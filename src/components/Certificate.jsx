@@ -6,7 +6,8 @@ import Navbar from './Navbar';
 function Certificate() {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { recipientName, event, canvasRef } = state || {};
+  const { recipientName, event } = state || {};
+  const canvasRef = useRef(null);
   const canvasContainerRef = useRef(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);

@@ -5,7 +5,6 @@ function InputField() {
   const [recipientName, setRecipientName] = useState('');
   const [event, setEvent] = useState('');
   const [errors, setErrors] = useState({});
-  const canvasRef = useRef(null);
   const navigate = useNavigate();
 
   const handleNameChange = (e) => {
@@ -33,7 +32,7 @@ function InputField() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      navigate('/Certificate', { state: { recipientName, event, canvasRef } });
+      navigate('/Certificate', { state: { recipientName, event } });
     }
   };
 
