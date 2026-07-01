@@ -1,24 +1,25 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import CertificatePreview from './CertificatePreview';
+import SEO from './SEO';
 import { TEMPLATES } from '../data/templates';
 
 function Welcome() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  // Load from sessionStorage if returning
+  // Load from sessionStorage if returning, or from ?template= query param
   const [recipientName, setRecipientName] = useState(() => sessionStorage.getItem('cert_recipientName') || '');
   const [event, setEvent] = useState(() => sessionStorage.getItem('cert_event') || '');
   const [date, setDate] = useState(() => sessionStorage.getItem('cert_date') || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
   const [issuer, setIssuer] = useState(() => sessionStorage.getItem('cert_issuer') || 'CertifyMe');
   const [signature, setSignature] = useState(() => sessionStorage.getItem('cert_signature') || '');
-  const [selectedTemplate, setSelectedTemplate] = useState(() => sessionStorage.getItem('cert_template') || 'classic-gold');
+  const [selectedTemplate, setSelectedTemplate] = useState(() => searchParams.get('template') || sessionStorage.getItem('cert_template') || 'classic-gold');
 
   const [errors, setErrors] = useState({});
   const [activeCategory, setActiveCategory] = useState('All');
 
-  // Persist to sessionStorage so Certificate page can read it
   useEffect(() => {
     sessionStorage.setItem('cert_recipientName', recipientName);
     sessionStorage.setItem('cert_event', event);
@@ -60,6 +61,7 @@ function Welcome() {
 
   return (
     <div>
+      <SEO />
       <Navbar />
 
       {/* Hero */}
@@ -67,7 +69,7 @@ function Welcome() {
         <div className="container mx-auto max-w-6xl text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300 mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-            New: 12 designer templates + live preview
+            Free · 12 templates · CSV bulk · No sign-up
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4">
             <span className="bg-gradient-to-r from-amber-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
@@ -79,12 +81,17 @@ function Welcome() {
           <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto mb-6">
             Pick a template, fill in the details, watch the preview update live, and download a high-resolution PNG — all in one place.
           </p>
-          <button
-            onClick={useSampleData}
-            className="text-xs text-cyan-300 hover:text-cyan-200 underline underline-offset-4"
-          >
-            ✨ Use sample data to preview
-          </button>
+          <div className="flex flex-wrap justify-center gap-3 text-sm">
+            <button
+              onClick={useSampleData}
+              className="text-xs text-cyan-300 hover:text-cyan-200 underline underline-offset-4"
+            >
+              ✨ Use sample data to preview
+            </button>
+            <Link to="/bulk" className="text-xs text-amber-300 hover:text-amber-200 underline underline-offset-4">
+              📦 Need many? Try bulk CSV upload →
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -285,6 +292,15 @@ function Welcome() {
               </button>
             ))}
           </div>
+
+          <div className="text-center mt-8">
+            <Link
+              to="/templates"
+              className="text-sm text-cyan-300 hover:text-cyan-200 underline underline-offset-4"
+            >
+              See all 12 templates in detail →
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -295,8 +311,8 @@ function Welcome() {
             {[
               { icon: '⚡', title: 'Live preview', desc: 'See changes instantly as you type' },
               { icon: '🎨', title: '12 templates', desc: 'Formal, minimal, luxury, vintage & more' },
-              { icon: '🖼️', title: 'High-res PNG', desc: 'Crisp downloads at A4 landscape ratio' },
-              { icon: '🔒', title: 'Privacy-first', desc: 'Everything runs locally in your browser' },
+              { icon: '📦', title: 'CSV bulk export', desc: 'Upload a spreadsheet, get a ZIP of PNGs' },
+              { icon: '🔗', title: 'Shareable links', desc: 'Every certificate gets its own URL' },
             ].map((f) => (
               <div key={f.title} className="bg-white/[0.04] border border-white/10 rounded-xl p-5 text-center">
                 <div className="text-3xl mb-2">{f.icon}</div>
@@ -308,7 +324,27 @@ function Welcome() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Use cases */}
+      <section className="px-4 sm:px-6 pb-20">
+        <div className="container mx-auto max-w-5xl">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-8">Built for every kind of recognition</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { icon: '🎓', title: 'Schools & courses', desc: 'Award students at scale via CSV' },
+              { icon: '💼', title: 'HR & corporate', desc: 'Completion certificates for training' },
+              { icon: '🏆', title: 'Events & hackathons', desc: 'Participation and winner certs' },
+              { icon: '🤝', title: 'Volunteers', desc: 'Recognize contributors instantly' },
+            ].map((u) => (
+              <div key={u.title} className="bg-white/[0.04] border border-white/10 rounded-xl p-5">
+                <div className="text-3xl mb-2">{u.icon}</div>
+                <h3 className="text-white font-semibold text-sm mb-1">{u.title}</h3>
+                <p className="text-slate-400 text-xs">{u.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <footer className="border-t border-white/10 py-6 text-center text-xs text-slate-500">
         Built with React + Vite + Tailwind. Crafted by the CertifyMe community.
       </footer>

@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import CertificatePreview from './CertificatePreview';
+import SEO from './SEO';
 import { TEMPLATES } from '../data/templates';
+import { buildShareUrl } from '../utils/share';
 
 function Certificate() {
   const { state } = useLocation();
@@ -20,8 +22,10 @@ function Certificate() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showSwitcher, setShowSwitcher] = useState(false);
+  const [shareLink, setShareLink] = useState('');
+  const [copied, setCopied] = useState(false);
 
-  const data = { recipientName, event, date, issuer, signature };
+  const data = { recipientName, event, date, issuer, signature, templateId: selectedTemplate };
   const currentTemplate = TEMPLATES.find((t) => t.id === selectedTemplate) || TEMPLATES[0];
 
   useEffect(() => {
@@ -30,26 +34,30 @@ function Certificate() {
     }
   }, [recipientName, event, navigate]);
 
+  // Generate share link once on mount (and when data changes)
+  useEffect(() => {
+    if (recipientName && event) {
+      setShareLink(buildShareUrl({
+        recipientName, event, date, issuer, signature, templateId: selectedTemplate,
+      }));
+    }
+  }, [recipientName, event, date, issuer, signature, selectedTemplate]);
+
   const downloadCertificate = async () => {
     if (!certificateRef.current) return;
     setIsDownloading(true);
     try {
-      // Dynamically import html2canvas to keep initial bundle small
       const { default: html2canvas } = await import('html2canvas');
-
-      // Render at 2x for crispness
       const canvas = await html2canvas(certificateRef.current, {
         scale: 2,
         useCORS: true,
         backgroundColor: null,
         logging: false,
       });
-
       const link = document.createElement('a');
       link.download = `${recipientName.replace(/\s+/g, '_')}_${event.replace(/\s+/g, '_')}_certificate.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-
       setTimeout(() => {
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
@@ -62,13 +70,32 @@ function Certificate() {
     }
   };
 
-  const shareOnSocial = () => {
+  const shareOnSocial = async () => {
     const text = `I just received my certificate for ${event}! 🎉`;
     if (navigator.share) {
-      navigator.share({ title: 'My Certificate', text });
+      try {
+        await navigator.share({ title: 'My Certificate', text, url: shareLink });
+      } catch (e) { /* user cancelled */ }
     } else {
-      navigator.clipboard?.writeText(text);
-      alert('Message copied to clipboard!');
+      await copyShareLink();
+    }
+  };
+
+  const copyShareLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      // Fallback for older browsers
+      const ta = document.createElement('textarea');
+      ta.value = shareLink;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -79,6 +106,10 @@ function Certificate() {
 
   return (
     <div className="min-h-screen">
+      <SEO
+        title={`Certificate — ${recipientName}`}
+        description={`Certificate of achievement awarded to ${recipientName} for ${event}. Issued by ${issuer}.`}
+      />
       <Navbar />
 
       {showSuccess && (
@@ -123,6 +154,31 @@ function Certificate() {
             />
           </div>
         </div>
+
+        {/* Share link bar */}
+        {shareLink && (
+          <div className="max-w-3xl mx-auto mb-6 bg-white/[0.04] border border-white/10 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="text-xs text-slate-400 mb-1">🔗 Shareable link to this certificate</div>
+              <input
+                readOnly
+                value={shareLink}
+                onClick={(e) => e.target.select()}
+                className="w-full px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10 text-cyan-300 text-xs font-mono truncate"
+              />
+            </div>
+            <button
+              onClick={copyShareLink}
+              className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                copied
+                  ? 'bg-emerald-500 text-white'
+                  : 'bg-white/10 hover:bg-white/20 text-white border border-white/15'
+              }`}
+            >
+              {copied ? '✓ Copied!' : 'Copy link'}
+            </button>
+          </div>
+        )}
 
         {/* Action buttons */}
         <div className="flex flex-col sm:flex-row justify-center gap-3 mb-12">
@@ -207,7 +263,7 @@ function Certificate() {
         <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { icon: '💾', title: 'Save it', desc: 'Download your certificate as a high-quality PNG' },
-            { icon: '📱', title: 'Share it', desc: 'Post your achievement on social media' },
+            { icon: '🔗', title: 'Share link', desc: 'Send a unique URL that opens this exact certificate' },
             { icon: '🖼️', title: 'Print it', desc: 'Print at A4 landscape for best results' },
           ].map((tip) => (
             <div key={tip.title} className="bg-white/[0.04] backdrop-blur border border-white/10 p-5 rounded-xl text-center">

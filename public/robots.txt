@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /c/
+
+# Sitemap
+Sitemap: https://certifyme.app/sitemap.xml

@@ -2,6 +2,9 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Welcome from './components/Welcome';
 import Certificate from './components/Certificate';
+import Templates from './components/Templates';
+import BulkGenerate from './components/BulkGenerate';
+import SharedCertificate from './components/SharedCertificate';
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Welcome />} />
             <Route path="/Certificate" element={<Certificate />} />
+            <Route path="/templates" element={<Templates />} />
+            <Route path="/bulk" element={<BulkGenerate />} />
+            <Route path="/c/:data" element={<SharedCertificate />} />
           </Routes>
         </BrowserRouter>
       </div>
