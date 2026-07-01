@@ -1,5 +1,5 @@
 // Template 9: Marble Noir — black marble with luxurious gold
-function MarbleBlack({ data }) {
+function MarbleBlack({ data, logoUrl }) {
   const { recipientName, event, date, issuer, signature } = data;
   return (
     <div style={{
@@ -55,6 +55,9 @@ function MarbleBlack({ data }) {
         }}>◈</div>
       ))}
 
+      {logoUrl && (
+        <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
+      )}
       <div style={{
         fontSize: '0.9vw',
         letterSpacing: '0.5em',

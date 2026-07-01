@@ -21,8 +21,8 @@ function Templates() {
   return (
     <div>
       <SEO
-        title="12 Free Certificate Templates — Download & Customize"
-        description="Browse 12 professionally designed certificate templates: formal, minimal, luxury, vintage, modern & more. Customize with your name and event, then download as high-res PNG. Free, no sign-up."
+        title="20 Free Certificate Templates — Download & Customize"
+        description="Browse 20 professionally designed certificate templates: formal, minimal, luxury, vintage, modern & more. Customize with your name and event, then download as high-res PNG or PDF. Free, no sign-up."
         path="/templates"
         keywords="certificate templates, free certificate designs, award certificate templates, certificate of achievement template, certificate of completion template"
       />
@@ -33,7 +33,7 @@ function Templates() {
         <div className="container mx-auto max-w-5xl text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-amber-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
-              12 Free Certificate Templates
+              20 Free Certificate Templates
             </span>
           </h1>
           <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto mb-6">

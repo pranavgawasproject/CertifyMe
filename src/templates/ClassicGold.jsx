@@ -1,5 +1,5 @@
 // Template 1: Classic Gold — black background with ornate gold border
-function ClassicGold({ data }) {
+function ClassicGold({ data, logoUrl }) {
   const { recipientName, event, date, issuer, signature } = data;
   return (
     <div style={{
@@ -45,6 +45,9 @@ function ClassicGold({ data }) {
         }}>❖</div>
       ))}
 
+      {logoUrl && (
+        <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
+      )}
       <div style={{ fontSize: '1.4vw', letterSpacing: '0.4em', marginBottom: '0.5%', textTransform: 'uppercase', opacity: 0.85 }}>
         Certificate of Achievement
       </div>

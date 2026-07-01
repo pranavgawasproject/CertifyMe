@@ -1,5 +1,5 @@
 // Template 5: Geometric Pulse — bold geometric shapes, purple gradient
-function GeometricPurple({ data }) {
+function GeometricPurple({ data, logoUrl }) {
   const { recipientName, event, date, issuer, signature } = data;
   return (
     <div style={{
@@ -71,6 +71,9 @@ function GeometricPurple({ data }) {
         marginBottom: '3%',
       }} />
 
+      {logoUrl && (
+        <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
+      )}
       <div style={{
         fontSize: '0.95vw',
         letterSpacing: '0.4em',

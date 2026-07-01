@@ -1,4 +1,4 @@
-// Registry of all 12 certificate templates.
+// Registry of all 20 certificate templates.
 // Each entry has: id, name, category, accent (tailwind-ish hex), description
 // The `Component` is wired up in TemplateRenderer.jsx to avoid circular imports.
 
@@ -86,6 +86,62 @@ export const TEMPLATES = [
     category: 'Luxury',
     accent: '#D4AF37',
     description: '1920s geometric gold on black',
+  },
+  {
+    id: 'midnight-galaxy',
+    name: 'Midnight Galaxy',
+    category: 'Modern',
+    accent: '#A78BFA',
+    description: 'Dark space theme with stars and moon',
+  },
+  {
+    id: 'forest-green',
+    name: 'Forest Pine',
+    category: 'Nature',
+    accent: '#8FBC8F',
+    description: 'Deep forest with pine tree silhouettes',
+  },
+  {
+    id: 'crimson-heritage',
+    name: 'Crimson Heritage',
+    category: 'Formal',
+    accent: '#8B0000',
+    description: 'Harvard-style crimson formal',
+  },
+  {
+    id: 'tropical-paradise',
+    name: 'Tropical Paradise',
+    category: 'Modern',
+    accent: '#FB923C',
+    description: 'Bright tropical with palm leaves',
+  },
+  {
+    id: 'pure-monochrome',
+    name: 'Pure Monochrome',
+    category: 'Minimal',
+    accent: '#000000',
+    description: 'Strictly black & white minimal',
+  },
+  {
+    id: 'watercolor-splash',
+    name: 'Watercolor Splash',
+    category: 'Elegant',
+    accent: '#7C3AED',
+    description: 'Soft pastel watercolor splotches',
+  },
+  {
+    id: 'industrial-steel',
+    name: 'Industrial Steel',
+    category: 'Modern',
+    accent: '#F59E0B',
+    description: 'Metallic grey with rivets, urban',
+  },
+  {
+    id: 'royal-purple',
+    name: 'Royal Purple',
+    category: 'Luxury',
+    accent: '#C0C0C0',
+    description: 'Royal purple with silver crown accents',
   },
 ];
 

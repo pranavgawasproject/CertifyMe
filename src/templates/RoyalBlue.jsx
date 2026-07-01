@@ -1,5 +1,5 @@
 // Template 2: Royal Blue — deep blue background with gold accents
-function RoyalBlue({ data }) {
+function RoyalBlue({ data, logoUrl }) {
   const { recipientName, event, date, issuer, signature } = data;
   return (
     <div style={{
@@ -28,6 +28,9 @@ function RoyalBlue({ data }) {
         marginBottom: '1%',
       }}>✦</div>
 
+      {logoUrl && (
+        <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
+      )}
       <div style={{
         fontSize: '1.5vw',
         letterSpacing: '0.35em',

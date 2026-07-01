@@ -1,5 +1,5 @@
 // Template 8: Tech Neon — dark with neon cyan/magenta glow
-function TechNeon({ data }) {
+function TechNeon({ data, logoUrl }) {
   const { recipientName, event, date, issuer, signature } = data;
   return (
     <div style={{
@@ -65,6 +65,9 @@ function TechNeon({ data }) {
         }} />
       ))}
 
+      {logoUrl && (
+        <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
+      )}
       <div style={{
         fontSize: '0.9vw',
         letterSpacing: '0.5em',

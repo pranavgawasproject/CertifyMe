@@ -6,6 +6,7 @@ import Navbar from './Navbar';
 import CertificatePreview from './CertificatePreview';
 import TemplateRenderer from '../templates/TemplateRenderer';
 import SEO from './SEO';
+import AdSlot from './AdSlot';
 
 const SAMPLE_CSV = `recipientName,event,date,issuer,signature,template
 Jane Anderson,Advanced Web Development,July 2026,CertifyMe Academy,Dr. Sharma,classic-gold
@@ -18,6 +19,7 @@ function BulkGenerate() {
   const [rows, setRows] = useState([]);
   const [error, setError] = useState('');
   const [isZipping, setIsZipping] = useState(false);
+  const [isPdfing, setIsPdfing] = useState(false);
   const [progress, setProgress] = useState(0);
   const fileInputRef = useRef(null);
 
@@ -142,6 +144,74 @@ function BulkGenerate() {
     }
   };
 
+  const downloadAllPdf = async () => {
+    if (rows.length === 0) return;
+    setIsPdfing(true);
+    setProgress(0);
+    try {
+      // Render each cert one at a time, capture to canvas immediately,
+      // then build the multi-page PDF from the captured canvases.
+      const { default: html2canvas } = await import('html2canvas');
+      const { default: jsPDF } = await import('jspdf');
+
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.left = '-9999px';
+      container.style.top = '0';
+      container.style.width = '1200px';
+      container.style.height = '848px';
+      document.body.appendChild(container);
+
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const pdfW = 297, pdfH = 210;
+
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        container.innerHTML = '';
+        const holder = document.createElement('div');
+        holder.style.width = '100%';
+        holder.style.height = '100%';
+        container.appendChild(holder);
+        const root = createRoot(holder);
+
+        await new Promise((resolve) => {
+          root.render(<TemplateRenderer templateId={row.templateId} data={row} />);
+          setTimeout(resolve, 250);
+        });
+
+        const canvas = await html2canvas(holder, {
+          scale: 2, useCORS: true, backgroundColor: null, logging: false,
+          width: 1200, height: 848,
+        });
+
+        const imgRatio = canvas.width / canvas.height;
+        const pdfRatio = pdfW / pdfH;
+        let imgW, imgH, x, y;
+        if (imgRatio > pdfRatio) {
+          imgW = pdfW; imgH = pdfW / imgRatio; x = 0; y = (pdfH - imgH) / 2;
+        } else {
+          imgH = pdfH; imgW = pdfH * imgRatio; x = (pdfW - imgW) / 2; y = 0;
+        }
+
+        const imgData = canvas.toDataURL('image/png');
+        if (i > 0) pdf.addPage();
+        pdf.addImage(imgData, 'PNG', x, y, imgW, imgH);
+
+        root.unmount();
+        setProgress(Math.round(((i + 1) / rows.length) * 100));
+      }
+
+      document.body.removeChild(container);
+      pdf.save(`certifyme_bulk_${rows.length}_certificates.pdf`);
+    } catch (err) {
+      console.error(err);
+      setError(`PDF export failed: ${err.message}`);
+    } finally {
+      setIsPdfing(false);
+      setProgress(0);
+    }
+  };
+
   return (
     <div>
       <SEO
@@ -218,30 +288,54 @@ function BulkGenerate() {
                 <h2 className="text-xl font-bold text-white">{rows.length} certificate{rows.length !== 1 ? 's' : ''} ready</h2>
                 <p className="text-slate-400 text-xs">Preview below · click any to remove</p>
               </div>
-              <button
-                onClick={downloadAllZip}
-                disabled={isZipping}
-                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all ${
-                  isZipping
-                    ? 'bg-slate-600 cursor-wait'
-                    : 'bg-gradient-to-r from-emerald-500 to-green-600 hover:shadow-lg hover:shadow-emerald-500/30 text-white hover:scale-105'
-                }`}
-              >
-                {isZipping ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Generating ZIP… {progress}%
-                  </>
-                ) : (
-                  <>📦 Download all as ZIP</>
-                )}
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={downloadAllZip}
+                  disabled={isZipping || isPdfing}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all ${
+                    isZipping || isPdfing
+                      ? 'bg-slate-600 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-emerald-500 to-green-600 hover:shadow-lg hover:shadow-emerald-500/30 text-white hover:scale-105'
+                  }`}
+                >
+                  {isZipping ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      ZIP… {progress}%
+                    </>
+                  ) : (
+                    <>📦 Download ZIP (PNGs)</>
+                  )}
+                </button>
+
+                <button
+                  onClick={downloadAllPdf}
+                  disabled={isZipping || isPdfing}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all ${
+                    isPdfing
+                      ? 'bg-slate-600 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-rose-500 to-pink-600 hover:shadow-lg hover:shadow-rose-500/30 text-white hover:scale-105'
+                  }`}
+                >
+                  {isPdfing ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      PDF… {progress}%
+                    </>
+                  ) : (
+                    <>📄 Download single PDF</>
+                  )}
+                </button>
+              </div>
             </div>
 
-            {isZipping && (
+            {(isZipping || isPdfing) && (
               <div className="w-full bg-slate-800 rounded-full h-2 mb-6 overflow-hidden">
                 <div className="bg-gradient-to-r from-amber-500 via-pink-500 to-cyan-500 h-full transition-all" style={{ width: `${progress}%` }} />
               </div>
@@ -274,7 +368,7 @@ function BulkGenerate() {
       )}
 
       {/* Help section */}
-      <section className="px-4 sm:px-6 pb-20">
+      <section className="px-4 sm:px-6 pb-12">
         <div className="container mx-auto max-w-3xl">
           <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6">
             <h2 className="text-white font-bold text-lg mb-4">CSV format</h2>
@@ -309,6 +403,13 @@ function BulkGenerate() {
               💡 Tip: To find valid template IDs, visit the <a href="/templates" className="text-cyan-400 underline">templates page</a>. Examples: <code className="text-cyan-300">classic-gold</code>, <code className="text-cyan-300">royal-blue</code>, <code className="text-cyan-300">tech-neon</code>, <code className="text-cyan-300">art-deco</code>.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Ad slot */}
+      <section className="px-4 sm:px-6 pb-16">
+        <div className="container mx-auto max-w-3xl">
+          <AdSlot slot="0000000003" className="min-h-[90px]" />
         </div>
       </section>
 

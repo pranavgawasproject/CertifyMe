@@ -1,5 +1,5 @@
 // Template 6: Vintage Kraft — kraft paper texture with retro stamp
-function VintageKraft({ data }) {
+function VintageKraft({ data, logoUrl }) {
   const { recipientName, event, date, issuer, signature } = data;
   return (
     <div style={{
@@ -30,6 +30,9 @@ function VintageKraft({ data }) {
       <div style={{ position: 'absolute', top: '4.5%', left: '4.5%', right: '4.5%', bottom: '4.5%', border: '1px solid #5C3A1F', opacity: 0.4 }} />
 
       {/* Top banner */}
+      {logoUrl && (
+        <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
+      )}
       <div style={{
         fontSize: '0.9vw',
         letterSpacing: '0.4em',

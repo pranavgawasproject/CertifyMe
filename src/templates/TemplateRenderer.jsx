@@ -10,6 +10,14 @@ import MarbleBlack from './MarbleBlack';
 import SunsetGradient from './SunsetGradient';
 import NavyCorporate from './NavyCorporate';
 import ArtDeco from './ArtDeco';
+import MidnightGalaxy from './MidnightGalaxy';
+import ForestGreen from './ForestGreen';
+import CrimsonHeritage from './CrimsonHeritage';
+import TropicalParadise from './TropicalParadise';
+import PureMonochrome from './PureMonochrome';
+import WatercolorSplash from './WatercolorSplash';
+import IndustrialSteel from './IndustrialSteel';
+import RoyalPurple from './RoyalPurple';
 
 const TEMPLATE_MAP = {
   'classic-gold': ClassicGold,
@@ -24,9 +32,17 @@ const TEMPLATE_MAP = {
   'sunset-gradient': SunsetGradient,
   'navy-corporate': NavyCorporate,
   'art-deco': ArtDeco,
+  'midnight-galaxy': MidnightGalaxy,
+  'forest-green': ForestGreen,
+  'crimson-heritage': CrimsonHeritage,
+  'tropical-paradise': TropicalParadise,
+  'pure-monochrome': PureMonochrome,
+  'watercolor-splash': WatercolorSplash,
+  'industrial-steel': IndustrialSteel,
+  'royal-purple': RoyalPurple,
 };
 
-export default function TemplateRenderer({ templateId, data }) {
+export default function TemplateRenderer({ templateId, data, logoUrl }) {
   const Component = TEMPLATE_MAP[templateId] || ClassicGold;
-  return <Component data={data} />;
+  return <Component data={data} logoUrl={logoUrl} />;
 }

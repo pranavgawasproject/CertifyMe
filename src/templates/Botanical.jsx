@@ -1,5 +1,5 @@
 // Template 4: Botanical Sage — soft sage green with leaf decorations
-function Botanical({ data }) {
+function Botanical({ data, logoUrl }) {
   const { recipientName, event, date, issuer, signature } = data;
   return (
     <div style={{
@@ -38,6 +38,9 @@ function Botanical({ data }) {
       <div style={{ position: 'absolute', top: '6%', left: '6%', right: '6%', bottom: '6%', border: '2px solid #4A6741', opacity: 0.5 }} />
       <div style={{ position: 'absolute', top: '7%', left: '7%', right: '7%', bottom: '7%', border: '1px solid #4A6741', opacity: 0.3 }} />
 
+      {logoUrl && (
+        <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
+      )}
       <div style={{
         fontSize: '0.9vw',
         letterSpacing: '0.4em',

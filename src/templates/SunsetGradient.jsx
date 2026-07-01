@@ -1,5 +1,5 @@
 // Template 10: Sunset Wave — warm sunset gradient, celebratory
-function SunsetGradient({ data }) {
+function SunsetGradient({ data, logoUrl }) {
   const { recipientName, event, date, issuer, signature } = data;
   return (
     <div style={{
@@ -56,6 +56,9 @@ function SunsetGradient({ data }) {
       <div style={{ position: 'absolute', top: '4%', left: '4%', right: '4%', bottom: '4%', border: '2px solid rgba(255, 255, 255, 0.5)' }} />
       <div style={{ position: 'absolute', top: '5%', left: '5%', right: '5%', bottom: '5%', border: '1px solid rgba(255, 255, 255, 0.3)' }} />
 
+      {logoUrl && (
+        <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
+      )}
       <div style={{
         fontSize: '0.95vw',
         letterSpacing: '0.4em',

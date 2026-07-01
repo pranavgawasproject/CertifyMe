@@ -1,5 +1,5 @@
 // Template 11: Corporate Navy — professional navy with crisp white
-function NavyCorporate({ data }) {
+function NavyCorporate({ data, logoUrl }) {
   const { recipientName, event, date, issuer, signature } = data;
   return (
     <div style={{
@@ -44,6 +44,9 @@ function NavyCorporate({ data }) {
         OFFICIAL CERTIFICATE OF COMPLETION
       </div>
 
+      {logoUrl && (
+        <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
+      )}
       <div style={{
         fontSize: '0.95vw',
         letterSpacing: '0.4em',
