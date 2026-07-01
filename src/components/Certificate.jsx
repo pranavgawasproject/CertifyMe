@@ -6,11 +6,23 @@ import Navbar from './Navbar';
 function Certificate() {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { recipientName, event } = state || {};
+  
+  const recipientName = state?.recipientName || sessionStorage.getItem('cert_recipientName') || '';
+  const event = state?.event || sessionStorage.getItem('cert_event') || '';
+
   const canvasRef = useRef(null);
   const canvasContainerRef = useRef(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    if (state?.recipientName) {
+      sessionStorage.setItem('cert_recipientName', state.recipientName);
+    }
+    if (state?.event) {
+      sessionStorage.setItem('cert_event', state.event);
+    }
+  }, [state]);
 
   useEffect(() => {
     // Redirect if no data
