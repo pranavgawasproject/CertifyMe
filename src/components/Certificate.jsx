@@ -1,204 +1,221 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import certificateImage from '../assets/Certificate.png';
 import Navbar from './Navbar';
+import CertificatePreview from './CertificatePreview';
+import { TEMPLATES } from '../data/templates';
 
 function Certificate() {
   const { state } = useLocation();
   const navigate = useNavigate();
-  
+
+  // Read from location state OR sessionStorage (persists across refresh)
   const recipientName = state?.recipientName || sessionStorage.getItem('cert_recipientName') || '';
   const event = state?.event || sessionStorage.getItem('cert_event') || '';
+  const date = state?.date || sessionStorage.getItem('cert_date') || '';
+  const issuer = state?.issuer || sessionStorage.getItem('cert_issuer') || '';
+  const signature = state?.signature || sessionStorage.getItem('cert_signature') || '';
+  const selectedTemplate = state?.templateId || sessionStorage.getItem('cert_template') || 'classic-gold';
 
-  const canvasRef = useRef(null);
-  const canvasContainerRef = useRef(null);
+  const certificateRef = useRef(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showSwitcher, setShowSwitcher] = useState(false);
+
+  const data = { recipientName, event, date, issuer, signature };
+  const currentTemplate = TEMPLATES.find((t) => t.id === selectedTemplate) || TEMPLATES[0];
 
   useEffect(() => {
-    if (state?.recipientName) {
-      sessionStorage.setItem('cert_recipientName', state.recipientName);
-    }
-    if (state?.event) {
-      sessionStorage.setItem('cert_event', state.event);
-    }
-  }, [state]);
-
-  useEffect(() => {
-    // Redirect if no data
     if (!recipientName || !event) {
       navigate('/');
-      return;
     }
+  }, [recipientName, event, navigate]);
 
-    const handleResize = () => {
-      if (canvasRef.current && canvasContainerRef.current) {
-        const canvas = canvasRef.current;
-        const canvasContainer = canvasContainerRef.current;
-        const containerWidth = canvasContainer.offsetWidth;
-        const containerHeight = canvasContainer.offsetHeight;
-
-        const image = new Image();
-        image.src = certificateImage;
-
-        image.onload = () => {
-          const imageRatio = image.width / image.height;
-          const containerRatio = containerWidth / containerHeight;
-
-          let width, height;
-
-          if (imageRatio > containerRatio) {
-            width = containerWidth * 0.9;
-            height = width / imageRatio;
-          } else {
-            height = containerHeight * 0.9;
-            width = height * imageRatio;
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(image, 0, 0, width, height);
-          ctx.font = `${Math.floor(height / 20)}px Arial`; 
-          ctx.fillStyle = 'black';
-          ctx.fillText(recipientName, width * 0.3, height * 0.499); 
-          ctx.font = `${Math.floor(height / 30)}px Arial`; 
-          ctx.fillText(event, width * 0.5, height * 0.6); 
-        };
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [recipientName, event, canvasRef, navigate]);
-
-  const downloadCertificate = () => {
+  const downloadCertificate = async () => {
+    if (!certificateRef.current) return;
     setIsDownloading(true);
-    const canvas = canvasRef.current;
-    const link = document.createElement('a');
-    link.download = `${recipientName}_${event}_certificate.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    
-    setTimeout(() => {
+    try {
+      // Dynamically import html2canvas to keep initial bundle small
+      const { default: html2canvas } = await import('html2canvas');
+
+      // Render at 2x for crispness
+      const canvas = await html2canvas(certificateRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+        logging: false,
+      });
+
+      const link = document.createElement('a');
+      link.download = `${recipientName.replace(/\s+/g, '_')}_${event.replace(/\s+/g, '_')}_certificate.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+
+      setTimeout(() => {
+        setShowSuccess(true);
+        setTimeout(() => setShowSuccess(false), 3000);
+      }, 200);
+    } catch (err) {
+      console.error('Download failed:', err);
+      alert('Sorry, download failed. Please try again.');
+    } finally {
       setIsDownloading(false);
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
-    }, 500);
+    }
   };
 
   const shareOnSocial = () => {
     const text = `I just received my certificate for ${event}! 🎉`;
     if (navigator.share) {
-      navigator.share({
-        title: 'My Certificate',
-        text: text,
-      });
+      navigator.share({ title: 'My Certificate', text });
+    } else {
+      navigator.clipboard?.writeText(text);
+      alert('Message copied to clipboard!');
     }
+  };
+
+  const switchTemplate = (tplId) => {
+    sessionStorage.setItem('cert_template', tplId);
+    window.location.reload();
   };
 
   return (
     <div className="min-h-screen">
       <Navbar />
-      
-      {/* Success Message */}
+
       {showSuccess && (
-        <div className="fixed top-20 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-slide-in-right z-50">
+        <div className="fixed top-20 right-4 bg-emerald-500 text-white px-5 py-3 rounded-lg shadow-lg z-50 animate-slide-in-right">
           ✅ Certificate downloaded successfully!
         </div>
       )}
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Header Card */}
-        <div className="flex justify-center mb-8 animate-fade-in">
-          <div className="w-full max-w-2xl bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-cyan-500/20 backdrop-blur-lg p-8 rounded-2xl border border-white/20 shadow-2xl">
-            <div className="text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-yellow-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
+      <div className="container mx-auto px-4 sm:px-6 py-8">
+        {/* Header card */}
+        <div className="max-w-4xl mx-auto mb-8 animate-fade-in">
+          <div className="bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-cyan-500/10 backdrop-blur-xl p-6 sm:p-8 rounded-2xl border border-white/10 shadow-2xl text-center">
+            <div className="text-xs uppercase tracking-widest text-cyan-300/80 mb-2">
+              {currentTemplate.category} · {currentTemplate.name}
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold mb-2">
+              <span className="bg-gradient-to-r from-amber-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
                 🎊 Congratulations, {recipientName}!
-              </h1>
-              <p className="text-white text-lg md:text-xl">
-                Your certificate for <span className="font-semibold text-cyan-300">{event}</span> is ready!
-              </p>
-              <div className="mt-4 flex justify-center gap-2">
-                <span className="bg-purple-500/30 text-white px-4 py-1 rounded-full text-sm">Certificate Ready</span>
-                <span className="bg-green-500/30 text-white px-4 py-1 rounded-full text-sm">✓ Verified</span>
-              </div>
+              </span>
+            </h1>
+            <p className="text-slate-300 text-base sm:text-lg">
+              Your certificate for <span className="font-semibold text-cyan-300">{event}</span> is ready.
+            </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <span className="bg-amber-500/20 text-amber-200 px-3 py-1 rounded-full text-xs">Template: {currentTemplate.name}</span>
+              <span className="bg-emerald-500/20 text-emerald-200 px-3 py-1 rounded-full text-xs">✓ Ready to download</span>
+              <span className="bg-cyan-500/20 text-cyan-200 px-3 py-1 rounded-full text-xs">📐 A4 Landscape · 2x export</span>
             </div>
           </div>
         </div>
 
-        {/* Certificate Preview */}
-        <div
-          ref={canvasContainerRef}
-          className="w-full h-[60vh] md:h-[70vh] flex justify-center items-center mb-6 animate-scale-in"
-        >
-          <div className="relative">
-            <canvas 
-              ref={canvasRef} 
-              className="max-w-full max-h-full rounded-lg shadow-2xl border-4 border-white/20"
+        {/* Certificate preview (this is the element captured for download) */}
+        <div className="max-w-5xl mx-auto mb-8 animate-scale-in">
+          <div
+            ref={certificateRef}
+            style={{ aspectRatio: '1.414 / 1', width: '100%' }}
+            className="rounded-lg overflow-hidden shadow-2xl border border-white/10"
+          >
+            <CertificatePreview
+              templateId={selectedTemplate}
+              data={data}
             />
-            <div className="absolute -top-4 -right-4 bg-yellow-400 text-black rounded-full w-12 h-12 flex items-center justify-center text-2xl animate-bounce">
-              ⭐
-            </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+        {/* Action buttons */}
+        <div className="flex flex-col sm:flex-row justify-center gap-3 mb-12">
           <button
-            className={`flex items-center gap-2 px-8 py-4 rounded-lg font-bold text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg ${
-              isDownloading 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white hover:shadow-green-500/50'
+            className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all transform hover:scale-105 active:scale-95 shadow-lg ${
+              isDownloading
+                ? 'bg-slate-600 cursor-not-allowed'
+                : 'bg-gradient-to-r from-emerald-500 to-green-600 hover:shadow-emerald-500/40 text-white'
             }`}
             onClick={downloadCertificate}
             disabled={isDownloading}
           >
             {isDownloading ? (
               <>
-                <span className="animate-spin">⏳</span> Downloading...
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Generating PNG...
               </>
             ) : (
-              <>
-                📥 Download Certificate
-              </>
+              <>📥 Download PNG</>
             )}
           </button>
 
           <button
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-blue-500/50"
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-500/40 text-white px-6 py-3 rounded-lg font-semibold text-sm transition-all transform hover:scale-105 active:scale-95 shadow-lg"
             onClick={shareOnSocial}
           >
             📤 Share
           </button>
 
           <button
-            className="flex items-center gap-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-2 border-white/30 px-8 py-4 rounded-lg font-bold text-lg transition-all transform hover:scale-105 active:scale-95"
+            className="flex items-center justify-center gap-2 bg-white/5 backdrop-blur border border-white/15 hover:bg-white/10 text-white px-6 py-3 rounded-lg font-semibold text-sm transition-all transform hover:scale-105 active:scale-95"
+            onClick={() => setShowSwitcher((v) => !v)}
+          >
+            🎨 Switch template
+          </button>
+
+          <button
+            className="flex items-center justify-center gap-2 bg-white/5 backdrop-blur border border-white/15 hover:bg-white/10 text-white px-6 py-3 rounded-lg font-semibold text-sm transition-all transform hover:scale-105 active:scale-95"
             onClick={() => navigate('/')}
           >
-            🔄 Create Another
+            🔄 Edit details
           </button>
         </div>
 
-        {/* Tips Section */}
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center">
-            <div className="text-4xl mb-2">💾</div>
-            <h3 className="text-white font-semibold mb-2">Save It</h3>
-            <p className="text-gray-300 text-sm">Download your certificate in high quality PNG format</p>
+        {/* Template switcher panel */}
+        {showSwitcher && (
+          <div className="max-w-5xl mx-auto mb-12 bg-white/[0.04] border border-white/10 rounded-2xl p-5 animate-fade-in">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-semibold text-sm">Switch template (keeps your details)</h3>
+              <button
+                onClick={() => setShowSwitcher(false)}
+                className="text-slate-400 hover:text-white text-sm"
+              >
+                ✕ Close
+              </button>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {TEMPLATES.map((tpl) => (
+                <button
+                  key={tpl.id}
+                  onClick={() => switchTemplate(tpl.id)}
+                  className={`group rounded-lg overflow-hidden border transition-all ${
+                    selectedTemplate === tpl.id
+                      ? 'border-cyan-400 ring-2 ring-cyan-400/40'
+                      : 'border-white/10 hover:border-white/30'
+                  }`}
+                >
+                  <CertificatePreview templateId={tpl.id} data={data} />
+                  <div className="bg-slate-900/80 backdrop-blur px-2 py-1.5">
+                    <div className="text-[11px] text-white font-medium truncate">{tpl.name}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center">
-            <div className="text-4xl mb-2">📱</div>
-            <h3 className="text-white font-semibold mb-2">Share It</h3>
-            <p className="text-gray-300 text-sm">Share your achievement on social media</p>
-          </div>
-          <div className="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/20 text-center">
-            <div className="text-4xl mb-2">🖼️</div>
-            <h3 className="text-white font-semibold mb-2">Print It</h3>
-            <p className="text-gray-300 text-sm">Print it and frame your accomplishment</p>
-          </div>
+        )}
+
+        {/* Tips */}
+        <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {[
+            { icon: '💾', title: 'Save it', desc: 'Download your certificate as a high-quality PNG' },
+            { icon: '📱', title: 'Share it', desc: 'Post your achievement on social media' },
+            { icon: '🖼️', title: 'Print it', desc: 'Print at A4 landscape for best results' },
+          ].map((tip) => (
+            <div key={tip.title} className="bg-white/[0.04] backdrop-blur border border-white/10 p-5 rounded-xl text-center">
+              <div className="text-3xl mb-2">{tip.icon}</div>
+              <h3 className="text-white font-semibold text-sm mb-1">{tip.title}</h3>
+              <p className="text-slate-400 text-xs">{tip.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>
