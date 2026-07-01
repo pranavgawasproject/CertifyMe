@@ -1,5 +1,6 @@
 // Encode certificate data into a URL-safe base64 string for shareable links.
 // No backend required — the entire certificate is reconstructed from the URL.
+// Note: logoUrl is intentionally NOT included (data URLs are too large for URLs).
 
 /**
  * Encode a certificate data object into a URL-safe string.
@@ -7,7 +8,6 @@
  * @returns {string} URL-safe base64
  */
 export function encodeCertData(data) {
-  // Compact keys to keep URL short
   const compact = {
     r: data.recipientName || '',
     e: data.event || '',
@@ -17,7 +17,6 @@ export function encodeCertData(data) {
     t: data.templateId || 'classic-gold',
   };
   const json = JSON.stringify(compact);
-  // base64url encode
   const b64 = btoa(unescape(encodeURIComponent(json)));
   return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
@@ -29,9 +28,7 @@ export function encodeCertData(data) {
  */
 export function decodeCertData(encoded) {
   try {
-    // Restore base64 from base64url
     let b64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
-    // Pad
     while (b64.length % 4) b64 += '=';
     const json = decodeURIComponent(escape(atob(b64)));
     const compact = JSON.parse(json);

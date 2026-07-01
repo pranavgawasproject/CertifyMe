@@ -1,5 +1,5 @@
 // Template 3: Modern Minimal — white with thin accent line
-function ModernMinimal({ data }) {
+function ModernMinimal({ data, logoUrl }) {
   const { recipientName, event, date, issuer, signature } = data;
   return (
     <div style={{
@@ -22,6 +22,9 @@ function ModernMinimal({ data }) {
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '8px', background: '#0F172A' }} />
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '8px', background: '#0F172A' }} />
 
+      {logoUrl && (
+        <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
+      )}
       <div style={{
         fontSize: '0.9vw',
         letterSpacing: '0.5em',

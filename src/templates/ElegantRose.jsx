@@ -1,5 +1,5 @@
 // Template 7: Elegant Rose — soft rose with elegant script typography
-function ElegantRose({ data }) {
+function ElegantRose({ data, logoUrl }) {
   const { recipientName, event, date, issuer, signature } = data;
   return (
     <div style={{
@@ -38,6 +38,9 @@ function ElegantRose({ data }) {
         }}>❀</div>
       ))}
 
+      {logoUrl && (
+        <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
+      )}
       <div style={{
         fontSize: '1vw',
         letterSpacing: '0.4em',

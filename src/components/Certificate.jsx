@@ -3,24 +3,27 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import CertificatePreview from './CertificatePreview';
 import SEO from './SEO';
+import AdSlot from './AdSlot';
 import { TEMPLATES } from '../data/templates';
 import { buildShareUrl } from '../utils/share';
+import { exportNodeToPdf } from '../utils/pdfExport';
 
 function Certificate() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  // Read from location state OR sessionStorage (persists across refresh)
   const recipientName = state?.recipientName || sessionStorage.getItem('cert_recipientName') || '';
   const event = state?.event || sessionStorage.getItem('cert_event') || '';
   const date = state?.date || sessionStorage.getItem('cert_date') || '';
   const issuer = state?.issuer || sessionStorage.getItem('cert_issuer') || '';
   const signature = state?.signature || sessionStorage.getItem('cert_signature') || '';
+  const logoUrl = state?.logoUrl || sessionStorage.getItem('cert_logoUrl') || '';
   const selectedTemplate = state?.templateId || sessionStorage.getItem('cert_template') || 'classic-gold';
 
   const certificateRef = useRef(null);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
+  const [showSuccess, setShowSuccess] = useState('');
   const [showSwitcher, setShowSwitcher] = useState(false);
   const [shareLink, setShareLink] = useState('');
   const [copied, setCopied] = useState(false);
@@ -34,7 +37,6 @@ function Certificate() {
     }
   }, [recipientName, event, navigate]);
 
-  // Generate share link once on mount (and when data changes)
   useEffect(() => {
     if (recipientName && event) {
       setShareLink(buildShareUrl({
@@ -43,30 +45,43 @@ function Certificate() {
     }
   }, [recipientName, event, date, issuer, signature, selectedTemplate]);
 
-  const downloadCertificate = async () => {
+  const downloadPng = async () => {
     if (!certificateRef.current) return;
     setIsDownloading(true);
     try {
       const { default: html2canvas } = await import('html2canvas');
       const canvas = await html2canvas(certificateRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: null,
-        logging: false,
+        scale: 2, useCORS: true, backgroundColor: null, logging: false,
       });
       const link = document.createElement('a');
       link.download = `${recipientName.replace(/\s+/g, '_')}_${event.replace(/\s+/g, '_')}_certificate.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-      setTimeout(() => {
-        setShowSuccess(true);
-        setTimeout(() => setShowSuccess(false), 3000);
-      }, 200);
+      setShowSuccess('PNG downloaded');
+      setTimeout(() => setShowSuccess(''), 3000);
     } catch (err) {
       console.error('Download failed:', err);
       alert('Sorry, download failed. Please try again.');
     } finally {
       setIsDownloading(false);
+    }
+  };
+
+  const downloadPdf = async () => {
+    if (!certificateRef.current) return;
+    setIsDownloadingPdf(true);
+    try {
+      await exportNodeToPdf(
+        certificateRef.current,
+        `${recipientName.replace(/\s+/g, '_')}_${event.replace(/\s+/g, '_')}_certificate.pdf`
+      );
+      setShowSuccess('PDF downloaded');
+      setTimeout(() => setShowSuccess(''), 3000);
+    } catch (err) {
+      console.error('PDF failed:', err);
+      alert('Sorry, PDF generation failed. Please try again.');
+    } finally {
+      setIsDownloadingPdf(false);
     }
   };
 
@@ -87,7 +102,6 @@ function Certificate() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      // Fallback for older browsers
       const ta = document.createElement('textarea');
       ta.value = shareLink;
       document.body.appendChild(ta);
@@ -114,12 +128,11 @@ function Certificate() {
 
       {showSuccess && (
         <div className="fixed top-20 right-4 bg-emerald-500 text-white px-5 py-3 rounded-lg shadow-lg z-50 animate-slide-in-right">
-          ✅ Certificate downloaded successfully!
+          ✅ {showSuccess} successfully!
         </div>
       )}
 
       <div className="container mx-auto px-4 sm:px-6 py-8">
-        {/* Header card */}
         <div className="max-w-4xl mx-auto mb-8 animate-fade-in">
           <div className="bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-cyan-500/10 backdrop-blur-xl p-6 sm:p-8 rounded-2xl border border-white/10 shadow-2xl text-center">
             <div className="text-xs uppercase tracking-widest text-cyan-300/80 mb-2">
@@ -141,7 +154,6 @@ function Certificate() {
           </div>
         </div>
 
-        {/* Certificate preview (this is the element captured for download) */}
         <div className="max-w-5xl mx-auto mb-8 animate-scale-in">
           <div
             ref={certificateRef}
@@ -151,6 +163,7 @@ function Certificate() {
             <CertificatePreview
               templateId={selectedTemplate}
               data={data}
+              logoUrl={logoUrl}
             />
           </div>
         </div>
@@ -181,14 +194,14 @@ function Certificate() {
         )}
 
         {/* Action buttons */}
-        <div className="flex flex-col sm:flex-row justify-center gap-3 mb-12">
+        <div className="flex flex-col sm:flex-row justify-center gap-3 mb-6">
           <button
             className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all transform hover:scale-105 active:scale-95 shadow-lg ${
               isDownloading
                 ? 'bg-slate-600 cursor-not-allowed'
                 : 'bg-gradient-to-r from-emerald-500 to-green-600 hover:shadow-emerald-500/40 text-white'
             }`}
-            onClick={downloadCertificate}
+            onClick={downloadPng}
             disabled={isDownloading}
           >
             {isDownloading ? (
@@ -201,6 +214,28 @@ function Certificate() {
               </>
             ) : (
               <>📥 Download PNG</>
+            )}
+          </button>
+
+          <button
+            className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all transform hover:scale-105 active:scale-95 shadow-lg ${
+              isDownloadingPdf
+                ? 'bg-slate-600 cursor-not-allowed'
+                : 'bg-gradient-to-r from-rose-500 to-pink-600 hover:shadow-rose-500/40 text-white'
+            }`}
+            onClick={downloadPdf}
+            disabled={isDownloadingPdf}
+          >
+            {isDownloadingPdf ? (
+              <>
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Generating PDF...
+              </>
+            ) : (
+              <>📄 Download PDF</>
             )}
           </button>
 
@@ -226,6 +261,11 @@ function Certificate() {
           </button>
         </div>
 
+        {/* Ad slot */}
+        <div className="max-w-3xl mx-auto mb-12">
+          <AdSlot slot="0000000002" className="min-h-[90px]" />
+        </div>
+
         {/* Template switcher panel */}
         {showSwitcher && (
           <div className="max-w-5xl mx-auto mb-12 bg-white/[0.04] border border-white/10 rounded-2xl p-5 animate-fade-in">
@@ -249,7 +289,7 @@ function Certificate() {
                       : 'border-white/10 hover:border-white/30'
                   }`}
                 >
-                  <CertificatePreview templateId={tpl.id} data={data} />
+                  <CertificatePreview templateId={tpl.id} data={data} logoUrl={logoUrl} />
                   <div className="bg-slate-900/80 backdrop-blur px-2 py-1.5">
                     <div className="text-[11px] text-white font-medium truncate">{tpl.name}</div>
                   </div>
@@ -262,7 +302,7 @@ function Certificate() {
         {/* Tips */}
         <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { icon: '💾', title: 'Save it', desc: 'Download your certificate as a high-quality PNG' },
+            { icon: '💾', title: 'Save it', desc: 'Download as high-quality PNG or PDF' },
             { icon: '🔗', title: 'Share link', desc: 'Send a unique URL that opens this exact certificate' },
             { icon: '🖼️', title: 'Print it', desc: 'Print at A4 landscape for best results' },
           ].map((tip) => (

@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import CertificatePreview from './CertificatePreview';
 import SEO from './SEO';
+import AdSlot from './AdSlot';
 import { TEMPLATES } from '../data/templates';
 
 function Welcome() {
@@ -15,10 +16,12 @@ function Welcome() {
   const [date, setDate] = useState(() => sessionStorage.getItem('cert_date') || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
   const [issuer, setIssuer] = useState(() => sessionStorage.getItem('cert_issuer') || 'CertifyMe');
   const [signature, setSignature] = useState(() => sessionStorage.getItem('cert_signature') || '');
+  const [logoUrl, setLogoUrl] = useState(() => sessionStorage.getItem('cert_logoUrl') || '');
   const [selectedTemplate, setSelectedTemplate] = useState(() => searchParams.get('template') || sessionStorage.getItem('cert_template') || 'classic-gold');
 
   const [errors, setErrors] = useState({});
   const [activeCategory, setActiveCategory] = useState('All');
+  const logoInputRef = useRef(null);
 
   useEffect(() => {
     sessionStorage.setItem('cert_recipientName', recipientName);
@@ -26,8 +29,9 @@ function Welcome() {
     sessionStorage.setItem('cert_date', date);
     sessionStorage.setItem('cert_issuer', issuer);
     sessionStorage.setItem('cert_signature', signature);
+    sessionStorage.setItem('cert_logoUrl', logoUrl);
     sessionStorage.setItem('cert_template', selectedTemplate);
-  }, [recipientName, event, date, issuer, signature, selectedTemplate]);
+  }, [recipientName, event, date, issuer, signature, logoUrl, selectedTemplate]);
 
   const categories = ['All', ...Array.from(new Set(TEMPLATES.map((t) => t.category)))];
   const filteredTemplates = activeCategory === 'All'
@@ -47,7 +51,7 @@ function Welcome() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      navigate('/Certificate', { state: previewData });
+      navigate('/Certificate', { state: { ...previewData, logoUrl } });
     }
   };
 
@@ -57,6 +61,27 @@ function Welcome() {
     setIssuer('CertifyMe Academy');
     setSignature('Dr. R. Sharma');
     setDate(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+  };
+
+  const handleLogoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file (PNG, JPG, SVG)');
+      return;
+    }
+    if (file.size > 500 * 1024) {
+      alert('Logo must be under 500KB. Please use a smaller image.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => setLogoUrl(ev.target.result);
+    reader.readAsDataURL(file);
+  };
+
+  const removeLogo = () => {
+    setLogoUrl('');
+    if (logoInputRef.current) logoInputRef.current.value = '';
   };
 
   return (
@@ -69,7 +94,7 @@ function Welcome() {
         <div className="container mx-auto max-w-6xl text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300 mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-            Free · 12 templates · CSV bulk · No sign-up
+            Free · 20 templates · CSV bulk · PDF · No sign-up
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4">
             <span className="bg-gradient-to-r from-amber-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
@@ -173,7 +198,7 @@ function Welcome() {
               </div>
 
               {/* Signature */}
-              <div className="mb-6">
+              <div className="mb-4">
                 <label className="block text-slate-200 font-medium mb-1.5 text-sm">
                   Signature <span className="text-slate-500 font-normal">(optional)</span>
                 </label>
@@ -184,6 +209,34 @@ function Welcome() {
                   value={signature}
                   onChange={(e) => setSignature(e.target.value)}
                 />
+              </div>
+
+              {/* Logo upload */}
+              <div className="mb-6">
+                <label className="block text-slate-200 font-medium mb-1.5 text-sm">
+                  Organization logo <span className="text-slate-500 font-normal">(optional, &lt;500KB)</span>
+                </label>
+                {logoUrl ? (
+                  <div className="flex items-center gap-3 bg-slate-900/60 border border-white/10 rounded-lg p-3">
+                    <img src={logoUrl} alt="logo preview" className="h-10 w-10 object-contain bg-white/5 rounded" />
+                    <span className="text-xs text-slate-300 flex-1 truncate">Logo uploaded</span>
+                    <button
+                      type="button"
+                      onClick={removeLogo}
+                      className="text-xs text-red-400 hover:text-red-300"
+                    >
+                      ✕ Remove
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    ref={logoInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/svg+xml"
+                    onChange={handleLogoUpload}
+                    className="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30 file:cursor-pointer cursor-pointer"
+                  />
+                )}
               </div>
 
               {/* Submit */}
@@ -219,11 +272,12 @@ function Welcome() {
               <CertificatePreview
                 templateId={selectedTemplate}
                 data={previewData}
+                logoUrl={logoUrl}
               />
 
               <div className="mt-4 flex items-center justify-between text-xs text-slate-400">
                 <span>📐 Aspect ratio: A4 landscape (1.414:1)</span>
-                <span>🖼️ Export: high-res PNG</span>
+                <span>🖼️ Export: PNG + PDF</span>
               </div>
             </div>
           </div>
@@ -236,7 +290,7 @@ function Welcome() {
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-6 gap-3">
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold text-white">Choose a template</h2>
-              <p className="text-slate-400 text-sm mt-1">12 hand-crafted designs across 7 styles. Click any one to preview.</p>
+              <p className="text-slate-400 text-sm mt-1">20 hand-crafted designs across 7 styles. Click any one to preview.</p>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {categories.map((cat) => (
@@ -269,6 +323,7 @@ function Welcome() {
                 <CertificatePreview
                   templateId={tpl.id}
                   data={previewData}
+                  logoUrl={logoUrl}
                 />
                 <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent">
                   <div className="flex items-center justify-between">
@@ -298,19 +353,19 @@ function Welcome() {
               to="/templates"
               className="text-sm text-cyan-300 hover:text-cyan-200 underline underline-offset-4"
             >
-              See all 12 templates in detail →
+              See all 20 templates in detail →
             </Link>
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section id="features" className="px-4 sm:px-6 pb-20">
+      <section id="features" className="px-4 sm:px-6 pb-12">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {[
               { icon: '⚡', title: 'Live preview', desc: 'See changes instantly as you type' },
-              { icon: '🎨', title: '12 templates', desc: 'Formal, minimal, luxury, vintage & more' },
+              { icon: '🎨', title: '20 templates', desc: 'Formal, minimal, luxury, vintage & more' },
               { icon: '📦', title: 'CSV bulk export', desc: 'Upload a spreadsheet, get a ZIP of PNGs' },
               { icon: '🔗', title: 'Shareable links', desc: 'Every certificate gets its own URL' },
             ].map((f) => (
@@ -321,6 +376,13 @@ function Welcome() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Ad slot — appears once AdSense is configured */}
+      <section className="px-4 sm:px-6 pb-16">
+        <div className="container mx-auto max-w-4xl">
+          <AdSlot slot="0000000001" className="min-h-[90px]" />
         </div>
       </section>
 
