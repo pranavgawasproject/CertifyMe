@@ -22,8 +22,8 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950">
-          <div className="max-w-md w-full text-center bg-white/[0.04] border border-white/10 rounded-2xl p-8 shadow-2xl">
+        <div className="min-h-screen flex items-center justify-center px-4 bg-[#0E1526] guilloche-bg">
+          <div className="max-w-md w-full text-center bg-white/[0.04] border border-white/10 rounded-md p-8 ">
             <div className="text-5xl mb-4">⚠️</div>
             <h1 className="text-2xl font-bold text-white mb-2">Something went wrong</h1>
             <p className="text-slate-300 text-sm mb-6">
@@ -32,7 +32,7 @@ class ErrorBoundary extends Component {
             <div className="flex flex-col sm:flex-row gap-2 justify-center">
               <button
                 onClick={() => window.location.reload()}
-                className="bg-gradient-to-r from-amber-500 via-pink-500 to-cyan-500 text-white font-semibold px-5 py-2.5 rounded-lg text-sm hover:scale-105 transition-transform"
+                className="bg-[#8C2F39] text-white font-semibold px-5 py-2.5 rounded-lg text-sm hover:scale-105 transition-transform"
               >
                 Reload page
               </button>

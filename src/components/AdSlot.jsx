@@ -33,7 +33,7 @@ export default function AdSlot({ slot = '', format = 'auto', responsive = true, 
         className={`bg-white/[0.02] border border-dashed border-white/10 rounded-lg p-4 text-center text-xs text-slate-500 ${className}`}
         aria-hidden="true"
       >
-        Ad slot (placeholder — set <code className="text-cyan-300">VITE_ADSENSE_CLIENT</code> to enable)
+        Ad slot (placeholder — set <code className="text-[#C9A24B]">VITE_ADSENSE_CLIENT</code> to enable)
       </div>
     );
   }

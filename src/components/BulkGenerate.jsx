@@ -225,7 +225,7 @@ function BulkGenerate() {
       <section className="px-4 sm:px-6 pt-12 pb-8">
         <div className="container mx-auto max-w-5xl text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-amber-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="font-display text-[#C9A24B]">
               Bulk Certificate Generator
             </span>
           </h1>
@@ -239,7 +239,7 @@ function BulkGenerate() {
       <section className="px-4 sm:px-6 pb-8">
         <div className="container mx-auto max-w-3xl">
           <div
-            className="border-2 border-dashed border-white/15 rounded-2xl p-8 text-center hover:border-cyan-400/50 transition-colors cursor-pointer bg-white/[0.02]"
+            className="border-2 border-dashed border-white/15 rounded-md p-8 text-center hover:border-[#C9A24B]/50 transition-colors cursor-pointer bg-white/[0.02]"
             onClick={() => fileInputRef.current?.click()}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => {
@@ -250,7 +250,7 @@ function BulkGenerate() {
           >
             <div className="text-4xl mb-3">📁</div>
             <p className="text-white font-medium mb-1">Drop your CSV here or click to upload</p>
-            <p className="text-slate-400 text-xs mb-4">Required columns: <code className="text-cyan-300">recipientName</code>, <code className="text-cyan-300">event</code>. Optional: date, issuer, signature, template</p>
+            <p className="text-slate-400 text-xs mb-4">Required columns: <code className="text-[#C9A24B]">recipientName</code>, <code className="text-[#C9A24B]">event</code>. Optional: date, issuer, signature, template</p>
             <input
               ref={fileInputRef}
               type="file"
@@ -295,7 +295,7 @@ function BulkGenerate() {
                   className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all ${
                     isZipping || isPdfing
                       ? 'bg-slate-600 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-emerald-500 to-green-600 hover:shadow-lg hover:shadow-emerald-500/30 text-white hover:scale-105'
+                      : 'bg-[#C9A24B] hover:brightness-105 text-[#0E1526]'
                   }`}
                 >
                   {isZipping ? (
@@ -317,7 +317,7 @@ function BulkGenerate() {
                   className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all ${
                     isPdfing
                       ? 'bg-slate-600 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-rose-500 to-pink-600 hover:shadow-lg hover:shadow-rose-500/30 text-white hover:scale-105'
+                      : 'bg-[#8C2F39] hover:brightness-110 text-white'
                   }`}
                 >
                   {isPdfing ? (
@@ -337,7 +337,7 @@ function BulkGenerate() {
 
             {(isZipping || isPdfing) && (
               <div className="w-full bg-slate-800 rounded-full h-2 mb-6 overflow-hidden">
-                <div className="bg-gradient-to-r from-amber-500 via-pink-500 to-cyan-500 h-full transition-all" style={{ width: `${progress}%` }} />
+                <div className="bg-[#8C2F39] h-full transition-all" style={{ width: `${progress}%` }} />
               </div>
             )}
 
@@ -370,7 +370,7 @@ function BulkGenerate() {
       {/* Help section */}
       <section className="px-4 sm:px-6 pb-12">
         <div className="container mx-auto max-w-3xl">
-          <div className="bg-white/[0.04] border border-white/10 rounded-2xl p-6">
+          <div className="bg-white/[0.04] border border-white/10 rounded-md p-6">
             <h2 className="text-white font-bold text-lg mb-4">CSV format</h2>
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-slate-300">
@@ -391,7 +391,7 @@ function BulkGenerate() {
                     ['template', 'No', 'Template ID. Defaults to "classic-gold". See templates page'],
                   ].map(([col, req, desc]) => (
                     <tr key={col}>
-                      <td className="py-2 pr-4"><code className="text-cyan-300">{col}</code></td>
+                      <td className="py-2 pr-4"><code className="text-[#C9A24B]">{col}</code></td>
                       <td className="py-2 pr-4">{req === 'Yes' ? <span className="text-red-400">{req}</span> : req}</td>
                       <td className="py-2">{desc}</td>
                     </tr>
@@ -400,7 +400,7 @@ function BulkGenerate() {
               </table>
             </div>
             <p className="text-slate-400 text-xs mt-4">
-              💡 Tip: To find valid template IDs, visit the <a href="/templates" className="text-cyan-400 underline">templates page</a>. Examples: <code className="text-cyan-300">classic-gold</code>, <code className="text-cyan-300">royal-blue</code>, <code className="text-cyan-300">tech-neon</code>, <code className="text-cyan-300">art-deco</code>.
+              💡 Tip: To find valid template IDs, visit the <a href="/templates" className="text-[#C9A24B] underline">templates page</a>. Examples: <code className="text-[#C9A24B]">classic-gold</code>, <code className="text-[#C9A24B]">royal-blue</code>, <code className="text-[#C9A24B]">tech-neon</code>, <code className="text-[#C9A24B]">art-deco</code>.
             </p>
           </div>
         </div>

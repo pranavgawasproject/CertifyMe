@@ -97,7 +97,7 @@ function Welcome() {
             Free · 20 templates · CSV bulk · PDF · No sign-up
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4">
-            <span className="bg-gradient-to-r from-amber-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="font-display text-[#C9A24B]">
               Design a certificate
             </span>
             <br />
@@ -109,7 +109,7 @@ function Welcome() {
           <div className="flex flex-wrap justify-center gap-3 text-sm">
             <button
               onClick={useSampleData}
-              className="text-xs text-cyan-300 hover:text-cyan-200 underline underline-offset-4"
+              className="text-xs text-[#C9A24B] hover:text-[#DAB86A] underline underline-offset-4"
             >
               ✨ Use sample data to preview
             </button>
@@ -128,7 +128,7 @@ function Welcome() {
             {/* Left: Form */}
             <form
               onSubmit={handleSubmit}
-              className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl"
+              className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-md p-6 "
             >
               <h2 className="text-lg font-semibold text-white mb-1">Certificate details</h2>
               <p className="text-xs text-slate-400 mb-5">All fields sync to the preview in real time.</p>
@@ -142,7 +142,7 @@ function Welcome() {
                   type="text"
                   className={`w-full px-3.5 py-2.5 rounded-lg bg-slate-900/60 border ${
                     errors.name ? 'border-red-400/80' : 'border-white/10'
-                  } text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/80 focus:ring-2 focus:ring-cyan-400/20 transition-all text-sm`}
+                  } text-white placeholder-slate-500 focus:outline-none focus:border-[#C9A24B]/80 focus:ring-2 focus:ring-[#C9A24B]/20 transition-all text-sm`}
                   placeholder="e.g. Jane Anderson"
                   value={recipientName}
                   onChange={(e) => {
@@ -162,7 +162,7 @@ function Welcome() {
                   type="text"
                   className={`w-full px-3.5 py-2.5 rounded-lg bg-slate-900/60 border ${
                     errors.event ? 'border-red-400/80' : 'border-white/10'
-                  } text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/80 focus:ring-2 focus:ring-cyan-400/20 transition-all text-sm`}
+                  } text-white placeholder-slate-500 focus:outline-none focus:border-[#C9A24B]/80 focus:ring-2 focus:ring-[#C9A24B]/20 transition-all text-sm`}
                   placeholder="e.g. Advanced Web Development"
                   value={event}
                   onChange={(e) => {
@@ -179,7 +179,7 @@ function Welcome() {
                   <label className="block text-slate-200 font-medium mb-1.5 text-sm">Date</label>
                   <input
                     type="text"
-                    className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900/60 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/80 focus:ring-2 focus:ring-cyan-400/20 transition-all text-sm"
+                    className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900/60 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-[#C9A24B]/80 focus:ring-2 focus:ring-[#C9A24B]/20 transition-all text-sm"
                     placeholder="Date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
@@ -189,7 +189,7 @@ function Welcome() {
                   <label className="block text-slate-200 font-medium mb-1.5 text-sm">Issuer</label>
                   <input
                     type="text"
-                    className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900/60 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/80 focus:ring-2 focus:ring-cyan-400/20 transition-all text-sm"
+                    className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900/60 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-[#C9A24B]/80 focus:ring-2 focus:ring-[#C9A24B]/20 transition-all text-sm"
                     placeholder="Issuing org"
                     value={issuer}
                     onChange={(e) => setIssuer(e.target.value)}
@@ -204,7 +204,7 @@ function Welcome() {
                 </label>
                 <input
                   type="text"
-                  className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900/60 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400/80 focus:ring-2 focus:ring-cyan-400/20 transition-all text-sm"
+                  className="w-full px-3.5 py-2.5 rounded-lg bg-slate-900/60 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-[#C9A24B]/80 focus:ring-2 focus:ring-[#C9A24B]/20 transition-all text-sm"
                   placeholder="e.g. Dr. R. Sharma"
                   value={signature}
                   onChange={(e) => setSignature(e.target.value)}
@@ -234,7 +234,7 @@ function Welcome() {
                     type="file"
                     accept="image/png,image/jpeg,image/svg+xml"
                     onChange={handleLogoUpload}
-                    className="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-cyan-500/20 file:text-cyan-300 hover:file:bg-cyan-500/30 file:cursor-pointer cursor-pointer"
+                    className="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-3 file:rounded-md file:border-0 file:bg-[#C9A24B]/20 file:text-[#C9A24B] hover:file:bg-[#C9A24B]/30 file:cursor-pointer cursor-pointer"
                   />
                 )}
               </div>
@@ -242,7 +242,7 @@ function Welcome() {
               {/* Submit */}
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-amber-500 via-pink-500 to-cyan-500 text-white font-semibold py-3 rounded-lg hover:shadow-lg hover:shadow-pink-500/30 transform hover:scale-[1.01] active:scale-95 transition-all duration-200 text-sm tracking-wide"
+                className="w-full bg-[#8C2F39] text-white font-semibold py-3 rounded-lg hover:brightness-110 transform hover:scale-[1.01] active:scale-95 transition-all duration-200 text-sm tracking-wide"
               >
                 Continue to final preview →
               </button>
@@ -253,14 +253,14 @@ function Welcome() {
             </form>
 
             {/* Right: Live preview */}
-            <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-5 sm:p-6">
+            <div className="bg-white/[0.02] border border-white/10 rounded-md p-5 sm:p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h2 className="text-lg font-semibold text-white">Live preview</h2>
                   <p className="text-xs text-slate-400">Selected template:</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-sm font-medium text-cyan-300">
+                  <div className="text-sm font-medium text-[#C9A24B]">
                     {TEMPLATES.find((t) => t.id === selectedTemplate)?.name || '—'}
                   </div>
                   <div className="text-[11px] text-slate-500">
@@ -314,9 +314,9 @@ function Welcome() {
               <button
                 key={tpl.id}
                 onClick={() => setSelectedTemplate(tpl.id)}
-                className={`group relative rounded-2xl overflow-hidden border transition-all duration-300 text-left ${
+                className={`group relative rounded-md overflow-hidden border transition-all duration-300 text-left ${
                   selectedTemplate === tpl.id
-                    ? 'border-cyan-400 ring-2 ring-cyan-400/40 scale-[1.01]'
+                    ? 'border-[#C9A24B] ring-2 ring-[#C9A24B]/40 scale-[1.01]'
                     : 'border-white/10 hover:border-white/30'
                 }`}
               >
@@ -340,7 +340,7 @@ function Welcome() {
                   </div>
                 </div>
                 {selectedTemplate === tpl.id && (
-                  <div className="absolute top-3 right-3 bg-cyan-400 text-slate-900 rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold shadow-lg">
+                  <div className="absolute top-3 right-3 bg-[#C9A24B] text-[#0E1526] rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold shadow-lg">
                     ✓
                   </div>
                 )}
@@ -351,7 +351,7 @@ function Welcome() {
           <div className="text-center mt-8">
             <Link
               to="/templates"
-              className="text-sm text-cyan-300 hover:text-cyan-200 underline underline-offset-4"
+              className="text-sm text-[#C9A24B] hover:text-[#DAB86A] underline underline-offset-4"
             >
               See all 20 templates in detail →
             </Link>
