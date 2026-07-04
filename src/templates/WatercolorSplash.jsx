@@ -61,7 +61,7 @@ function WatercolorSplash({ data, logoUrl }) {
       </div>
 
       <div style={{
-        fontSize: '3.8vw', fontFamily: '"Brush Script MT", "Lucida Handwriting", cursive',
+        fontSize: '3.8vw', fontFamily: '"Dancing Script", cursive',
         color: '#3F3A5B', margin: '0.5% 0 1.5%', lineHeight: 1.1,
       }}>
         {recipientName || 'Recipient Name'}
@@ -82,7 +82,7 @@ function WatercolorSplash({ data, logoUrl }) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.5vw', fontFamily: '"Brush Script MT", cursive', color: '#7C3AED' }}>
+          <div style={{ fontSize: '1.5vw', fontFamily: '"Dancing Script", cursive', color: '#7C3AED' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#7C3AED', margin: '4px 0', opacity: 0.4 }} />

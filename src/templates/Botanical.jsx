@@ -9,7 +9,7 @@ function Botanical({ data, logoUrl }) {
       position: 'relative',
       padding: '4%',
       boxSizing: 'border-box',
-      fontFamily: 'Georgia, "Times New Roman", serif',
+      fontFamily: 'Georgia, serif',
       color: '#2D3E26',
       display: 'flex',
       flexDirection: 'column',
@@ -58,7 +58,7 @@ function Botanical({ data, logoUrl }) {
 
       <div style={{
         fontSize: '3.4vw',
-        fontFamily: '"Brush Script MT", "Lucida Handwriting", cursive',
+        fontFamily: '"Dancing Script", cursive',
         color: '#2D3E26',
         margin: '0.5% 0 1.5%',
         lineHeight: 1.1,
@@ -81,7 +81,7 @@ function Botanical({ data, logoUrl }) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.5vw', fontFamily: '"Brush Script MT", cursive', color: '#2D3E26' }}>
+          <div style={{ fontSize: '1.5vw', fontFamily: '"Dancing Script", cursive', color: '#2D3E26' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#4A6741', margin: '4px 0' }} />

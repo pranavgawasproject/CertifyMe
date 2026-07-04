@@ -9,7 +9,7 @@ function ArtDeco({ data, logoUrl }) {
       position: 'relative',
       padding: '5%',
       boxSizing: 'border-box',
-      fontFamily: 'Georgia, "Times New Roman", serif',
+      fontFamily: 'Georgia, serif',
       color: '#D4AF37',
       display: 'flex',
       flexDirection: 'column',
@@ -129,7 +129,7 @@ function ArtDeco({ data, logoUrl }) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4vw', fontFamily: '"Brush Script MT", cursive', color: '#D4AF37' }}>
+          <div style={{ fontSize: '1.4vw', fontFamily: '"Dancing Script", cursive', color: '#D4AF37' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '6px 0' }}>

@@ -6,7 +6,7 @@ function CrimsonHeritage({ data, logoUrl }) {
       width: '100%', height: '100%',
       background: '#FFFEF7',
       position: 'relative', padding: '5%', boxSizing: 'border-box',
-      fontFamily: 'Georgia, "Times New Roman", serif', color: '#1A1A1A',
+      fontFamily: 'Georgia, serif', color: '#1A1A1A',
       display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
       textAlign: 'center', overflow: 'hidden',
     }}>
@@ -69,7 +69,7 @@ function CrimsonHeritage({ data, logoUrl }) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '50px' }}>
         <div style={{ textAlign: 'left' }}>
-          <div style={{ fontSize: '1.5vw', fontFamily: '"Brush Script MT", cursive', color: '#8B0000' }}>
+          <div style={{ fontSize: '1.5vw', fontFamily: '"Dancing Script", cursive', color: '#8B0000' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '140px', height: '2px', background: '#8B0000', margin: '6px 0 4px' }} />
