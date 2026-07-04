@@ -30,7 +30,7 @@ function SharedCertificate() {
             <p className="text-slate-300 mb-6">This share link is invalid or has been corrupted.</p>
             <Link
               to="/"
-              className="inline-block bg-gradient-to-r from-amber-500 via-pink-500 to-cyan-500 text-white font-semibold px-5 py-2.5 rounded-lg text-sm"
+              className="inline-block bg-[#8C2F39] text-white font-semibold px-5 py-2.5 rounded-lg text-sm"
             >
               Create your own certificate →
             </Link>
@@ -62,18 +62,18 @@ function SharedCertificate() {
 
       <div className="container mx-auto px-4 sm:px-6 py-8 max-w-5xl">
         <div className="text-center mb-6 animate-fade-in">
-          <div className="text-xs uppercase tracking-widest text-cyan-300/80 mb-2">Shared certificate</div>
+          <div className="text-xs uppercase tracking-widest text-[#C9A24B]/80 mb-2">Shared certificate</div>
           <h1 className="text-2xl sm:text-3xl font-bold mb-2">
-            <span className="bg-gradient-to-r from-amber-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="font-display text-[#C9A24B]">
               🎊 {cert.recipientName}
             </span>
           </h1>
           <p className="text-slate-300 text-sm">
-            Awarded for <span className="text-cyan-300 font-medium">{cert.event}</span>
+            Awarded for <span className="text-[#C9A24B] font-medium">{cert.event}</span>
           </p>
         </div>
 
-        <div className="rounded-lg overflow-hidden shadow-2xl border border-white/10 animate-scale-in">
+        <div className="rounded-lg overflow-hidden  border border-white/10 animate-scale-in">
           <CertificatePreview templateId={cert.templateId} data={cert} />
         </div>
 
@@ -81,7 +81,7 @@ function SharedCertificate() {
           <p className="text-slate-400 text-sm mb-4">Want to create your own?</p>
           <Link
             to="/"
-            className="inline-block bg-gradient-to-r from-amber-500 via-pink-500 to-cyan-500 text-white font-semibold px-6 py-3 rounded-lg text-sm hover:scale-105 transition-transform"
+            className="inline-block bg-[#8C2F39] text-white font-semibold px-6 py-3 rounded-lg text-sm hover:scale-105 transition-transform"
           >
             🎓 Create a free certificate
           </Link>

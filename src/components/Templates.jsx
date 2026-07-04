@@ -32,7 +32,7 @@ function Templates() {
       <section className="px-4 sm:px-6 pt-12 pb-8">
         <div className="container mx-auto max-w-5xl text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-amber-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="font-display text-[#C9A24B]">
               20 Free Certificate Templates
             </span>
           </h1>
@@ -41,7 +41,7 @@ function Templates() {
           </p>
           <Link
             to="/"
-            className="inline-block bg-gradient-to-r from-amber-500 via-pink-500 to-cyan-500 text-white font-semibold px-6 py-3 rounded-lg text-sm hover:scale-105 transition-transform"
+            className="inline-block bg-[#8C2F39] text-white font-semibold px-6 py-3 rounded-lg text-sm hover:scale-105 transition-transform"
           >
             🚀 Start creating →
           </Link>
@@ -76,7 +76,7 @@ function Templates() {
             {filtered.map((tpl) => (
               <article key={tpl.id} className="group">
                 <Link to={`/?template=${tpl.id}`} className="block">
-                  <div className="rounded-2xl overflow-hidden border border-white/10 group-hover:border-cyan-400/50 transition-all shadow-lg group-hover:shadow-cyan-500/20">
+                  <div className="rounded-md overflow-hidden border border-white/10 group-hover:border-[#C9A24B]/50 transition-all shadow-lg ">
                     <CertificatePreview templateId={tpl.id} data={sampleData} />
                   </div>
                   <div className="mt-3 px-1">
@@ -109,7 +109,7 @@ function Templates() {
             <strong className="text-white">Use cases:</strong> Perfect for teachers awarding students, HR teams issuing completion certificates, online course creators, hackathon organizers, event hosts, volunteer recognition programs, employee of the month awards, sports tournaments, and personal achievements.
           </p>
           <p className="text-slate-300 leading-relaxed">
-            <strong className="text-white">How it works:</strong> Pick a template, fill in the recipient name, event name, date, issuer, and optional signature, then download as a high-resolution PNG. All processing happens locally in your browser — your data never leaves your device. For bulk needs (e.g., 50 students), use our <Link to="/bulk" className="text-cyan-400 underline">CSV bulk generation</Link> feature.
+            <strong className="text-white">How it works:</strong> Pick a template, fill in the recipient name, event name, date, issuer, and optional signature, then download as a high-resolution PNG. All processing happens locally in your browser — your data never leaves your device. For bulk needs (e.g., 50 students), use our <Link to="/bulk" className="text-[#C9A24B] underline">CSV bulk generation</Link> feature.
           </p>
         </div>
       </section>

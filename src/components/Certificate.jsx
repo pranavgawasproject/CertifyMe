@@ -134,22 +134,22 @@ function Certificate() {
 
       <div className="container mx-auto px-4 sm:px-6 py-8">
         <div className="max-w-4xl mx-auto mb-8 animate-fade-in">
-          <div className="bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-cyan-500/10 backdrop-blur-xl p-6 sm:p-8 rounded-2xl border border-white/10 shadow-2xl text-center">
-            <div className="text-xs uppercase tracking-widest text-cyan-300/80 mb-2">
+          <div className="bg-[#C9A24B]/10 backdrop-blur-xl p-6 sm:p-8 rounded-md border border-white/10  text-center">
+            <div className="text-xs uppercase tracking-widest text-[#C9A24B]/80 mb-2">
               {currentTemplate.category} · {currentTemplate.name}
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold mb-2">
-              <span className="bg-gradient-to-r from-amber-200 via-pink-200 to-cyan-200 bg-clip-text text-transparent">
+              <span className="font-display text-[#C9A24B]">
                 🎊 Congratulations, {recipientName}!
               </span>
             </h1>
             <p className="text-slate-300 text-base sm:text-lg">
-              Your certificate for <span className="font-semibold text-cyan-300">{event}</span> is ready.
+              Your certificate for <span className="font-semibold text-[#C9A24B]">{event}</span> is ready.
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               <span className="bg-amber-500/20 text-amber-200 px-3 py-1 rounded-full text-xs">Template: {currentTemplate.name}</span>
               <span className="bg-emerald-500/20 text-emerald-200 px-3 py-1 rounded-full text-xs">✓ Ready to download</span>
-              <span className="bg-cyan-500/20 text-cyan-200 px-3 py-1 rounded-full text-xs">📐 A4 Landscape · 2x export</span>
+              <span className="bg-[#C9A24B]/20 text-[#DAB86A] px-3 py-1 rounded-full text-xs">📐 A4 Landscape · 2x export</span>
             </div>
           </div>
         </div>
@@ -158,7 +158,7 @@ function Certificate() {
           <div
             ref={certificateRef}
             style={{ aspectRatio: '1.414 / 1', width: '100%' }}
-            className="rounded-lg overflow-hidden shadow-2xl border border-white/10"
+            className="rounded-lg overflow-hidden  border border-white/10"
           >
             <CertificatePreview
               templateId={selectedTemplate}
@@ -177,7 +177,7 @@ function Certificate() {
                 readOnly
                 value={shareLink}
                 onClick={(e) => e.target.select()}
-                className="w-full px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10 text-cyan-300 text-xs font-mono truncate"
+                className="w-full px-3 py-2 rounded-lg bg-slate-900/60 border border-white/10 text-[#C9A24B] text-xs font-mono truncate"
               />
             </div>
             <button
@@ -199,7 +199,7 @@ function Certificate() {
             className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all transform hover:scale-105 active:scale-95 shadow-lg ${
               isDownloading
                 ? 'bg-slate-600 cursor-not-allowed'
-                : 'bg-gradient-to-r from-emerald-500 to-green-600 hover:shadow-emerald-500/40 text-white'
+                : 'bg-[#C9A24B] hover:brightness-105 text-[#0E1526]'
             }`}
             onClick={downloadPng}
             disabled={isDownloading}
@@ -221,7 +221,7 @@ function Certificate() {
             className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-sm transition-all transform hover:scale-105 active:scale-95 shadow-lg ${
               isDownloadingPdf
                 ? 'bg-slate-600 cursor-not-allowed'
-                : 'bg-gradient-to-r from-rose-500 to-pink-600 hover:shadow-rose-500/40 text-white'
+                : 'bg-[#8C2F39] hover:brightness-110 text-white'
             }`}
             onClick={downloadPdf}
             disabled={isDownloadingPdf}
@@ -240,7 +240,7 @@ function Certificate() {
           </button>
 
           <button
-            className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-cyan-500/40 text-white px-6 py-3 rounded-lg font-semibold text-sm transition-all transform hover:scale-105 active:scale-95 shadow-lg"
+            className="flex items-center justify-center gap-2 bg-[#8C2F39] hover:brightness-110 text-white px-6 py-3 rounded-lg font-semibold text-sm transition-all transform hover:scale-105 active:scale-95 shadow-lg"
             onClick={shareOnSocial}
           >
             📤 Share
@@ -268,7 +268,7 @@ function Certificate() {
 
         {/* Template switcher panel */}
         {showSwitcher && (
-          <div className="max-w-5xl mx-auto mb-12 bg-white/[0.04] border border-white/10 rounded-2xl p-5 animate-fade-in">
+          <div className="max-w-5xl mx-auto mb-12 bg-white/[0.04] border border-white/10 rounded-md p-5 animate-fade-in">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-white font-semibold text-sm">Switch template (keeps your details)</h3>
               <button
@@ -285,7 +285,7 @@ function Certificate() {
                   onClick={() => switchTemplate(tpl.id)}
                   className={`group rounded-lg overflow-hidden border transition-all ${
                     selectedTemplate === tpl.id
-                      ? 'border-cyan-400 ring-2 ring-cyan-400/40'
+                      ? 'border-[#C9A24B] ring-2 ring-[#C9A24B]/40'
                       : 'border-white/10 hover:border-white/30'
                   }`}
                 >
