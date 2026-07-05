@@ -18,9 +18,12 @@ function ModernMinimal({ data, logoUrl }) {
       textAlign: 'center',
       overflow: 'hidden',
     }}>
-      {/* Minimal accent line top */}
+      {/* Full perimeter frame instead of floating top/bottom bars only */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '8px', background: '#0F172A' }} />
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '8px', background: '#0F172A' }} />
+      <div style={{ position: 'absolute', top: '8px', bottom: '8px', left: 0, width: '3px', background: '#0F172A' }} />
+      <div style={{ position: 'absolute', top: '8px', bottom: '8px', right: 0, width: '3px', background: '#0F172A' }} />
+      <div style={{ position: 'absolute', top: '4%', left: '4%', right: '4%', bottom: '4%', border: '1px solid #E2E8F0' }} />
 
       {logoUrl && (
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
