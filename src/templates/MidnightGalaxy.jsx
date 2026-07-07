@@ -82,7 +82,7 @@ function MidnightGalaxy({ data, logoUrl }) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4vw', fontFamily: '"Brush Script MT", cursive', color: '#A78BFA' }}>
+          <div style={{ fontSize: '1.4vw', fontFamily: '"Dancing Script", cursive', color: '#A78BFA' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#A78BFA', margin: '4px 0', opacity: 0.6 }} />

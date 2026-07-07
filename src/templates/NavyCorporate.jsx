@@ -21,6 +21,10 @@ function NavyCorporate({ data, logoUrl }) {
       {/* Navy top and bottom bands */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '60px', background: '#1E293B' }} />
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '60px', background: '#1E293B' }} />
+      {/* Side rails connecting the bands into a full frame */}
+      <div style={{ position: 'absolute', top: '60px', bottom: '60px', left: 0, width: '10px', background: '#1E293B' }} />
+      <div style={{ position: 'absolute', top: '60px', bottom: '60px', right: 0, width: '10px', background: '#1E293B' }} />
+      <div style={{ position: 'absolute', top: '78px', left: '24px', right: '24px', bottom: '78px', border: '1px solid #CBD5E1' }} />
 
       {/* Inner accent stripes */}
       <div style={{ position: 'absolute', top: '60px', left: 0, right: 0, height: '4px', background: '#3B82F6' }} />

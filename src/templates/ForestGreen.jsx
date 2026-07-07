@@ -48,7 +48,7 @@ function ForestGreen({ data, logoUrl }) {
       </div>
 
       <div style={{
-        fontSize: '3.4vw', fontFamily: '"Brush Script MT", cursive', color: '#FFFFFF',
+        fontSize: '3.4vw', fontFamily: '"Dancing Script", cursive', color: '#FFFFFF',
         margin: '0.5% 0 1.5%', lineHeight: 1.1,
         textShadow: '0 2px 10px rgba(0,0,0,0.5)',
       }}>
@@ -70,7 +70,7 @@ function ForestGreen({ data, logoUrl }) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4vw', fontFamily: '"Brush Script MT", cursive', color: '#8FBC8F' }}>
+          <div style={{ fontSize: '1.4vw', fontFamily: '"Dancing Script", cursive', color: '#8FBC8F' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#8FBC8F', margin: '4px 0', opacity: 0.6 }} />

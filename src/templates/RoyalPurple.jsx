@@ -69,7 +69,7 @@ function RoyalPurple({ data, logoUrl }) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4vw', fontFamily: '"Brush Script MT", cursive', color: '#C0C0C0' }}>
+          <div style={{ fontSize: '1.4vw', fontFamily: '"Dancing Script", cursive', color: '#C0C0C0' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#C0C0C0', margin: '4px 0' }} />

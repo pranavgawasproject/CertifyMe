@@ -9,7 +9,7 @@ function RoyalBlue({ data, logoUrl }) {
       position: 'relative',
       padding: '4%',
       boxSizing: 'border-box',
-      fontFamily: 'Georgia, "Times New Roman", serif',
+      fontFamily: 'Georgia, serif',
       color: '#F5E6C8',
       display: 'flex',
       flexDirection: 'column',
@@ -67,7 +67,7 @@ function RoyalBlue({ data, logoUrl }) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '4%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4vw', fontFamily: '"Brush Script MT", cursive', color: '#D4AF37' }}>
+          <div style={{ fontSize: '1.4vw', fontFamily: '"Dancing Script", cursive', color: '#D4AF37' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#D4AF37', margin: '4px 0' }} />

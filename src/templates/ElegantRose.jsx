@@ -9,7 +9,7 @@ function ElegantRose({ data, logoUrl }) {
       position: 'relative',
       padding: '5%',
       boxSizing: 'border-box',
-      fontFamily: 'Georgia, "Times New Roman", serif',
+      fontFamily: 'Georgia, serif',
       color: '#831843',
       display: 'flex',
       flexDirection: 'column',
@@ -59,7 +59,7 @@ function ElegantRose({ data, logoUrl }) {
 
       <div style={{
         fontSize: '4vw',
-        fontFamily: '"Brush Script MT", "Lucida Handwriting", "Snell Roundhand", cursive',
+        fontFamily: '"Dancing Script", cursive',
         color: '#831843',
         margin: '0.5% 0 1.5%',
         lineHeight: 1.1,
@@ -83,7 +83,7 @@ function ElegantRose({ data, logoUrl }) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.6vw', fontFamily: '"Brush Script MT", cursive', color: '#831843' }}>
+          <div style={{ fontSize: '1.6vw', fontFamily: '"Dancing Script", cursive', color: '#831843' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#BE185D', margin: '4px 0', opacity: 0.6 }} />

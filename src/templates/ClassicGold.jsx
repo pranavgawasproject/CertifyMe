@@ -9,7 +9,7 @@ function ClassicGold({ data, logoUrl }) {
       position: 'relative',
       padding: '3%',
       boxSizing: 'border-box',
-      fontFamily: '"Times New Roman", Georgia, serif',
+      fontFamily: 'Georgia, serif',
       color: '#B8860B',
       display: 'flex',
       flexDirection: 'column',
@@ -57,7 +57,7 @@ function ClassicGold({ data, logoUrl }) {
 
       <div style={{
         fontSize: '3.6vw',
-        fontFamily: '"Brush Script MT", "Lucida Handwriting", cursive',
+        fontFamily: '"Dancing Script", cursive',
         color: '#FFD700',
         textShadow: '0 0 20px rgba(255, 215, 0, 0.3)',
         margin: '0.5% 0 1%',
@@ -77,7 +77,7 @@ function ClassicGold({ data, logoUrl }) {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.6vw', fontFamily: '"Brush Script MT", cursive', color: '#FFD700' }}>
+          <div style={{ fontSize: '1.6vw', fontFamily: '"Dancing Script", cursive', color: '#FFD700' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#B8860B', margin: '4px 0' }} />
