@@ -92,10 +92,7 @@ function GeometricPurple({ data, logoUrl }) {
         fontWeight: 800,
         margin: '0.5% 0 1.5%',
         lineHeight: 1.1,
-        background: 'linear-gradient(135deg, #FFFFFF 0%, #F0ABFC 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
+        color: '#FFFFFF',
       }}>
         {recipientName || 'Recipient Name'}
       </div>

@@ -7,6 +7,10 @@
  * @param {string} filename - output filename
  */
 export async function exportNodeToPdf(node, filename = 'certificate.pdf') {
+  if (typeof document !== 'undefined' && document.fonts?.ready) {
+    await document.fonts.ready;
+  }
+
   const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
     import('html2canvas'),
     import('jspdf'),
@@ -55,7 +59,12 @@ export async function exportNodeToPdf(node, filename = 'certificate.pdf') {
  * @param {string} filename
  */
 export async function exportNodesToMultiPagePdf(nodes, filename = 'certificates.pdf') {
-  if (nodes.length === 0) return;
+  if (!nodes || nodes.length === 0) return;
+
+  if (typeof document !== 'undefined' && document.fonts?.ready) {
+    await document.fonts.ready;
+  }
+
   const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
     import('html2canvas'),
     import('jspdf'),
@@ -95,3 +104,4 @@ export async function exportNodesToMultiPagePdf(nodes, filename = 'certificates.
 
   pdf.save(filename);
 }
+

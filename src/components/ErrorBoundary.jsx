@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { clearCertStorage } from '../utils/storage';
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class ErrorBoundary extends Component {
               </button>
               <button
                 onClick={() => {
-                  sessionStorage.clear();
+                  clearCertStorage();
                   window.location.href = '/';
                 }}
                 className="bg-white/5 border border-white/15 text-white px-5 py-2.5 rounded-lg text-sm hover:bg-white/10 transition-colors"

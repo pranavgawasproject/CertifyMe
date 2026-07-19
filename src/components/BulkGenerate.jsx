@@ -8,6 +8,8 @@ import TemplateRenderer from '../templates/TemplateRenderer';
 import SEO from './SEO';
 import AdSlot from './AdSlot';
 
+import { normalizeCsvRow } from '../utils/csv';
+
 const SAMPLE_CSV = `recipientName,event,date,issuer,signature,template
 Jane Anderson,Advanced Web Development,July 2026,CertifyMe Academy,Dr. Sharma,classic-gold
 Rahul Mehta,Python for Data Science,July 2026,CertifyMe Academy,Prof. Iyer,royal-blue
@@ -25,16 +27,6 @@ function BulkGenerate() {
 
   const defaultDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-  const normalizeRow = (row, idx) => ({
-    recipientName: row.recipientName || row.name || row.recipient || '',
-    event: row.event || row.course || row.title || '',
-    date: row.date || defaultDate,
-    issuer: row.issuer || row.organization || row.org || 'CertifyMe',
-    signature: row.signature || '',
-    templateId: row.template || row.templateId || 'classic-gold',
-    _idx: idx,
-  });
-
   const handleFile = (file) => {
     setError('');
     Papa.parse(file, {
@@ -45,7 +37,7 @@ function BulkGenerate() {
           setError('CSV appears to be empty.');
           return;
         }
-        const normalized = results.data.map(normalizeRow);
+        const normalized = results.data.map((r, i) => normalizeCsvRow(r, i, defaultDate));
         const invalid = normalized.filter((r) => !r.recipientName || !r.event);
         if (invalid.length > 0) {
           setError(`${invalid.length} row(s) missing required "recipientName" or "event" column. They were skipped.`);
@@ -67,7 +59,7 @@ function BulkGenerate() {
       header: true,
       skipEmptyLines: true,
       complete: (results) => {
-        const normalized = results.data.map(normalizeRow);
+        const normalized = results.data.map((r, i) => normalizeCsvRow(r, i, defaultDate));
         setRows(normalized);
         setError('');
       },
@@ -80,34 +72,35 @@ function BulkGenerate() {
     if (rows.length === 0) return;
     setIsZipping(true);
     setProgress(0);
+
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.left = '-9999px';
+    container.style.top = '0';
+    container.style.width = '1200px';
+    container.style.height = '848px';
+    document.body.appendChild(container);
+
     try {
+      if (typeof document !== 'undefined' && document.fonts?.ready) {
+        await document.fonts.ready;
+      }
+
       const { default: html2canvas } = await import('html2canvas');
       const zip = new JSZip();
 
-      // Off-screen render container at fixed A4 landscape size
-      const container = document.createElement('div');
-      container.style.position = 'fixed';
-      container.style.left = '-9999px';
-      container.style.top = '0';
-      container.style.width = '1200px';
-      container.style.height = '848px';
-      document.body.appendChild(container);
-
-      const holder = document.createElement('div');
-      holder.style.width = '100%';
-      holder.style.height = '100%';
-      container.appendChild(holder);
-
-      const root = createRoot(holder);
-
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
-        holder.innerHTML = '';
+        const holder = document.createElement('div');
+        holder.style.width = '100%';
+        holder.style.height = '100%';
+        container.appendChild(holder);
+
+        const root = createRoot(holder);
 
         await new Promise((resolve) => {
           root.render(<TemplateRenderer templateId={row.templateId} data={row} />);
-          // Give React + fonts a moment to paint
-          setTimeout(resolve, 250);
+          setTimeout(resolve, 200);
         });
 
         const canvas = await html2canvas(holder, {
@@ -123,11 +116,10 @@ function BulkGenerate() {
         const safeName = (row.recipientName || 'certificate').replace(/[^a-z0-9]+/gi, '_');
         zip.file(`${String(i + 1).padStart(2, '0')}_${safeName}.png`, blob);
 
+        root.unmount();
+        container.removeChild(holder);
         setProgress(Math.round(((i + 1) / rows.length) * 100));
       }
-
-      root.unmount();
-      document.body.removeChild(container);
 
       const zipBlob = await zip.generateAsync({ type: 'blob' });
       const link = document.createElement('a');
@@ -139,6 +131,9 @@ function BulkGenerate() {
       console.error(err);
       setError(`Bulk export failed: ${err.message}`);
     } finally {
+      if (document.body.contains(container)) {
+        document.body.removeChild(container);
+      }
       setIsZipping(false);
       setProgress(0);
     }
@@ -148,35 +143,38 @@ function BulkGenerate() {
     if (rows.length === 0) return;
     setIsPdfing(true);
     setProgress(0);
+
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.left = '-9999px';
+    container.style.top = '0';
+    container.style.width = '1200px';
+    container.style.height = '848px';
+    document.body.appendChild(container);
+
     try {
-      // Render each cert one at a time, capture to canvas immediately,
-      // then build the multi-page PDF from the captured canvases.
+      if (typeof document !== 'undefined' && document.fonts?.ready) {
+        await document.fonts.ready;
+      }
+
       const { default: html2canvas } = await import('html2canvas');
       const { default: jsPDF } = await import('jspdf');
-
-      const container = document.createElement('div');
-      container.style.position = 'fixed';
-      container.style.left = '-9999px';
-      container.style.top = '0';
-      container.style.width = '1200px';
-      container.style.height = '848px';
-      document.body.appendChild(container);
 
       const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
       const pdfW = 297, pdfH = 210;
 
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
-        container.innerHTML = '';
         const holder = document.createElement('div');
         holder.style.width = '100%';
         holder.style.height = '100%';
         container.appendChild(holder);
+
         const root = createRoot(holder);
 
         await new Promise((resolve) => {
           root.render(<TemplateRenderer templateId={row.templateId} data={row} />);
-          setTimeout(resolve, 250);
+          setTimeout(resolve, 200);
         });
 
         const canvas = await html2canvas(holder, {
@@ -198,15 +196,18 @@ function BulkGenerate() {
         pdf.addImage(imgData, 'PNG', x, y, imgW, imgH);
 
         root.unmount();
+        container.removeChild(holder);
         setProgress(Math.round(((i + 1) / rows.length) * 100));
       }
 
-      document.body.removeChild(container);
       pdf.save(`certifyme_bulk_${rows.length}_certificates.pdf`);
     } catch (err) {
       console.error(err);
       setError(`PDF export failed: ${err.message}`);
     } finally {
+      if (document.body.contains(container)) {
+        document.body.removeChild(container);
+      }
       setIsPdfing(false);
       setProgress(0);
     }

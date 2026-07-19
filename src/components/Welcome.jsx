@@ -5,33 +5,35 @@ import CertificatePreview from './CertificatePreview';
 import SEO from './SEO';
 import AdSlot from './AdSlot';
 import { TEMPLATES } from '../data/templates';
+import { getStorageItem, setStorageItem } from '../utils/storage';
 
 function Welcome() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // Load from sessionStorage if returning, or from ?template= query param
-  const [recipientName, setRecipientName] = useState(() => sessionStorage.getItem('cert_recipientName') || '');
-  const [event, setEvent] = useState(() => sessionStorage.getItem('cert_event') || '');
-  const [date, setDate] = useState(() => sessionStorage.getItem('cert_date') || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
-  const [issuer, setIssuer] = useState(() => sessionStorage.getItem('cert_issuer') || 'CertifyMe');
-  const [signature, setSignature] = useState(() => sessionStorage.getItem('cert_signature') || '');
-  const [logoUrl, setLogoUrl] = useState(() => sessionStorage.getItem('cert_logoUrl') || '');
-  const [selectedTemplate, setSelectedTemplate] = useState(() => searchParams.get('template') || sessionStorage.getItem('cert_template') || 'classic-gold');
+  // Load from storage if returning, or from ?template= query param
+  const [recipientName, setRecipientName] = useState(() => getStorageItem('cert_recipientName') || '');
+  const [event, setEvent] = useState(() => getStorageItem('cert_event') || '');
+  const [date, setDate] = useState(() => getStorageItem('cert_date') || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
+  const [issuer, setIssuer] = useState(() => getStorageItem('cert_issuer') || 'CertifyMe');
+  const [signature, setSignature] = useState(() => getStorageItem('cert_signature') || '');
+  const [logoUrl, setLogoUrl] = useState(() => getStorageItem('cert_logoUrl') || '');
+  const [selectedTemplate, setSelectedTemplate] = useState(() => searchParams.get('template') || getStorageItem('cert_template') || 'classic-gold');
 
   const [errors, setErrors] = useState({});
   const [activeCategory, setActiveCategory] = useState('All');
   const logoInputRef = useRef(null);
 
   useEffect(() => {
-    sessionStorage.setItem('cert_recipientName', recipientName);
-    sessionStorage.setItem('cert_event', event);
-    sessionStorage.setItem('cert_date', date);
-    sessionStorage.setItem('cert_issuer', issuer);
-    sessionStorage.setItem('cert_signature', signature);
-    sessionStorage.setItem('cert_logoUrl', logoUrl);
-    sessionStorage.setItem('cert_template', selectedTemplate);
+    setStorageItem('cert_recipientName', recipientName);
+    setStorageItem('cert_event', event);
+    setStorageItem('cert_date', date);
+    setStorageItem('cert_issuer', issuer);
+    setStorageItem('cert_signature', signature);
+    setStorageItem('cert_logoUrl', logoUrl);
+    setStorageItem('cert_template', selectedTemplate);
   }, [recipientName, event, date, issuer, signature, logoUrl, selectedTemplate]);
+
 
   const categories = ['All', ...Array.from(new Set(TEMPLATES.map((t) => t.category)))];
   const filteredTemplates = activeCategory === 'All'

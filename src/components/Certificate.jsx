@@ -7,18 +7,20 @@ import AdSlot from './AdSlot';
 import { TEMPLATES } from '../data/templates';
 import { buildShareUrl } from '../utils/share';
 import { exportNodeToPdf } from '../utils/pdfExport';
+import { getStorageItem, setStorageItem } from '../utils/storage';
 
 function Certificate() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  const recipientName = state?.recipientName || sessionStorage.getItem('cert_recipientName') || '';
-  const event = state?.event || sessionStorage.getItem('cert_event') || '';
-  const date = state?.date || sessionStorage.getItem('cert_date') || '';
-  const issuer = state?.issuer || sessionStorage.getItem('cert_issuer') || '';
-  const signature = state?.signature || sessionStorage.getItem('cert_signature') || '';
-  const logoUrl = state?.logoUrl || sessionStorage.getItem('cert_logoUrl') || '';
-  const selectedTemplate = state?.templateId || sessionStorage.getItem('cert_template') || 'classic-gold';
+  const recipientName = state?.recipientName || getStorageItem('cert_recipientName') || '';
+  const event = state?.event || getStorageItem('cert_event') || '';
+  const date = state?.date || getStorageItem('cert_date') || '';
+  const issuer = state?.issuer || getStorageItem('cert_issuer') || '';
+  const signature = state?.signature || getStorageItem('cert_signature') || '';
+  const logoUrl = state?.logoUrl || getStorageItem('cert_logoUrl') || '';
+  const selectedTemplate = state?.templateId || getStorageItem('cert_template') || 'classic-gold';
+
 
   const certificateRef = useRef(null);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -114,7 +116,7 @@ function Certificate() {
   };
 
   const switchTemplate = (tplId) => {
-    sessionStorage.setItem('cert_template', tplId);
+    setStorageItem('cert_template', tplId);
     window.location.reload();
   };
 

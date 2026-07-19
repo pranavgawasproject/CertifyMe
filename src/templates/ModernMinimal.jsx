@@ -45,10 +45,7 @@ function ModernMinimal({ data, logoUrl }) {
         letterSpacing: '-0.02em',
         margin: '1% 0 0.5%',
         lineHeight: 1.1,
-        background: 'linear-gradient(135deg, #0F172A 0%, #475569 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
+        color: '#0F172A',
       }}>
         {recipientName || 'Recipient Name'}
       </div>
