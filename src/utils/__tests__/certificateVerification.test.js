@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl } from '../certificateVerification.js';
 
 describe('Certificate Verification Utilities', () => {
   describe('generateCredentialId', () => {
@@ -47,5 +47,18 @@ describe('Certificate Verification Utilities', () => {
       expect(buildVerificationUrl(undefined)).toBe('');
     });
   });
+
+  describe('generateCertificateQRCodeUrl', () => {
+    it('generates a valid QR server URL with encoded verification link', () => {
+      const qrUrl = generateCertificateQRCodeUrl('https://certify.app/verify?id=123', 200);
+      expect(qrUrl).toContain('https://api.qrserver.com/v1/create-qr-code/?size=200x200');
+      expect(qrUrl).toContain('data=https%3A%2F%2Fcertify.app%2Fverify%3Fid%3D123');
+    });
+
+    it('handles empty verification url gracefully', () => {
+      expect(generateCertificateQRCodeUrl(null)).toBe('');
+    });
+  });
 });
+
 

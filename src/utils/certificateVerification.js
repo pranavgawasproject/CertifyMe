@@ -42,3 +42,11 @@ export function buildVerificationUrl(credentialId, baseUrl = 'https://certify-me
   return `${cleanBase}/verify?id=${sanitizedId}`;
 }
 
+export function generateCertificateQRCodeUrl(verificationUrl, size = 150) {
+  if (!verificationUrl || typeof verificationUrl !== 'string') return '';
+  const encoded = encodeURIComponent(verificationUrl.trim());
+  const dimension = typeof size === 'number' && size > 0 ? size : 150;
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${dimension}x${dimension}&data=${encoded}`;
+}
+
+
