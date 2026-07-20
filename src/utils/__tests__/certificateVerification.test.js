@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus } from '../certificateVerification.js';
 
 describe('Certificate Verification Utilities', () => {
   describe('generateCredentialId', () => {
@@ -59,6 +59,26 @@ describe('Certificate Verification Utilities', () => {
       expect(generateCertificateQRCodeUrl(null)).toBe('');
     });
   });
+
+  describe('calculateCertificateExpirationStatus', () => {
+    it('calculates certificate expiration date and status', () => {
+      const future = calculateCertificateExpirationStatus('2026-01-01', 24);
+      expect(future.isExpired).toBe(false);
+      expect(future.status).toBe('VALID');
+      expect(future.expirationDate).toBe('2028-01-01');
+
+      const expired = calculateCertificateExpirationStatus('2020-01-01', 12);
+      expect(expired.isExpired).toBe(true);
+      expect(expired.status).toBe('EXPIRED');
+    });
+
+    it('handles empty input gracefully', () => {
+      const res = calculateCertificateExpirationStatus(null);
+      expect(res.isExpired).toBe(false);
+      expect(res.status).toBe('VALID');
+    });
+  });
 });
+
 
 

@@ -49,4 +49,38 @@ export function generateCertificateQRCodeUrl(verificationUrl, size = 150) {
   return `https://api.qrserver.com/v1/create-qr-code/?size=${dimension}x${dimension}&data=${encoded}`;
 }
 
+export function calculateCertificateExpirationStatus(issueDateStr, validityMonths = 12) {
+  if (!issueDateStr || typeof issueDateStr !== 'string') {
+    return { isExpired: false, daysRemaining: 365, status: 'VALID', expirationDate: '' };
+  }
+  const issueDate = new Date(issueDateStr);
+  if (isNaN(issueDate.getTime())) {
+    return { isExpired: false, daysRemaining: 365, status: 'VALID', expirationDate: '' };
+  }
+  const months = typeof validityMonths === 'number' && validityMonths > 0 ? validityMonths : 12;
+
+  const expiration = new Date(issueDate);
+  expiration.setMonth(expiration.getMonth() + months);
+
+  const now = new Date();
+  const diffTime = expiration.getTime() - now.getTime();
+  const daysRemaining = Math.ceil(diffTime / (1000 * 3600 * 24));
+  const isExpired = daysRemaining <= 0;
+
+  let status = 'VALID';
+  if (isExpired) {
+    status = 'EXPIRED';
+  } else if (daysRemaining <= 30) {
+    status = 'EXPIRING_SOON';
+  }
+
+  return {
+    isExpired,
+    daysRemaining: Math.max(0, daysRemaining),
+    status,
+    expirationDate: expiration.toISOString().split('T')[0]
+  };
+}
+
+
 
