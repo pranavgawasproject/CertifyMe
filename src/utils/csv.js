@@ -59,3 +59,38 @@ export function normalizeCsvRow(row = {}, idx = 0, defaultDate = '') {
     _idx: idx,
   };
 }
+
+export function validateCsvBatchData(rows = [], defaultDate = '') {
+  if (!Array.isArray(rows)) return { validCount: 0, invalidCount: 0, normalized: [], errors: [] };
+  const normalized = [];
+  const errors = [];
+  const seenNames = new Set();
+
+  rows.forEach((row, idx) => {
+    const item = normalizeCsvRow(row, idx, defaultDate);
+    if (!item.recipientName) {
+      errors.push({ line: idx + 1, message: 'Missing recipient name' });
+    } else {
+      if (seenNames.has(item.recipientName.toLowerCase())) {
+        errors.push({ line: idx + 1, message: `Duplicate recipient name: ${item.recipientName}` });
+      }
+      seenNames.add(item.recipientName.toLowerCase());
+      normalized.push(item);
+    }
+  });
+
+  return {
+    validCount: normalized.length,
+    invalidCount: errors.length,
+    normalized,
+    errors,
+  };
+}
+
+export function generateSampleCsvTemplate() {
+  const headers = ['Full Name', 'Course Title', 'Date', 'Issuer', 'Template ID'];
+  const sample1 = ['Jane Doe', 'Full-Stack Web Development', '2026-07-20', 'Tech Academy', 'classic-gold'];
+  const sample2 = ['John Smith', 'Data Science & AI Masterclass', '2026-07-20', 'CertifyMe Institute', 'navy-corporate'];
+  return [headers.join(','), sample1.join(','), sample2.join(',')].join('\n');
+}
+

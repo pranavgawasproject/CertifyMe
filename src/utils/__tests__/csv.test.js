@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { normalizeCsvRow } from '../csv.js';
+import { normalizeCsvRow, validateCsvBatchData, generateSampleCsvTemplate } from '../csv.js';
 
 describe('CertifyMe CSV Normalization Utilities', () => {
   test('should normalize standard CSV headers', () => {
@@ -71,4 +71,25 @@ describe('CertifyMe CSV Normalization Utilities', () => {
     expect(normalized.templateId).toBe('classic-gold');
     expect(normalized._idx).toBe(5);
   });
+
+  test('should validate batch CSV rows and report missing/duplicate recipient names', () => {
+    const rows = [
+      { 'Full Name': 'Alice Smith', 'Course': 'React Basics' },
+      { 'Full Name': '', 'Course': 'Node.js' },
+      { 'Full Name': 'Alice Smith', 'Course': 'Advanced React' }
+    ];
+    const validation = validateCsvBatchData(rows, '2026-07-20');
+    expect(validation.validCount).toBe(2);
+    expect(validation.invalidCount).toBe(2); // line 2 missing name, line 3 duplicate name
+    expect(validation.errors[0].message).toContain('Missing recipient name');
+    expect(validation.errors[1].message).toContain('Duplicate recipient name');
+  });
+
+  test('should generate sample CSV template string', () => {
+    const csv = generateSampleCsvTemplate();
+    expect(csv).toContain('Full Name,Course Title,Date,Issuer,Template ID');
+    expect(csv).toContain('Jane Doe');
+    expect(csv).toContain('John Smith');
+  });
 });
+
