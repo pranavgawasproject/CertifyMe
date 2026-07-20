@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl } from '../certificateVerification.js';
 
 describe('Certificate Verification Utilities', () => {
   describe('generateCredentialId', () => {
@@ -35,4 +35,17 @@ describe('Certificate Verification Utilities', () => {
       expect(formatted).toContain('July');
     });
   });
+
+  describe('buildVerificationUrl', () => {
+    it('constructs valid verification URL with encoded ID', () => {
+      const url = buildVerificationUrl('CERT-123 ABC');
+      expect(url).toBe('https://certify-me-liart.vercel.app/verify?id=CERT-123%20ABC');
+    });
+
+    it('returns empty string for missing or non-string ID', () => {
+      expect(buildVerificationUrl(null)).toBe('');
+      expect(buildVerificationUrl(undefined)).toBe('');
+    });
+  });
 });
+

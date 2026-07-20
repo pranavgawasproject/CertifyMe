@@ -34,3 +34,11 @@ export function formatCertificateIssueDate(dateString) {
   if (isNaN(d.getTime())) return dateString;
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 }
+
+export function buildVerificationUrl(credentialId, baseUrl = 'https://certify-me-liart.vercel.app') {
+  if (!credentialId || typeof credentialId !== 'string') return '';
+  const sanitizedId = encodeURIComponent(credentialId.trim());
+  const cleanBase = baseUrl.replace(/\/+$/, '');
+  return `${cleanBase}/verify?id=${sanitizedId}`;
+}
+
