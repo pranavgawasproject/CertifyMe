@@ -72,3 +72,27 @@ export function buildShareUrl(data) {
   return `${origin}/c/${encoded}`;
 }
 
+/**
+ * Build a Twitter/X post share URL for a certificate.
+ */
+export function generateTwitterShareUrl(certData = {}, shareUrl = '') {
+  const recipient = certData.recipientName ? certData.recipientName.trim() : 'a participant';
+  const eventName = certData.event ? certData.event.trim() : 'a specialized program';
+  const text = `Congratulations to ${recipient} for completing ${eventName}! Verified certificate via CertifyMe 🎓`;
+  const encodedText = encodeURIComponent(text);
+  const encodedUrl = shareUrl ? encodeURIComponent(shareUrl) : '';
+
+  return `https://twitter.com/intent/tweet?text=${encodedText}${encodedUrl ? '&url=' + encodedUrl : ''}`;
+}
+
+/**
+ * Build a WhatsApp share URL for a certificate.
+ */
+export function generateWhatsAppShareUrl(certData = {}, shareUrl = '') {
+  const recipient = certData.recipientName ? certData.recipientName.trim() : 'a participant';
+  const eventName = certData.event ? certData.event.trim() : 'a program';
+  const text = `🎓 Verified Certificate for ${recipient} - ${eventName}${shareUrl ? '\n' + shareUrl : ''}`;
+  return `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+}
+
+

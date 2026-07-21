@@ -1,5 +1,6 @@
 import { describe, test, expect } from 'vitest';
-import { encodeCertData, decodeCertData, buildShareUrl } from '../share.js';
+import { encodeCertData, decodeCertData, buildShareUrl, generateTwitterShareUrl, generateWhatsAppShareUrl } from '../share.js';
+
 
 describe('CertifyMe Share Utilities', () => {
   test('should encode and decode certificate data accurately', () => {
@@ -104,4 +105,18 @@ describe('CertifyMe Share Utilities', () => {
     expect(url).toContain('/c/');
     expect(url.endsWith('/c/' + encodeCertData(data))).toBe(true);
   });
+
+  test('should generate valid Twitter and WhatsApp share URLs', () => {
+    const data = { recipientName: 'Alice Smith', event: 'React Mastery' };
+    const shareUrl = 'https://certifyme.app/c/xyz123';
+
+    const twitterUrl = generateTwitterShareUrl(data, shareUrl);
+    expect(twitterUrl).toContain('https://twitter.com/intent/tweet?text=');
+    expect(twitterUrl).toContain('Alice%20Smith');
+
+    const whatsappUrl = generateWhatsAppShareUrl(data, shareUrl);
+    expect(whatsappUrl).toContain('https://api.whatsapp.com/send?text=');
+    expect(whatsappUrl).toContain('React%20Mastery');
+  });
 });
+
