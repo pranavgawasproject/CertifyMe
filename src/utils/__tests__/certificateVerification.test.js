@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore } from '../certificateVerification.js';
 
 describe('Certificate Verification Utilities', () => {
   describe('generateCredentialId', () => {
@@ -91,6 +91,28 @@ describe('Certificate Verification Utilities', () => {
       const res = generateBadgeEmbedCode(null);
       expect(res.html).toBe('');
       expect(res.markdown).toBe('');
+    });
+  });
+
+  describe('calculateCertificateVerificationScore', () => {
+    it('calculates score and authenticity for complete certificate data', () => {
+      const cert = {
+        recipientName: 'Jane Doe',
+        courseTitle: 'React Developer',
+        issuerName: 'Tech Academy',
+        credentialId: 'CERT-JANE-1234'
+      };
+      const res = calculateCertificateVerificationScore(cert);
+      expect(res.score).toBe(100);
+      expect(res.confidence).toBe('HIGH');
+      expect(res.isAuthentic).toBe(true);
+    });
+
+    it('handles incomplete certificate data gracefully', () => {
+      const res = calculateCertificateVerificationScore({});
+      expect(res.score).toBe(0);
+      expect(res.confidence).toBe('LOW');
+      expect(res.isAuthentic).toBe(false);
     });
   });
 });

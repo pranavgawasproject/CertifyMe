@@ -97,6 +97,48 @@ export function generateBadgeEmbedCode(credentialId, recipientName = '', baseUrl
   return { html, markdown, verificationUrl };
 }
 
+export function calculateCertificateVerificationScore(certData = {}) {
+  let score = 0;
+  const checks = [];
+
+  if (certData.recipientName && typeof certData.recipientName === 'string' && certData.recipientName.trim()) {
+    score += 25;
+    checks.push({ field: 'recipientName', status: 'PASS', points: 25 });
+  } else {
+    checks.push({ field: 'recipientName', status: 'FAIL', points: 0 });
+  }
+
+  if (certData.courseTitle && typeof certData.courseTitle === 'string' && certData.courseTitle.trim()) {
+    score += 25;
+    checks.push({ field: 'courseTitle', status: 'PASS', points: 25 });
+  } else {
+    checks.push({ field: 'courseTitle', status: 'FAIL', points: 0 });
+  }
+
+  if (certData.issuerName && typeof certData.issuerName === 'string' && certData.issuerName.trim()) {
+    score += 25;
+    checks.push({ field: 'issuerName', status: 'PASS', points: 25 });
+  } else {
+    checks.push({ field: 'issuerName', status: 'FAIL', points: 0 });
+  }
+
+  if (certData.credentialId && typeof certData.credentialId === 'string' && certData.credentialId.startsWith('CERT-')) {
+    score += 25;
+    checks.push({ field: 'credentialId', status: 'PASS', points: 25 });
+  } else {
+    checks.push({ field: 'credentialId', status: 'FAIL', points: 0 });
+  }
+
+  const confidence = score >= 100 ? 'HIGH' : score >= 75 ? 'MEDIUM' : 'LOW';
+
+  return {
+    score,
+    confidence,
+    isAuthentic: score >= 75,
+    checks
+  };
+}
+
 
 
 
