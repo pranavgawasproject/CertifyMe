@@ -82,5 +82,21 @@ export function calculateCertificateExpirationStatus(issueDateStr, validityMonth
   };
 }
 
+export function generateBadgeEmbedCode(credentialId, recipientName = '', baseUrl = 'https://certify-me-liart.vercel.app') {
+  if (!credentialId || typeof credentialId !== 'string') {
+    return { html: '', markdown: '', verificationUrl: '' };
+  }
+
+  const verificationUrl = buildVerificationUrl(credentialId, baseUrl);
+  const name = recipientName ? recipientName.trim() : 'Certificate';
+  const qrUrl = generateCertificateQRCodeUrl(verificationUrl, 120);
+
+  const html = `<a href="${verificationUrl}" target="_blank" rel="noopener noreferrer"><img src="${qrUrl}" alt="Verified Certificate Badge for ${name}" width="120" height="120" /></a>`;
+  const markdown = `[![Verified Certificate](${qrUrl})](${verificationUrl})`;
+
+  return { html, markdown, verificationUrl };
+}
+
+
 
 

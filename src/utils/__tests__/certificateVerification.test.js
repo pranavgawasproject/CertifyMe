@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode } from '../certificateVerification.js';
 
 describe('Certificate Verification Utilities', () => {
   describe('generateCredentialId', () => {
@@ -78,7 +78,23 @@ describe('Certificate Verification Utilities', () => {
       expect(res.status).toBe('VALID');
     });
   });
+
+  describe('generateBadgeEmbedCode', () => {
+    it('generates valid HTML and Markdown embed code for certificate badges', () => {
+      const embed = generateBadgeEmbedCode('CERT-123', 'Alice');
+      expect(embed.html).toContain('<a href="https://certify-me-liart.vercel.app/verify?id=CERT-123"');
+      expect(embed.html).toContain('alt="Verified Certificate Badge for Alice"');
+      expect(embed.markdown).toContain('[![Verified Certificate]');
+    });
+
+    it('handles missing credential ID gracefully', () => {
+      const res = generateBadgeEmbedCode(null);
+      expect(res.html).toBe('');
+      expect(res.markdown).toBe('');
+    });
+  });
 });
+
 
 
 
