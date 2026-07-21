@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl } from '../certificateVerification.js';
 
 describe('Certificate Verification Utilities', () => {
   describe('generateCredentialId', () => {
@@ -115,7 +115,29 @@ describe('Certificate Verification Utilities', () => {
       expect(res.isAuthentic).toBe(false);
     });
   });
+
+  describe('generateLinkedInShareUrl', () => {
+    it('generates a valid LinkedIn certification add-to-profile URL', () => {
+      const res = generateLinkedInShareUrl({
+        credentialId: 'CERT-123',
+        courseTitle: 'React Dev',
+        issuerName: 'CertifyMe Org',
+        issueDateStr: '2026-05-15'
+      });
+      expect(res.linkedInUrl).toContain('https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME');
+      expect(res.linkedInUrl).toContain('name=React%20Dev');
+      expect(res.linkedInUrl).toContain('organizationName=CertifyMe%20Org');
+      expect(res.linkedInUrl).toContain('issueYear=2026');
+      expect(res.linkedInUrl).toContain('issueMonth=5');
+    });
+
+    it('handles empty inputs gracefully', () => {
+      const res = generateLinkedInShareUrl({});
+      expect(res.linkedInUrl).toBe('');
+    });
+  });
 });
+
 
 
 

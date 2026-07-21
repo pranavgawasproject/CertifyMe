@@ -139,6 +139,35 @@ export function calculateCertificateVerificationScore(certData = {}) {
   };
 }
 
+export function generateLinkedInShareUrl({ credentialId = '', courseTitle = '', issuerName = '', issueDateStr = '', baseUrl = 'https://certify-me-liart.vercel.app' } = {}) {
+  if (!credentialId || typeof credentialId !== 'string') {
+    return { linkedInUrl: '', verificationUrl: '' };
+  }
+
+  const verificationUrl = buildVerificationUrl(credentialId, baseUrl);
+  const nameParam = encodeURIComponent((courseTitle || 'Certificate of Completion').trim());
+  const orgParam = encodeURIComponent((issuerName || 'CertifyMe').trim());
+
+  let yearParam = new Date().getFullYear();
+  let monthParam = new Date().getMonth() + 1;
+
+  if (issueDateStr && typeof issueDateStr === 'string') {
+    const parsed = new Date(issueDateStr);
+    if (!isNaN(parsed.getTime())) {
+      yearParam = parsed.getFullYear();
+      monthParam = parsed.getMonth() + 1;
+    }
+  }
+
+  const linkedInUrl = `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${nameParam}&organizationName=${orgParam}&issueYear=${yearParam}&issueMonth=${monthParam}&certUrl=${encodeURIComponent(verificationUrl)}&certId=${encodeURIComponent(credentialId.trim())}`;
+
+  return {
+    linkedInUrl,
+    verificationUrl
+  };
+}
+
+
 
 
 
