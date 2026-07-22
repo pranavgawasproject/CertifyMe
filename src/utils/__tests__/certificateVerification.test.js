@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus } from '../certificateVerification.js';
 
 describe('Certificate Verification Utilities', () => {
   describe('generateCredentialId', () => {
@@ -134,6 +134,20 @@ describe('Certificate Verification Utilities', () => {
     it('handles empty inputs gracefully', () => {
       const res = generateLinkedInShareUrl({});
       expect(res.linkedInUrl).toBe('');
+    });
+  });
+
+  describe('calculateCertificateExpiryAndRenewalStatus', () => {
+    it('calculates lifetime status when validityYears is omitted', () => {
+      const res = calculateCertificateExpiryAndRenewalStatus('2026-01-01');
+      expect(res.status).toBe('LIFETIME');
+      expect(res.isExpired).toBe(false);
+    });
+
+    it('calculates expired status for past certificates', () => {
+      const res = calculateCertificateExpiryAndRenewalStatus('2020-01-01', 2);
+      expect(res.status).toBe('EXPIRED');
+      expect(res.isExpired).toBe(true);
     });
   });
 });

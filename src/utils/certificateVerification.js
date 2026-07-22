@@ -167,6 +167,43 @@ export function generateLinkedInShareUrl({ credentialId = '', courseTitle = '', 
   };
 }
 
+export function calculateCertificateExpiryAndRenewalStatus(issueDateStr, validityYears = null) {
+  if (!issueDateStr || typeof issueDateStr !== 'string') {
+    return { status: 'LIFETIME', isExpired: false, expiryDateStr: null, daysRemaining: null };
+  }
+
+  const issueDate = new Date(issueDateStr);
+  if (isNaN(issueDate.getTime())) {
+    return { status: 'LIFETIME', isExpired: false, expiryDateStr: null, daysRemaining: null };
+  }
+
+  if (typeof validityYears !== 'number' || isNaN(validityYears) || validityYears <= 0) {
+    return { status: 'LIFETIME', isExpired: false, expiryDateStr: null, daysRemaining: null };
+  }
+
+  const expiryDate = new Date(issueDate);
+  expiryDate.setFullYear(expiryDate.getFullYear() + validityYears);
+
+  const now = new Date();
+  const diffMs = expiryDate.getTime() - now.getTime();
+  const daysRemaining = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  const isExpired = daysRemaining <= 0;
+
+  let status = 'ACTIVE';
+  if (isExpired) {
+    status = 'EXPIRED';
+  } else if (daysRemaining <= 60) {
+    status = 'EXPIRING_SOON';
+  }
+
+  return {
+    status,
+    isExpired,
+    expiryDateStr: expiryDate.toISOString().split('T')[0],
+    daysRemaining
+  };
+}
+
 
 
 
