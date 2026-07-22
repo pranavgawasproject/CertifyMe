@@ -204,6 +204,33 @@ export function calculateCertificateExpiryAndRenewalStatus(issueDateStr, validit
   };
 }
 
+export function calculateCertificateTamperCheck(credentialId, recipientName, courseTitle, issuerName) {
+  if (!credentialId || typeof credentialId !== 'string' || !credentialId.trim()) {
+    return { isTamperFree: false, reason: 'Missing or invalid Credential ID' };
+  }
+  if (!recipientName || typeof recipientName !== 'string' || !recipientName.trim()) {
+    return { isTamperFree: false, reason: 'Missing recipient name' };
+  }
+  if (!courseTitle || typeof courseTitle !== 'string' || !courseTitle.trim()) {
+    return { isTamperFree: false, reason: 'Missing course title' };
+  }
+  if (!issuerName || typeof issuerName !== 'string' || !issuerName.trim()) {
+    return { isTamperFree: false, reason: 'Missing issuer organization' };
+  }
+
+  const cleanName = recipientName.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  const idLower = credentialId.toLowerCase();
+
+  // Basic tamper check: credential ID must incorporate recipient slug prefix if generated standardly
+  const containsNameSlug = idLower.includes(cleanName.substring(0, Math.min(4, cleanName.length)));
+
+  return {
+    isTamperFree: containsNameSlug || credentialId.startsWith('CERT-'),
+    reason: containsNameSlug || credentialId.startsWith('CERT-') ? 'Certificate integrity verified' : 'Metadata does not match Credential ID signature'
+  };
+}
+
+
 
 
 

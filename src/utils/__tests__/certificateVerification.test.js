@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck } from '../certificateVerification.js';
+
 
 describe('Certificate Verification Utilities', () => {
   describe('generateCredentialId', () => {
@@ -150,7 +151,22 @@ describe('Certificate Verification Utilities', () => {
       expect(res.isExpired).toBe(true);
     });
   });
+
+  describe('calculateCertificateTamperCheck', () => {
+    it('returns isTamperFree true for valid credential ID and metadata', () => {
+      const res = calculateCertificateTamperCheck('CERT-JOHNDOE-2026', 'John Doe', 'React Mastery', 'CertifyMe');
+      expect(res.isTamperFree).toBe(true);
+      expect(res.reason).toBe('Certificate integrity verified');
+    });
+
+    it('returns isTamperFree false when required metadata is missing', () => {
+      const res = calculateCertificateTamperCheck('', 'John Doe', 'React Mastery', 'CertifyMe');
+      expect(res.isTamperFree).toBe(false);
+      expect(res.reason).toBe('Missing or invalid Credential ID');
+    });
+  });
 });
+
 
 
 
