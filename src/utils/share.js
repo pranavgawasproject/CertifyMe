@@ -95,4 +95,16 @@ export function generateWhatsAppShareUrl(certData = {}, shareUrl = '') {
   return `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
 }
 
+/**
+ * Build a LinkedIn share URL for a certificate.
+ */
+export function generateLinkedInShareUrl(certData = {}, shareUrl = '') {
+  const eventName = certData.event ? certData.event.trim() : 'Certificate of Completion';
+  const encodedUrl = shareUrl ? encodeURIComponent(shareUrl) : '';
+  const encodedTitle = encodeURIComponent(`Verified Certificate - ${eventName}`);
+
+  return `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}&title=${encodedTitle}`;
+}
+
+
 

@@ -1,6 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { encodeCertData, decodeCertData, buildShareUrl, generateTwitterShareUrl, generateWhatsAppShareUrl } from '../share.js';
-
+import { encodeCertData, decodeCertData, buildShareUrl, generateTwitterShareUrl, generateWhatsAppShareUrl, generateLinkedInShareUrl } from '../share.js';
 
 describe('CertifyMe Share Utilities', () => {
   test('should encode and decode certificate data accurately', () => {
@@ -117,6 +116,16 @@ describe('CertifyMe Share Utilities', () => {
     const whatsappUrl = generateWhatsAppShareUrl(data, shareUrl);
     expect(whatsappUrl).toContain('https://api.whatsapp.com/send?text=');
     expect(whatsappUrl).toContain('React%20Mastery');
+  });
+
+  test('should generate valid LinkedIn share URL', () => {
+    const data = { recipientName: 'Bob Jones', event: 'AI Ethics Certification' };
+    const shareUrl = 'https://certifyme.app/c/abc789';
+
+    const linkedinUrl = generateLinkedInShareUrl(data, shareUrl);
+    expect(linkedinUrl).toContain('https://www.linkedin.com/sharing/share-offsite/?url=');
+    expect(linkedinUrl).toContain(encodeURIComponent(shareUrl));
+    expect(linkedinUrl).toContain(encodeURIComponent('AI Ethics Certification'));
   });
 });
 
