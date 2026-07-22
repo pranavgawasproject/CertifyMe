@@ -27,8 +27,16 @@ function BulkGenerate() {
 
   const defaultDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
+  const MAX_ROWS = 200;
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
   const handleFile = (file) => {
     setError('');
+    if (file.size > MAX_FILE_SIZE) {
+      setError(`File is too large. Max size is 5MB.`);
+      return;
+    }
+
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
@@ -37,12 +45,22 @@ function BulkGenerate() {
           setError('CSV appears to be empty.');
           return;
         }
+        
+        if (results.errors && results.errors.length > 0) {
+          console.warn('CSV parsing errors:', results.errors);
+        }
+
         const normalized = results.data.map((r, i) => normalizeCsvRow(r, i, defaultDate));
         const invalid = normalized.filter((r) => !r.recipientName || !r.event);
         if (invalid.length > 0) {
           setError(`${invalid.length} row(s) missing required "recipientName" or "event" column. They were skipped.`);
         }
-        const valid = normalized.filter((r) => r.recipientName && r.event);
+        let valid = normalized.filter((r) => r.recipientName && r.event);
+        
+        if (valid.length > MAX_ROWS) {
+          setError(`File contains ${valid.length} valid rows. Limited to ${MAX_ROWS} to prevent browser crash.`);
+          valid = valid.slice(0, MAX_ROWS);
+        }
         setRows(valid);
       },
       error: (err) => setError(`Failed to parse CSV: ${err.message}`),

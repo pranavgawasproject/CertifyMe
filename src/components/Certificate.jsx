@@ -47,6 +47,8 @@ function Certificate() {
     }
   }, [recipientName, event, date, issuer, signature, selectedTemplate]);
 
+  if (!recipientName || !event) return null;
+
   const downloadPng = async () => {
     if (!certificateRef.current) return;
     setIsDownloading(true);
