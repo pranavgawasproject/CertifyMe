@@ -230,8 +230,44 @@ export function calculateCertificateTamperCheck(credentialId, recipientName, cou
   };
 }
 
+export function calculateCertificateRenewalAlert(issueDateStr, validityMonths = 12, warningThresholdDays = 30) {
+  if (!issueDateStr) {
+    return { valid: false, error: 'Issue date string is required' };
+  }
 
+  const issue = new Date(issueDateStr);
+  if (isNaN(issue.getTime())) {
+    return { valid: false, error: 'Invalid issue date format' };
+  }
 
+  const months = typeof validityMonths === 'number' && validityMonths > 0 ? validityMonths : 12;
+  const threshold = typeof warningThresholdDays === 'number' && warningThresholdDays > 0 ? warningThresholdDays : 30;
 
+  const expiry = new Date(issue);
+  expiry.setMonth(expiry.getMonth() + months);
 
+  const now = new Date();
+  const diffMs = expiry.getTime() - now.getTime();
+  const daysRemaining = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
+  let status = 'VALID';
+  let requiresAction = false;
+
+  if (daysRemaining <= 0) {
+    status = 'EXPIRED';
+    requiresAction = true;
+  } else if (daysRemaining <= threshold) {
+    status = 'URGENT';
+    requiresAction = true;
+  } else if (daysRemaining <= threshold * 2) {
+    status = 'UPCOMING';
+  }
+
+  return {
+    valid: true,
+    status,
+    expiryDateStr: expiry.toISOString().split('T')[0],
+    daysRemaining,
+    requiresAction
+  };
+}

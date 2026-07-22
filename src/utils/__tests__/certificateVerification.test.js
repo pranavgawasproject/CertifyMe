@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert } from '../certificateVerification.js';
 
 
 describe('Certificate Verification Utilities', () => {
@@ -163,6 +163,23 @@ describe('Certificate Verification Utilities', () => {
       const res = calculateCertificateTamperCheck('', 'John Doe', 'React Mastery', 'CertifyMe');
       expect(res.isTamperFree).toBe(false);
       expect(res.reason).toBe('Missing or invalid Credential ID');
+    });
+  });
+
+  describe('calculateCertificateRenewalAlert', () => {
+    it('calculates valid renewal status for active certificates', () => {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const res = calculateCertificateRenewalAlert(todayStr, 12, 30);
+      expect(res.valid).toBe(true);
+      expect(res.status).toBe('VALID');
+      expect(res.requiresAction).toBe(false);
+      expect(res.daysRemaining).toBeGreaterThan(300);
+    });
+
+    it('returns error for missing or invalid issue date', () => {
+      const res = calculateCertificateRenewalAlert('');
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Issue date string is required');
     });
   });
 });
