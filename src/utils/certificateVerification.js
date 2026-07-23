@@ -318,3 +318,28 @@ export function calculateCertificateBatchIssuanceSummary(recipientsList = [], co
   };
 }
 
+export function generateCertificateEmbedBadgeHTML(credentialId = '', courseTitle = '', recipientName = '', theme = 'dark') {
+  if (!credentialId || typeof credentialId !== 'string' || !credentialId.trim()) {
+    return { embedCode: '', isValid: false };
+  }
+
+  const cleanId = credentialId.trim();
+  const title = (courseTitle || 'Verified Achievement').trim();
+  const recipient = (recipientName || 'Recipient').trim();
+  const verifyUrl = buildVerificationUrl(cleanId);
+  const isDark = theme === 'dark';
+
+  const bgColor = isDark ? '#1e293b' : '#ffffff';
+  const textColor = isDark ? '#f8fafc' : '#0f172a';
+  const borderColor = isDark ? '#334155' : '#e2e8f0';
+
+  const embedCode = `<div style="display:inline-flex;align-items:center;gap:12px;padding:12px 16px;background:${bgColor};color:${textColor};border:1px solid ${borderColor};border-radius:8px;font-family:sans-serif;box-shadow:0 2px 4px rgba(0,0,0,0.05);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg><div><div style="font-weight:600;font-size:14px;line-height:1.2;">${title}</div><div style="font-size:12px;opacity:0.8;margin-top:2px;">Issued to ${recipient} • <a href="${verifyUrl}" target="_blank" rel="noopener noreferrer" style="color:#3b82f6;text-decoration:none;font-weight:500;">Verify Badge #${cleanId.slice(-8)}</a></div></div></div>`;
+
+  return {
+    embedCode,
+    verifyUrl,
+    isValid: true
+  };
+}
+
+

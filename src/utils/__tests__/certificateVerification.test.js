@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML } from '../certificateVerification.js';
 
 
 describe('Certificate Verification Utilities', () => {
@@ -201,7 +201,24 @@ describe('Certificate Verification Utilities', () => {
       expect(res.validationErrors).toContain('Recipients list cannot be empty');
     });
   });
+
+  describe('generateCertificateEmbedBadgeHTML', () => {
+    it('generates valid HTML embed code with verification link', () => {
+      const res = generateCertificateEmbedBadgeHTML('CERT-12345', 'React Engineering', 'Alex');
+      expect(res.isValid).toBe(true);
+      expect(res.embedCode).toContain('React Engineering');
+      expect(res.embedCode).toContain('Issued to Alex');
+      expect(res.embedCode).toContain('https://certify-me-liart.vercel.app/verify?id=CERT-12345');
+    });
+
+    it('returns empty embed code for invalid credential id', () => {
+      const res = generateCertificateEmbedBadgeHTML('');
+      expect(res.isValid).toBe(false);
+      expect(res.embedCode).toBe('');
+    });
+  });
 });
+
 
 
 
