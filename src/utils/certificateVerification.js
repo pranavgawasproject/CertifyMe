@@ -370,5 +370,31 @@ export function calculateCertificateTamperProofSignature(credentialId = '', reci
   };
 }
 
+export function calculateCertificateBulkExportBundleEstimate({ certificateCount = 10, includePdf = true, highResolutionPng = true } = {}) {
+  if (typeof certificateCount !== 'number' || certificateCount <= 0 || isNaN(certificateCount)) {
+    return { valid: false, error: 'Certificate count must be a positive number' };
+  }
+
+  const count = Math.floor(certificateCount);
+  const pdfSizeBytes = includePdf ? count * 450 * 1024 : 0;
+  const pngSizeBytes = highResolutionPng ? count * 850 * 1024 : 0;
+
+  const totalBytes = pdfSizeBytes + pngSizeBytes;
+  const totalMb = Math.round((totalBytes / (1024 * 1024)) * 100) / 100;
+  const estimatedGenerationSeconds = Math.max(1, Math.round(count * 0.4 * 10) / 10);
+
+  return {
+    valid: true,
+    certificateCount: count,
+    estimatedTotalMb: totalMb,
+    estimatedGenerationSeconds,
+    requiresZipCompression: totalMb > 5,
+    recommendation: totalMb > 50
+      ? 'Large batch volume. Recommend async background generation and email download link.'
+      : 'Optimal size for direct in-browser zip export.'
+  };
+}
+
+
 
 

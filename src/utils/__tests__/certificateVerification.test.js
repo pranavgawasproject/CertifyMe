@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate } from '../certificateVerification.js';
+
+
 
 
 describe('Certificate Verification Utilities', () => {
@@ -232,7 +234,24 @@ describe('Certificate Verification Utilities', () => {
       expect(res.signature).toBe('');
     });
   });
+
+  describe('calculateCertificateBulkExportBundleEstimate', () => {
+    it('calculates bundle export size and generation time estimates', () => {
+      const res = calculateCertificateBulkExportBundleEstimate({ certificateCount: 20, includePdf: true, highResolutionPng: true });
+      expect(res.valid).toBe(true);
+      expect(res.certificateCount).toBe(20);
+      expect(res.estimatedTotalMb).toBeGreaterThan(20);
+      expect(res.requiresZipCompression).toBe(true);
+    });
+
+    it('returns error for invalid certificate count', () => {
+      const res = calculateCertificateBulkExportBundleEstimate({ certificateCount: 0 });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Certificate count must be a positive number');
+    });
+  });
 });
+
 
 
 
