@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash } from '../certificateVerification.js';
 
 
 
@@ -248,6 +248,21 @@ describe('Certificate Verification Utilities', () => {
       const res = calculateCertificateBulkExportBundleEstimate({ certificateCount: 0 });
       expect(res.valid).toBe(false);
       expect(res.error).toBe('Certificate count must be a positive number');
+    });
+  });
+
+  describe('calculateCertificateSecurityQRVerificationHash', () => {
+    it('generates security hash and QR payload URL for valid certificate', () => {
+      const res = calculateCertificateSecurityQRVerificationHash({ credentialId: 'CERT-100', recipientName: 'Jane', issueDate: '2026-07-23' });
+      expect(res.valid).toBe(true);
+      expect(res.securityHash).toMatch(/^QR-HASH-[0-9A-Z]+$/);
+      expect(res.qrPayloadUrl).toContain('https://certify-me.vercel.app/verify/CERT-100');
+    });
+
+    it('returns error for empty credential id', () => {
+      const res = calculateCertificateSecurityQRVerificationHash({ credentialId: '' });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Credential ID is required');
     });
   });
 });

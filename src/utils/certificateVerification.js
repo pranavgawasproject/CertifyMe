@@ -395,6 +395,35 @@ export function calculateCertificateBulkExportBundleEstimate({ certificateCount 
   };
 }
 
+export function calculateCertificateSecurityQRVerificationHash({ credentialId = '', recipientName = '', issueDate = '' } = {}) {
+  if (!credentialId || typeof credentialId !== 'string' || !credentialId.trim()) {
+    return { valid: false, error: 'Credential ID is required' };
+  }
+
+  const cleanId = credentialId.trim().toUpperCase();
+  const cleanName = (recipientName || '').trim().toLowerCase();
+  const cleanDate = (issueDate || '').trim();
+
+  const str = `${cleanId}:${cleanName}:${cleanDate}`;
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+
+  const securityHash = `QR-HASH-${Math.abs(hash).toString(36).toUpperCase()}`;
+  const qrPayloadUrl = `https://certify-me.vercel.app/verify/${encodeURIComponent(cleanId)}?hash=${securityHash}`;
+
+  return {
+    valid: true,
+    credentialId: cleanId,
+    securityHash,
+    qrPayloadUrl,
+    isVerificationReady: true
+  };
+}
+
+
 
 
 
