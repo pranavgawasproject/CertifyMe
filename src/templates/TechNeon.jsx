@@ -69,7 +69,7 @@ function TechNeon({ data, logoUrl }) {
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
       )}
       <div style={{
-        fontSize: '0.9vw',
+        fontSize: '0.9cqw',
         letterSpacing: '0.5em',
         textTransform: 'uppercase',
         color: '#06B6D4',
@@ -79,12 +79,12 @@ function TechNeon({ data, logoUrl }) {
         {'// Certificate of Achievement'}
       </div>
 
-      <div style={{ fontSize: '1vw', color: '#EC4899', marginBottom: '1.5%', textShadow: '0 0 8px #EC4899' }}>
+      <div style={{ fontSize: '1cqw', color: '#EC4899', marginBottom: '1.5%', textShadow: '0 0 8px #EC4899' }}>
         {'> awarded to'}
       </div>
 
       <div style={{
-        fontSize: '3.4vw',
+        fontSize: '3.4cqw',
         fontWeight: 700,
         color: '#FFFFFF',
         margin: '0.5% 0 1.5%',
@@ -95,30 +95,30 @@ function TechNeon({ data, logoUrl }) {
       </div>
 
       <div style={{
-        fontSize: '1.15vw',
+        fontSize: '1.15cqw',
         color: '#94A3B8',
         maxWidth: '65%',
         lineHeight: 1.6,
         marginBottom: '2%',
       }}>
         {'for successfully completing'}
-        <div style={{ fontSize: '1.6vw', color: '#EC4899', marginTop: '0.5%', textShadow: '0 0 12px #EC4899', fontWeight: 700 }}>
+        <div style={{ fontSize: '1.6cqw', color: '#EC4899', marginTop: '0.5%', textShadow: '0 0 12px #EC4899', fontWeight: 700 }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto' }}>
         <div style={{ textAlign: 'left' }}>
-          <div style={{ fontSize: '1.3vw', color: '#FFFFFF', fontFamily: 'monospace' }}>
+          <div style={{ fontSize: '1.3cqw', color: '#FFFFFF', fontFamily: 'monospace' }}>
             {'<'}{signature || issuer || 'Issuer'}{'/>'}
           </div>
           <div style={{ width: '120px', height: '1px', background: '#06B6D4', margin: '6px 0 4px', boxShadow: '0 0 6px #06B6D4' }} />
-          <div style={{ fontSize: '0.8vw', color: '#64748B' }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.8cqw', color: '#64748B' }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '1vw', color: '#FFFFFF', fontFamily: 'monospace' }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1cqw', color: '#FFFFFF', fontFamily: 'monospace' }}>{date || 'Date'}</div>
           <div style={{ width: '120px', height: '1px', background: '#EC4899', margin: '6px 0 4px', marginLeft: 'auto', boxShadow: '0 0 6px #EC4899' }} />
-          <div style={{ fontSize: '0.8vw', color: '#64748B' }}>Date</div>
+          <div style={{ fontSize: '0.8cqw', color: '#64748B' }}>Date</div>
         </div>
       </div>
     </div>

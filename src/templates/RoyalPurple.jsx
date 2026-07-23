@@ -26,19 +26,19 @@ function RoyalPurple({ data, logoUrl }) {
         { bottom: '6%', right: '6%' },
       ].map((pos, i) => (
         <div key={i} style={{
-          position: 'absolute', fontSize: '1.4vw', color: '#C0C0C0', ...pos,
+          position: 'absolute', fontSize: '1.4cqw', color: '#C0C0C0', ...pos,
         }}>♛</div>
       ))}
 
       {/* Top crown emblem */}
-      <div style={{ fontSize: '2.5vw', marginBottom: '1%' }}>👑</div>
+      <div style={{ fontSize: '2.5cqw', marginBottom: '1%' }}>👑</div>
 
       {logoUrl && (
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
       )}
 
       <div style={{
-        fontSize: '0.95vw', letterSpacing: '0.5em', textTransform: 'uppercase',
+        fontSize: '0.95cqw', letterSpacing: '0.5em', textTransform: 'uppercase',
         color: '#C0C0C0', marginBottom: '2%', fontWeight: 'bold',
       }}>
         Royal Certificate of Achievement
@@ -46,12 +46,12 @@ function RoyalPurple({ data, logoUrl }) {
 
       <div style={{ width: '15%', height: '2px', background: '#C0C0C0', margin: '1% 0 3%' }} />
 
-      <div style={{ fontSize: '1.05vw', color: '#C4B5FD', fontStyle: 'italic', marginBottom: '1.5%' }}>
+      <div style={{ fontSize: '1.05cqw', color: '#C4B5FD', fontStyle: 'italic', marginBottom: '1.5%' }}>
         By royal decree, presented to
       </div>
 
       <div style={{
-        fontSize: '3.4vw', fontWeight: 'bold', color: '#FFFFFF',
+        fontSize: '3.4cqw', fontWeight: 'bold', color: '#FFFFFF',
         margin: '0.5% 0 1.5%', lineHeight: 1.1,
         textShadow: '0 0 20px rgba(192, 192, 192, 0.4)',
       }}>
@@ -60,25 +60,25 @@ function RoyalPurple({ data, logoUrl }) {
 
       <div style={{ width: '50%', height: '1px', background: 'linear-gradient(to right, transparent, #C0C0C0, transparent)', margin: '1% 0' }} />
 
-      <div style={{ fontSize: '1.1vw', color: '#C4B5FD', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
+      <div style={{ fontSize: '1.1cqw', color: '#C4B5FD', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
         for distinguished achievement in
-        <div style={{ fontSize: '1.7vw', color: '#C0C0C0', marginTop: '0.5%', fontStyle: 'italic' }}>
+        <div style={{ fontSize: '1.7cqw', color: '#C0C0C0', marginTop: '0.5%', fontStyle: 'italic' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4vw', fontFamily: '"Dancing Script", cursive', color: '#C0C0C0' }}>
+          <div style={{ fontSize: '1.4cqw', fontFamily: '"Dancing Script", cursive', color: '#C0C0C0' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#C0C0C0', margin: '4px 0' }} />
-          <div style={{ fontSize: '0.8vw', color: '#C4B5FD' }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.8cqw', color: '#C4B5FD' }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1vw', color: '#C0C0C0' }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1cqw', color: '#C0C0C0' }}>{date || 'Date'}</div>
           <div style={{ width: '100%', height: '1px', background: '#C0C0C0', margin: '4px 0' }} />
-          <div style={{ fontSize: '0.8vw', color: '#C4B5FD' }}>Date</div>
+          <div style={{ fontSize: '0.8cqw', color: '#C4B5FD' }}>Date</div>
         </div>
       </div>
     </div>

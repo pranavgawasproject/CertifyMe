@@ -37,18 +37,18 @@ function ForestGreen({ data, logoUrl }) {
       )}
 
       <div style={{
-        fontSize: '0.95vw', letterSpacing: '0.4em', textTransform: 'uppercase',
+        fontSize: '0.95cqw', letterSpacing: '0.4em', textTransform: 'uppercase',
         color: '#8FBC8F', marginBottom: '2%', fontWeight: 'bold',
       }}>
         🌲 Certificate of Achievement 🌲
       </div>
 
-      <div style={{ fontSize: '1vw', color: '#A5D6A7', fontStyle: 'italic', marginBottom: '1.5%' }}>
+      <div style={{ fontSize: '1cqw', color: '#A5D6A7', fontStyle: 'italic', marginBottom: '1.5%' }}>
         In the spirit of growth, presented to
       </div>
 
       <div style={{
-        fontSize: '3.4vw', fontFamily: '"Dancing Script", cursive', color: '#FFFFFF',
+        fontSize: '3.4cqw', fontFamily: '"Dancing Script", cursive', color: '#FFFFFF',
         margin: '0.5% 0 1.5%', lineHeight: 1.1,
         textShadow: '0 2px 10px rgba(0,0,0,0.5)',
       }}>
@@ -57,29 +57,29 @@ function ForestGreen({ data, logoUrl }) {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '1% 0 2%' }}>
         <div style={{ width: '40px', height: '1px', background: '#8FBC8F' }} />
-        <span style={{ color: '#8FBC8F', fontSize: '1.2vw' }}>🍂</span>
+        <span style={{ color: '#8FBC8F', fontSize: '1.2cqw' }}>🍂</span>
         <div style={{ width: '40px', height: '1px', background: '#8FBC8F' }} />
       </div>
 
-      <div style={{ fontSize: '1.1vw', color: '#A5D6A7', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
+      <div style={{ fontSize: '1.1cqw', color: '#A5D6A7', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
         for cultivating excellence in
-        <div style={{ fontSize: '1.7vw', color: '#8FBC8F', marginTop: '0.5%', fontStyle: 'italic' }}>
+        <div style={{ fontSize: '1.7cqw', color: '#8FBC8F', marginTop: '0.5%', fontStyle: 'italic' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4vw', fontFamily: '"Dancing Script", cursive', color: '#8FBC8F' }}>
+          <div style={{ fontSize: '1.4cqw', fontFamily: '"Dancing Script", cursive', color: '#8FBC8F' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#8FBC8F', margin: '4px 0', opacity: 0.6 }} />
-          <div style={{ fontSize: '0.8vw', color: '#A5D6A7' }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.8cqw', color: '#A5D6A7' }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1vw', color: '#8FBC8F' }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1cqw', color: '#8FBC8F' }}>{date || 'Date'}</div>
           <div style={{ width: '100%', height: '1px', background: '#8FBC8F', margin: '4px 0', opacity: 0.6 }} />
-          <div style={{ fontSize: '0.8vw', color: '#A5D6A7' }}>Date</div>
+          <div style={{ fontSize: '0.8cqw', color: '#A5D6A7' }}>Date</div>
         </div>
       </div>
     </div>

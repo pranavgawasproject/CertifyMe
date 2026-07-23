@@ -75,7 +75,7 @@ function GeometricPurple({ data, logoUrl }) {
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
       )}
       <div style={{
-        fontSize: '0.95vw',
+        fontSize: '0.95cqw',
         letterSpacing: '0.4em',
         textTransform: 'uppercase',
         color: '#EC4899',
@@ -85,10 +85,10 @@ function GeometricPurple({ data, logoUrl }) {
         Certificate of Achievement
       </div>
 
-      <div style={{ fontSize: '1vw', color: '#C4B5FD', marginBottom: '1.5%' }}>awarded to</div>
+      <div style={{ fontSize: '1cqw', color: '#C4B5FD', marginBottom: '1.5%' }}>awarded to</div>
 
       <div style={{
-        fontSize: '3.6vw',
+        fontSize: '3.6cqw',
         fontWeight: 800,
         margin: '0.5% 0 1.5%',
         lineHeight: 1.1,
@@ -98,30 +98,30 @@ function GeometricPurple({ data, logoUrl }) {
       </div>
 
       <div style={{
-        fontSize: '1.15vw',
+        fontSize: '1.15cqw',
         color: '#E9D5FF',
         maxWidth: '65%',
         lineHeight: 1.6,
         marginBottom: '2%',
       }}>
         for excellence in
-        <div style={{ fontSize: '1.7vw', color: '#FBBF24', marginTop: '0.5%', fontWeight: 700 }}>
+        <div style={{ fontSize: '1.7cqw', color: '#FBBF24', marginTop: '0.5%', fontWeight: 700 }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto' }}>
         <div style={{ textAlign: 'left' }}>
-          <div style={{ fontSize: '1.3vw', color: '#FFFFFF', fontWeight: 600 }}>
+          <div style={{ fontSize: '1.3cqw', color: '#FFFFFF', fontWeight: 600 }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '120px', height: '2px', background: 'linear-gradient(to right, #EC4899, #7C3AED)', margin: '6px 0 4px' }} />
-          <div style={{ fontSize: '0.8vw', color: '#C4B5FD' }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.8cqw', color: '#C4B5FD' }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '1.1vw', color: '#FFFFFF', fontWeight: 600 }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1.1cqw', color: '#FFFFFF', fontWeight: 600 }}>{date || 'Date'}</div>
           <div style={{ width: '120px', height: '2px', background: 'linear-gradient(to right, #7C3AED, #06B6D4)', margin: '6px 0 4px', marginLeft: 'auto' }} />
-          <div style={{ fontSize: '0.8vw', color: '#C4B5FD' }}>Date</div>
+          <div style={{ fontSize: '0.8cqw', color: '#C4B5FD' }}>Date</div>
         </div>
       </div>
     </div>

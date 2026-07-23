@@ -47,18 +47,18 @@ function IndustrialSteel({ data, logoUrl }) {
       )}
 
       <div style={{
-        fontSize: '0.85vw', letterSpacing: '0.5em', textTransform: 'uppercase',
+        fontSize: '0.85cqw', letterSpacing: '0.5em', textTransform: 'uppercase',
         color: '#F59E0B', marginBottom: '3%', fontWeight: 700,
       }}>
         ⚙ Certificate of Achievement ⚙
       </div>
 
-      <div style={{ fontSize: '0.95vw', color: '#94A3B8', marginBottom: '1.5%', letterSpacing: '0.1em' }}>
+      <div style={{ fontSize: '0.95cqw', color: '#94A3B8', marginBottom: '1.5%', letterSpacing: '0.1em' }}>
         ENGINEERED FOR EXCELLENCE — PRESENTED TO
       </div>
 
       <div style={{
-        fontSize: '3.4vw', fontWeight: 800, color: '#FFFFFF',
+        fontSize: '3.4cqw', fontWeight: 800, color: '#FFFFFF',
         margin: '0.5% 0 1.5%', lineHeight: 1.1,
         letterSpacing: '0.02em',
         textShadow: '0 2px 10px rgba(0,0,0,0.6)',
@@ -72,27 +72,27 @@ function IndustrialSteel({ data, logoUrl }) {
         margin: '1% 0',
       }} />
 
-      <div style={{ fontSize: '1.1vw', color: '#CBD5E1', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
+      <div style={{ fontSize: '1.1cqw', color: '#CBD5E1', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
         has forged success in
-        <div style={{ fontSize: '1.7vw', color: '#F59E0B', marginTop: '0.5%', fontWeight: 700 }}>
+        <div style={{ fontSize: '1.7cqw', color: '#F59E0B', marginTop: '0.5%', fontWeight: 700 }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '4%' }}>
         <div style={{ textAlign: 'left' }}>
-          <div style={{ fontSize: '1.3vw', color: '#FFFFFF', fontWeight: 700, letterSpacing: '0.05em' }}>
+          <div style={{ fontSize: '1.3cqw', color: '#FFFFFF', fontWeight: 700, letterSpacing: '0.05em' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '140px', height: '2px', background: '#F59E0B', margin: '6px 0 4px' }} />
-          <div style={{ fontSize: '0.75vw', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#94A3B8' }}>
+          <div style={{ fontSize: '0.75cqw', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#94A3B8' }}>
             {issuer || 'Issuing Authority'}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '1vw', color: '#FFFFFF', fontWeight: 700 }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1cqw', color: '#FFFFFF', fontWeight: 700 }}>{date || 'Date'}</div>
           <div style={{ width: '140px', height: '2px', background: '#F59E0B', margin: '6px 0 4px', marginLeft: 'auto' }} />
-          <div style={{ fontSize: '0.75vw', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#94A3B8' }}>Date</div>
+          <div style={{ fontSize: '0.75cqw', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#94A3B8' }}>Date</div>
         </div>
       </div>
     </div>

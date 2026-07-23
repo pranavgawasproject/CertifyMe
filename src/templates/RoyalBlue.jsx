@@ -24,7 +24,7 @@ function RoyalBlue({ data, logoUrl }) {
 
       {/* Top emblem */}
       <div style={{
-        fontSize: '2.8vw',
+        fontSize: '2.8cqw',
         marginBottom: '1%',
       }}>✦</div>
 
@@ -32,7 +32,7 @@ function RoyalBlue({ data, logoUrl }) {
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
       )}
       <div style={{
-        fontSize: '1.5vw',
+        fontSize: '1.5cqw',
         letterSpacing: '0.35em',
         textTransform: 'uppercase',
         color: '#D4AF37',
@@ -43,10 +43,10 @@ function RoyalBlue({ data, logoUrl }) {
       </div>
       <div style={{ width: '15%', height: '2px', background: '#D4AF37', margin: '0.5% 0 3%' }} />
 
-      <div style={{ fontSize: '1.1vw', opacity: 0.85, marginBottom: '1%' }}>This certifies that</div>
+      <div style={{ fontSize: '1.1cqw', opacity: 0.85, marginBottom: '1%' }}>This certifies that</div>
 
       <div style={{
-        fontSize: '3.4vw',
+        fontSize: '3.4cqw',
         color: '#FFFFFF',
         fontWeight: 'bold',
         margin: '0.5% 0 1.5%',
@@ -58,25 +58,25 @@ function RoyalBlue({ data, logoUrl }) {
 
       <div style={{ width: '60%', height: '1px', background: 'linear-gradient(to right, transparent, #D4AF37, transparent)', margin: '1% 0' }} />
 
-      <div style={{ fontSize: '1.15vw', opacity: 0.9, maxWidth: '70%', lineHeight: 1.6, marginBottom: '2%' }}>
+      <div style={{ fontSize: '1.15cqw', opacity: 0.9, maxWidth: '70%', lineHeight: 1.6, marginBottom: '2%' }}>
         has successfully completed
-        <div style={{ fontSize: '1.8vw', color: '#D4AF37', marginTop: '0.5%', fontStyle: 'italic' }}>
+        <div style={{ fontSize: '1.8cqw', color: '#D4AF37', marginTop: '0.5%', fontStyle: 'italic' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '4%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4vw', fontFamily: '"Dancing Script", cursive', color: '#D4AF37' }}>
+          <div style={{ fontSize: '1.4cqw', fontFamily: '"Dancing Script", cursive', color: '#D4AF37' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#D4AF37', margin: '4px 0' }} />
-          <div style={{ fontSize: '0.85vw', opacity: 0.7 }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.85cqw', opacity: 0.7 }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1vw', color: '#D4AF37' }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1cqw', color: '#D4AF37' }}>{date || 'Date'}</div>
           <div style={{ width: '100%', height: '1px', background: '#D4AF37', margin: '4px 0' }} />
-          <div style={{ fontSize: '0.85vw', opacity: 0.7 }}>Date</div>
+          <div style={{ fontSize: '0.85cqw', opacity: 0.7 }}>Date</div>
         </div>
       </div>
     </div>

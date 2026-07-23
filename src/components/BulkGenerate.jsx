@@ -9,6 +9,7 @@ import SEO from './SEO';
 import AdSlot from './AdSlot';
 
 import { normalizeCsvRow } from '../utils/csv';
+import { calculateCertificateBatchIssuanceSummary } from '../utils/certificateVerification';
 
 const SAMPLE_CSV = `recipientName,event,date,issuer,signature,template
 Jane Anderson,Advanced Web Development,July 2026,CertifyMe Academy,Dr. Sharma,classic-gold
@@ -305,7 +306,12 @@ function BulkGenerate() {
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
               <div>
                 <h2 className="text-xl font-bold text-white">{rows.length} certificate{rows.length !== 1 ? 's' : ''} ready</h2>
-                <p className="text-slate-400 text-xs">Preview below · click any to remove</p>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-slate-400 text-xs">Preview below · click any to remove</span>
+                  <span className="bg-[#C9A24B]/20 text-[#DAB86A] text-[11px] px-2 py-0.5 rounded-full">
+                    ⚡ Est. ~{calculateCertificateBatchIssuanceSummary(rows).estimatedProcessingTimeSeconds}s export
+                  </span>
+                </div>
               </div>
               <div className="flex flex-wrap gap-2">
                 <button

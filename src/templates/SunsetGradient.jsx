@@ -60,7 +60,7 @@ function SunsetGradient({ data, logoUrl }) {
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
       )}
       <div style={{
-        fontSize: '0.95vw',
+        fontSize: '0.95cqw',
         letterSpacing: '0.4em',
         textTransform: 'uppercase',
         color: '#FFFFFF',
@@ -71,12 +71,12 @@ function SunsetGradient({ data, logoUrl }) {
         ✦ Certificate of Achievement ✦
       </div>
 
-      <div style={{ fontSize: '1.1vw', color: '#FFFFFF', marginBottom: '1.5%', fontWeight: 500, textShadow: '0 1px 6px rgba(124, 45, 18, 0.3)' }}>
+      <div style={{ fontSize: '1.1cqw', color: '#FFFFFF', marginBottom: '1.5%', fontWeight: 500, textShadow: '0 1px 6px rgba(124, 45, 18, 0.3)' }}>
         This celebrate-certifies that
       </div>
 
       <div style={{
-        fontSize: '3.6vw',
+        fontSize: '3.6cqw',
         fontWeight: 800,
         color: '#FFFFFF',
         margin: '0.5% 0 1.5%',
@@ -88,25 +88,25 @@ function SunsetGradient({ data, logoUrl }) {
 
       <div style={{ width: '60%', height: '2px', background: 'linear-gradient(to right, transparent, #FFFFFF, transparent)', margin: '1% 0' }} />
 
-      <div style={{ fontSize: '1.15vw', color: '#FFFFFF', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%', fontWeight: 500, textShadow: '0 1px 6px rgba(124, 45, 18, 0.3)' }}>
+      <div style={{ fontSize: '1.15cqw', color: '#FFFFFF', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%', fontWeight: 500, textShadow: '0 1px 6px rgba(124, 45, 18, 0.3)' }}>
         has brightly completed
-        <div style={{ fontSize: '1.7vw', marginTop: '0.5%', fontWeight: 800, color: '#FFFFFF', textShadow: '0 2px 12px rgba(124, 45, 18, 0.5)' }}>
+        <div style={{ fontSize: '1.7cqw', marginTop: '0.5%', fontWeight: 800, color: '#FFFFFF', textShadow: '0 2px 12px rgba(124, 45, 18, 0.5)' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4vw', color: '#FFFFFF', fontWeight: 700 }}>
+          <div style={{ fontSize: '1.4cqw', color: '#FFFFFF', fontWeight: 700 }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '2px', background: '#FFFFFF', margin: '6px 0 4px', opacity: 0.7 }} />
-          <div style={{ fontSize: '0.8vw', color: '#FFFFFF', opacity: 0.9 }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.8cqw', color: '#FFFFFF', opacity: 0.9 }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.1vw', color: '#FFFFFF', fontWeight: 700 }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1.1cqw', color: '#FFFFFF', fontWeight: 700 }}>{date || 'Date'}</div>
           <div style={{ width: '100%', height: '2px', background: '#FFFFFF', margin: '6px 0 4px', opacity: 0.7 }} />
-          <div style={{ fontSize: '0.8vw', color: '#FFFFFF', opacity: 0.9 }}>Date</div>
+          <div style={{ fontSize: '0.8cqw', color: '#FFFFFF', opacity: 0.9 }}>Date</div>
         </div>
       </div>
     </div>

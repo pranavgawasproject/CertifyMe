@@ -2,11 +2,36 @@
 // Uses jsPDF + html2canvas.
 
 /**
+ * Helper to calculate centered dimensions and offsets for landscape A4 PDF.
+ */
+export function calculatePdfDimensions(canvasWidth, canvasHeight, pdfWidth = 297, pdfHeight = 210) {
+  if (!canvasWidth || !canvasHeight) return { imgWidth: pdfWidth, imgHeight: pdfHeight, x: 0, y: 0 };
+  const imgRatio = canvasWidth / canvasHeight;
+  const pdfRatio = pdfWidth / pdfHeight;
+
+  let imgWidth, imgHeight, x, y;
+  if (imgRatio > pdfRatio) {
+    imgWidth = pdfWidth;
+    imgHeight = pdfWidth / imgRatio;
+    x = 0;
+    y = (pdfHeight - imgHeight) / 2;
+  } else {
+    imgHeight = pdfHeight;
+    imgWidth = pdfHeight * imgRatio;
+    x = (pdfWidth - imgWidth) / 2;
+    y = 0;
+  }
+  return { imgWidth, imgHeight, x, y };
+}
+
+/**
  * Export a single DOM node as a one-page A4 landscape PDF.
  * @param {HTMLElement} node - the certificate DOM element
  * @param {string} filename - output filename
  */
 export async function exportNodeToPdf(node, filename = 'certificate.pdf') {
+  if (!node) throw new Error('Target DOM node is required for PDF export');
+
   if (typeof document !== 'undefined' && document.fonts?.ready) {
     await document.fonts.ready;
   }
@@ -26,27 +51,7 @@ export async function exportNodeToPdf(node, filename = 'certificate.pdf') {
 
   // A4 landscape: 297mm x 210mm
   const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-  const pdfWidth = 297;
-  const pdfHeight = 210;
-
-  // Fit image while preserving aspect ratio
-  const imgRatio = canvas.width / canvas.height;
-  const pdfRatio = pdfWidth / pdfHeight;
-
-  let imgWidth, imgHeight, x, y;
-  if (imgRatio > pdfRatio) {
-    // Image is wider — fit to width
-    imgWidth = pdfWidth;
-    imgHeight = pdfWidth / imgRatio;
-    x = 0;
-    y = (pdfHeight - imgHeight) / 2;
-  } else {
-    // Image is taller — fit to height
-    imgHeight = pdfHeight;
-    imgWidth = pdfHeight * imgRatio;
-    x = (pdfWidth - imgWidth) / 2;
-    y = 0;
-  }
+  const { imgWidth, imgHeight, x, y } = calculatePdfDimensions(canvas.width, canvas.height, 297, 210);
 
   const imgData = canvas.toDataURL('image/png');
   pdf.addImage(imgData, 'PNG', x, y, imgWidth, imgHeight);
@@ -82,20 +87,7 @@ export async function exportNodesToMultiPagePdf(nodes, filename = 'certificates.
       logging: false,
     });
 
-    const imgRatio = canvas.width / canvas.height;
-    const pdfRatio = pdfWidth / pdfHeight;
-    let imgWidth, imgHeight, x, y;
-    if (imgRatio > pdfRatio) {
-      imgWidth = pdfWidth;
-      imgHeight = pdfWidth / imgRatio;
-      x = 0;
-      y = (pdfHeight - imgHeight) / 2;
-    } else {
-      imgHeight = pdfHeight;
-      imgWidth = pdfHeight * imgRatio;
-      x = (pdfWidth - imgWidth) / 2;
-      y = 0;
-    }
+    const { imgWidth, imgHeight, x, y } = calculatePdfDimensions(canvas.width, canvas.height, 297, 210);
 
     const imgData = canvas.toDataURL('image/png');
     if (i > 0) pdf.addPage();

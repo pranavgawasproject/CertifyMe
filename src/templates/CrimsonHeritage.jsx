@@ -21,7 +21,7 @@ function CrimsonHeritage({ data, logoUrl }) {
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <div style={{
-          fontSize: '1vw', letterSpacing: '0.4em', textTransform: 'uppercase',
+          fontSize: '1cqw', letterSpacing: '0.4em', textTransform: 'uppercase',
           color: '#FFFEF7', fontWeight: 'bold',
         }}>
           CertifyMe · Est. 2026
@@ -39,7 +39,7 @@ function CrimsonHeritage({ data, logoUrl }) {
       )}
 
       <div style={{
-        fontSize: '1.5vw', letterSpacing: '0.3em', textTransform: 'uppercase',
+        fontSize: '1.5cqw', letterSpacing: '0.3em', textTransform: 'uppercase',
         color: '#8B0000', marginBottom: '1%', fontWeight: 'bold', marginTop: logoUrl ? '0' : '60px',
       }}>
         Certificate of Achievement
@@ -47,12 +47,12 @@ function CrimsonHeritage({ data, logoUrl }) {
 
       <div style={{ width: '15%', height: '2px', background: '#8B0000', margin: '1% 0 3%' }} />
 
-      <div style={{ fontSize: '1.05vw', color: '#4A4A4A', fontStyle: 'italic', marginBottom: '1.5%' }}>
+      <div style={{ fontSize: '1.05cqw', color: '#4A4A4A', fontStyle: 'italic', marginBottom: '1.5%' }}>
         This is to certify that
       </div>
 
       <div style={{
-        fontSize: '3.4vw', fontWeight: 'bold', color: '#1A1A1A',
+        fontSize: '3.4cqw', fontWeight: 'bold', color: '#1A1A1A',
         margin: '0.5% 0 1.5%', lineHeight: 1.1,
       }}>
         {recipientName || 'Recipient Name'}
@@ -60,27 +60,27 @@ function CrimsonHeritage({ data, logoUrl }) {
 
       <div style={{ width: '50%', height: '1px', background: '#8B0000', margin: '1% 0', opacity: 0.5 }} />
 
-      <div style={{ fontSize: '1.1vw', color: '#4A4A4A', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
+      <div style={{ fontSize: '1.1cqw', color: '#4A4A4A', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
         has honorably completed the requirements for
-        <div style={{ fontSize: '1.7vw', color: '#8B0000', marginTop: '0.5%', fontStyle: 'italic', fontWeight: 'bold' }}>
+        <div style={{ fontSize: '1.7cqw', color: '#8B0000', marginTop: '0.5%', fontStyle: 'italic', fontWeight: 'bold' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '50px' }}>
         <div style={{ textAlign: 'left' }}>
-          <div style={{ fontSize: '1.5vw', fontFamily: '"Dancing Script", cursive', color: '#8B0000' }}>
+          <div style={{ fontSize: '1.5cqw', fontFamily: '"Dancing Script", cursive', color: '#8B0000' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '140px', height: '2px', background: '#8B0000', margin: '6px 0 4px' }} />
-          <div style={{ fontSize: '0.75vw', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#4A4A4A' }}>
+          <div style={{ fontSize: '0.75cqw', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#4A4A4A' }}>
             {issuer || 'Issuing Authority'}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '1.1vw', color: '#8B0000', fontWeight: 'bold' }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1.1cqw', color: '#8B0000', fontWeight: 'bold' }}>{date || 'Date'}</div>
           <div style={{ width: '140px', height: '2px', background: '#8B0000', margin: '6px 0 4px', marginLeft: 'auto' }} />
-          <div style={{ fontSize: '0.75vw', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#4A4A4A' }}>Date</div>
+          <div style={{ fontSize: '0.75cqw', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#4A4A4A' }}>Date</div>
         </div>
       </div>
     </div>

@@ -27,7 +27,7 @@ function Botanical({ data, logoUrl }) {
       ].map((style, i) => (
         <div key={i} style={{
           position: 'absolute',
-          fontSize: '4.5vw',
+          fontSize: '4.5cqw',
           color: '#4A6741',
           opacity: 0.4,
           ...style,
@@ -42,7 +42,7 @@ function Botanical({ data, logoUrl }) {
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
       )}
       <div style={{
-        fontSize: '0.9vw',
+        fontSize: '0.9cqw',
         letterSpacing: '0.4em',
         textTransform: 'uppercase',
         color: '#4A6741',
@@ -52,12 +52,12 @@ function Botanical({ data, logoUrl }) {
         ✿ Certificate of Achievement ✿
       </div>
 
-      <div style={{ fontSize: '1vw', color: '#5C6E54', fontStyle: 'italic', marginBottom: '2%' }}>
+      <div style={{ fontSize: '1cqw', color: '#5C6E54', fontStyle: 'italic', marginBottom: '2%' }}>
         This certificate is proudly presented to
       </div>
 
       <div style={{
-        fontSize: '3.4vw',
+        fontSize: '3.4cqw',
         fontFamily: '"Dancing Script", cursive',
         color: '#2D3E26',
         margin: '0.5% 0 1.5%',
@@ -68,29 +68,29 @@ function Botanical({ data, logoUrl }) {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '1% 0 2%' }}>
         <div style={{ width: '40px', height: '1px', background: '#4A6741' }} />
-        <span style={{ color: '#4A6741', fontSize: '1.2vw' }}>❦</span>
+        <span style={{ color: '#4A6741', fontSize: '1.2cqw' }}>❦</span>
         <div style={{ width: '40px', height: '1px', background: '#4A6741' }} />
       </div>
 
-      <div style={{ fontSize: '1.15vw', color: '#5C6E54', maxWidth: '70%', lineHeight: 1.6, marginBottom: '2%' }}>
+      <div style={{ fontSize: '1.15cqw', color: '#5C6E54', maxWidth: '70%', lineHeight: 1.6, marginBottom: '2%' }}>
         In recognition of completing
-        <div style={{ fontSize: '1.8vw', color: '#2D3E26', marginTop: '0.5%', fontStyle: 'italic' }}>
+        <div style={{ fontSize: '1.8cqw', color: '#2D3E26', marginTop: '0.5%', fontStyle: 'italic' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.5vw', fontFamily: '"Dancing Script", cursive', color: '#2D3E26' }}>
+          <div style={{ fontSize: '1.5cqw', fontFamily: '"Dancing Script", cursive', color: '#2D3E26' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#4A6741', margin: '4px 0' }} />
-          <div style={{ fontSize: '0.8vw', color: '#5C6E54' }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.8cqw', color: '#5C6E54' }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1vw', color: '#2D3E26' }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1cqw', color: '#2D3E26' }}>{date || 'Date'}</div>
           <div style={{ width: '100%', height: '1px', background: '#4A6741', margin: '4px 0' }} />
-          <div style={{ fontSize: '0.8vw', color: '#5C6E54' }}>Date</div>
+          <div style={{ fontSize: '0.8cqw', color: '#5C6E54' }}>Date</div>
         </div>
       </div>
     </div>

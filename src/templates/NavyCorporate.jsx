@@ -37,14 +37,14 @@ function NavyCorporate({ data, logoUrl }) {
         left: '50%',
         transform: 'translateX(-50%)',
         color: '#FFFFFF',
-        fontSize: '0.9vw',
+        fontSize: '0.9cqw',
         fontWeight: 700,
         letterSpacing: '0.2em',
       }}>
         CERTIFYME
       </div>
 
-      <div style={{ position: 'absolute', bottom: '18px', left: '50%', transform: 'translateX(-50%)', color: '#94A3B8', fontSize: '0.7vw', letterSpacing: '0.15em' }}>
+      <div style={{ position: 'absolute', bottom: '18px', left: '50%', transform: 'translateX(-50%)', color: '#94A3B8', fontSize: '0.7cqw', letterSpacing: '0.15em' }}>
         OFFICIAL CERTIFICATE OF COMPLETION
       </div>
 
@@ -52,7 +52,7 @@ function NavyCorporate({ data, logoUrl }) {
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
       )}
       <div style={{
-        fontSize: '0.95vw',
+        fontSize: '0.95cqw',
         letterSpacing: '0.4em',
         textTransform: 'uppercase',
         color: '#3B82F6',
@@ -62,12 +62,12 @@ function NavyCorporate({ data, logoUrl }) {
         Certificate of Achievement
       </div>
 
-      <div style={{ fontSize: '1vw', color: '#64748B', marginBottom: '1.5%' }}>
+      <div style={{ fontSize: '1cqw', color: '#64748B', marginBottom: '1.5%' }}>
         This is to certify that
       </div>
 
       <div style={{
-        fontSize: '3.4vw',
+        fontSize: '3.4cqw',
         fontWeight: 800,
         color: '#1E293B',
         margin: '0.5% 0 1.5%',
@@ -79,27 +79,27 @@ function NavyCorporate({ data, logoUrl }) {
 
       <div style={{ width: '120px', height: '3px', background: '#3B82F6', margin: '1% 0 2%' }} />
 
-      <div style={{ fontSize: '1.1vw', color: '#475569', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
+      <div style={{ fontSize: '1.1cqw', color: '#475569', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
         has successfully met all requirements for
-        <div style={{ fontSize: '1.6vw', color: '#1E293B', marginTop: '0.5%', fontWeight: 700 }}>
+        <div style={{ fontSize: '1.6cqw', color: '#1E293B', marginTop: '0.5%', fontWeight: 700 }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '40px' }}>
         <div style={{ textAlign: 'left' }}>
-          <div style={{ fontSize: '1.3vw', color: '#1E293B', fontWeight: 600, fontStyle: 'italic' }}>
+          <div style={{ fontSize: '1.3cqw', color: '#1E293B', fontWeight: 600, fontStyle: 'italic' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '140px', height: '2px', background: '#1E293B', margin: '6px 0 4px' }} />
-          <div style={{ fontSize: '0.75vw', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#64748B' }}>
+          <div style={{ fontSize: '0.75cqw', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#64748B' }}>
             {issuer || 'Issuing Authority'}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '1vw', color: '#1E293B', fontWeight: 600 }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1cqw', color: '#1E293B', fontWeight: 600 }}>{date || 'Date'}</div>
           <div style={{ width: '140px', height: '2px', background: '#1E293B', margin: '6px 0 4px', marginLeft: 'auto' }} />
-          <div style={{ fontSize: '0.75vw', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#64748B' }}>Date</div>
+          <div style={{ fontSize: '0.75cqw', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#64748B' }}>Date</div>
         </div>
       </div>
     </div>

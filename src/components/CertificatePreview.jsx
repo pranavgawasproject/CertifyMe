@@ -13,6 +13,7 @@ function CertificatePreview({ templateId, data, logoUrl, className = '' }) {
         overflow: 'hidden',
         borderRadius: '6px',
         boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
+        containerType: 'inline-size',
       }}
     >
       <TemplateRenderer templateId={templateId} data={data} logoUrl={logoUrl} />

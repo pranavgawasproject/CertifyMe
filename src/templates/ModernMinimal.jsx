@@ -29,7 +29,7 @@ function ModernMinimal({ data, logoUrl }) {
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
       )}
       <div style={{
-        fontSize: '0.9vw',
+        fontSize: '0.9cqw',
         letterSpacing: '0.5em',
         textTransform: 'uppercase',
         color: '#64748B',
@@ -40,7 +40,7 @@ function ModernMinimal({ data, logoUrl }) {
       </div>
 
       <div style={{
-        fontSize: '3.6vw',
+        fontSize: '3.6cqw',
         fontWeight: 800,
         letterSpacing: '-0.02em',
         margin: '1% 0 0.5%',
@@ -52,27 +52,27 @@ function ModernMinimal({ data, logoUrl }) {
 
       <div style={{ width: '40px', height: '3px', background: '#0F172A', margin: '2% 0' }} />
 
-      <div style={{ fontSize: '1.1vw', color: '#475569', maxWidth: '65%', lineHeight: 1.6, marginBottom: '3%' }}>
+      <div style={{ fontSize: '1.1cqw', color: '#475569', maxWidth: '65%', lineHeight: 1.6, marginBottom: '3%' }}>
         has successfully completed the requirements for
-        <div style={{ fontSize: '1.6vw', color: '#0F172A', marginTop: '1%', fontWeight: 600 }}>
+        <div style={{ fontSize: '1.6cqw', color: '#0F172A', marginTop: '1%', fontWeight: 600 }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto' }}>
         <div style={{ textAlign: 'left' }}>
-          <div style={{ fontSize: '1.4vw', fontWeight: 300, color: '#0F172A', fontStyle: 'italic' }}>
+          <div style={{ fontSize: '1.4cqw', fontWeight: 300, color: '#0F172A', fontStyle: 'italic' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '120px', height: '1px', background: '#0F172A', margin: '6px 0 4px' }} />
-          <div style={{ fontSize: '0.75vw', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#64748B' }}>
+          <div style={{ fontSize: '0.75cqw', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#64748B' }}>
             {issuer || 'Issuing Authority'}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '1.1vw', color: '#0F172A', fontWeight: 500 }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1.1cqw', color: '#0F172A', fontWeight: 500 }}>{date || 'Date'}</div>
           <div style={{ width: '120px', height: '1px', background: '#0F172A', margin: '6px 0 4px', marginLeft: 'auto' }} />
-          <div style={{ fontSize: '0.75vw', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#64748B' }}>Date</div>
+          <div style={{ fontSize: '0.75cqw', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#64748B' }}>Date</div>
         </div>
       </div>
     </div>

@@ -35,18 +35,18 @@ function TropicalParadise({ data, logoUrl }) {
       )}
 
       <div style={{
-        fontSize: '0.95vw', letterSpacing: '0.4em', textTransform: 'uppercase',
+        fontSize: '0.95cqw', letterSpacing: '0.4em', textTransform: 'uppercase',
         color: '#FB923C', marginBottom: '2%', fontWeight: 700,
       }}>
         🌴 Certificate of Achievement 🌴
       </div>
 
-      <div style={{ fontSize: '1.1vw', color: '#9A3412', marginBottom: '1.5%', fontWeight: 500 }}>
+      <div style={{ fontSize: '1.1cqw', color: '#9A3412', marginBottom: '1.5%', fontWeight: 500 }}>
         Sun-kissed recognition for
       </div>
 
       <div style={{
-        fontSize: '3.6vw', fontWeight: 800, color: '#7C2D12',
+        fontSize: '3.6cqw', fontWeight: 800, color: '#7C2D12',
         margin: '0.5% 0 1.5%', lineHeight: 1.1,
       }}>
         {recipientName || 'Recipient Name'}
@@ -54,25 +54,25 @@ function TropicalParadise({ data, logoUrl }) {
 
       <div style={{ width: '50%', height: '3px', background: 'linear-gradient(to right, transparent, #FB923C, transparent)', margin: '1% 0' }} />
 
-      <div style={{ fontSize: '1.15vw', color: '#9A3412', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%', fontWeight: 500 }}>
+      <div style={{ fontSize: '1.15cqw', color: '#9A3412', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%', fontWeight: 500 }}>
         for bright achievement in
-        <div style={{ fontSize: '1.7vw', marginTop: '0.5%', fontWeight: 800, color: '#FB923C' }}>
+        <div style={{ fontSize: '1.7cqw', marginTop: '0.5%', fontWeight: 800, color: '#FB923C' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto' }}>
         <div style={{ textAlign: 'left' }}>
-          <div style={{ fontSize: '1.4vw', color: '#7C2D12', fontWeight: 700 }}>
+          <div style={{ fontSize: '1.4cqw', color: '#7C2D12', fontWeight: 700 }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '120px', height: '2px', background: '#FB923C', margin: '6px 0 4px' }} />
-          <div style={{ fontSize: '0.8vw', color: '#9A3412' }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.8cqw', color: '#9A3412' }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '1.1vw', color: '#7C2D12', fontWeight: 700 }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1.1cqw', color: '#7C2D12', fontWeight: 700 }}>{date || 'Date'}</div>
           <div style={{ width: '120px', height: '2px', background: '#FB923C', margin: '6px 0 4px', marginLeft: 'auto' }} />
-          <div style={{ fontSize: '0.8vw', color: '#9A3412' }}>Date</div>
+          <div style={{ fontSize: '0.8cqw', color: '#9A3412' }}>Date</div>
         </div>
       </div>
     </div>

@@ -39,7 +39,7 @@ function ClassicGold({ data, logoUrl }) {
             const [k, v] = s.split(':');
             return [k.trim(), v.trim()];
           })),
-          fontSize: '2.4vw',
+          fontSize: '2.4cqw',
           color: '#B8860B',
           lineHeight: 1,
         }}>❖</div>
@@ -48,15 +48,15 @@ function ClassicGold({ data, logoUrl }) {
       {logoUrl && (
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
       )}
-      <div style={{ fontSize: '1.4vw', letterSpacing: '0.4em', marginBottom: '0.5%', textTransform: 'uppercase', opacity: 0.85 }}>
+      <div style={{ fontSize: '1.4cqw', letterSpacing: '0.4em', marginBottom: '0.5%', textTransform: 'uppercase', opacity: 0.85 }}>
         Certificate of Achievement
       </div>
       <div style={{ width: '20%', height: '2px', background: '#B8860B', margin: '0.5% 0 2%' }} />
 
-      <div style={{ fontSize: '1.1vw', opacity: 0.8, marginBottom: '1%' }}>This is proudly presented to</div>
+      <div style={{ fontSize: '1.1cqw', opacity: 0.8, marginBottom: '1%' }}>This is proudly presented to</div>
 
       <div style={{
-        fontSize: '3.6vw',
+        fontSize: '3.6cqw',
         fontFamily: '"Dancing Script", cursive',
         color: '#FFD700',
         textShadow: '0 0 20px rgba(255, 215, 0, 0.3)',
@@ -68,25 +68,25 @@ function ClassicGold({ data, logoUrl }) {
 
       <div style={{ width: '50%', height: '1px', background: 'linear-gradient(to right, transparent, #B8860B, transparent)', margin: '1% 0' }} />
 
-      <div style={{ fontSize: '1.2vw', opacity: 0.9, maxWidth: '70%', lineHeight: 1.5, marginBottom: '2%' }}>
+      <div style={{ fontSize: '1.2cqw', opacity: 0.9, maxWidth: '70%', lineHeight: 1.5, marginBottom: '2%' }}>
         for outstanding accomplishment in
-        <div style={{ fontSize: '1.8vw', color: '#FFD700', marginTop: '0.5%', fontStyle: 'italic' }}>
+        <div style={{ fontSize: '1.8cqw', color: '#FFD700', marginTop: '0.5%', fontStyle: 'italic' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.6vw', fontFamily: '"Dancing Script", cursive', color: '#FFD700' }}>
+          <div style={{ fontSize: '1.6cqw', fontFamily: '"Dancing Script", cursive', color: '#FFD700' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#B8860B', margin: '4px 0' }} />
-          <div style={{ fontSize: '0.85vw', opacity: 0.7 }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.85cqw', opacity: 0.7 }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.1vw', color: '#FFD700' }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1.1cqw', color: '#FFD700' }}>{date || 'Date'}</div>
           <div style={{ width: '100%', height: '1px', background: '#B8860B', margin: '4px 0' }} />
-          <div style={{ fontSize: '0.85vw', opacity: 0.7 }}>Date</div>
+          <div style={{ fontSize: '0.85cqw', opacity: 0.7 }}>Date</div>
         </div>
       </div>
     </div>

@@ -50,18 +50,18 @@ function WatercolorSplash({ data, logoUrl }) {
       )}
 
       <div style={{
-        fontSize: '1vw', letterSpacing: '0.4em', textTransform: 'uppercase',
+        fontSize: '1cqw', letterSpacing: '0.4em', textTransform: 'uppercase',
         color: '#7C3AED', marginBottom: '2%', fontStyle: 'italic',
       }}>
         ~ Certificate of Achievement ~
       </div>
 
-      <div style={{ fontSize: '1.05vw', color: '#6B6489', fontStyle: 'italic', marginBottom: '2%' }}>
+      <div style={{ fontSize: '1.05cqw', color: '#6B6489', fontStyle: 'italic', marginBottom: '2%' }}>
         With soft celebration, presented to
       </div>
 
       <div style={{
-        fontSize: '3.8vw', fontFamily: '"Dancing Script", cursive',
+        fontSize: '3.8cqw', fontFamily: '"Dancing Script", cursive',
         color: '#3F3A5B', margin: '0.5% 0 1.5%', lineHeight: 1.1,
       }}>
         {recipientName || 'Recipient Name'}
@@ -73,25 +73,25 @@ function WatercolorSplash({ data, logoUrl }) {
         <div style={{ width: '50px', height: '1px', background: '#7C3AED', opacity: 0.5 }} />
       </div>
 
-      <div style={{ fontSize: '1.1vw', color: '#6B6489', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%', fontStyle: 'italic' }}>
+      <div style={{ fontSize: '1.1cqw', color: '#6B6489', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%', fontStyle: 'italic' }}>
         in colorful recognition of
-        <div style={{ fontSize: '1.7vw', color: '#3F3A5B', marginTop: '0.5%', fontStyle: 'normal', fontWeight: 'bold' }}>
+        <div style={{ fontSize: '1.7cqw', color: '#3F3A5B', marginTop: '0.5%', fontStyle: 'normal', fontWeight: 'bold' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.5vw', fontFamily: '"Dancing Script", cursive', color: '#7C3AED' }}>
+          <div style={{ fontSize: '1.5cqw', fontFamily: '"Dancing Script", cursive', color: '#7C3AED' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#7C3AED', margin: '4px 0', opacity: 0.4 }} />
-          <div style={{ fontSize: '0.8vw', color: '#6B6489' }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.8cqw', color: '#6B6489' }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1vw', color: '#3F3A5B' }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1cqw', color: '#3F3A5B' }}>{date || 'Date'}</div>
           <div style={{ width: '100%', height: '1px', background: '#7C3AED', margin: '4px 0', opacity: 0.4 }} />
-          <div style={{ fontSize: '0.8vw', color: '#6B6489' }}>Date</div>
+          <div style={{ fontSize: '0.8cqw', color: '#6B6489' }}>Date</div>
         </div>
       </div>
     </div>

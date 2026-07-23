@@ -80,7 +80,7 @@ function ArtDeco({ data, logoUrl }) {
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
       )}
       <div style={{
-        fontSize: '1vw',
+        fontSize: '1cqw',
         letterSpacing: '0.5em',
         textTransform: 'uppercase',
         color: '#D4AF37',
@@ -97,12 +97,12 @@ function ArtDeco({ data, logoUrl }) {
         <div style={{ width: '60px', height: '2px', background: '#D4AF37' }} />
       </div>
 
-      <div style={{ fontSize: '1vw', color: '#BFA181', fontStyle: 'italic', marginBottom: '1.5%' }}>
+      <div style={{ fontSize: '1cqw', color: '#BFA181', fontStyle: 'italic', marginBottom: '1.5%' }}>
         ~ Presented to ~
       </div>
 
       <div style={{
-        fontSize: '3.4vw',
+        fontSize: '3.4cqw',
         fontWeight: 'bold',
         color: '#FFFFFF',
         margin: '0.5% 0 1.5%',
@@ -120,16 +120,16 @@ function ArtDeco({ data, logoUrl }) {
         <div style={{ width: '40px', height: '1px', background: '#D4AF37' }} />
       </div>
 
-      <div style={{ fontSize: '1.1vw', color: '#BFA181', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%', fontStyle: 'italic' }}>
+      <div style={{ fontSize: '1.1cqw', color: '#BFA181', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%', fontStyle: 'italic' }}>
         in recognition of
-        <div style={{ fontSize: '1.7vw', color: '#D4AF37', marginTop: '0.5%', fontStyle: 'normal', fontWeight: 'bold' }}>
+        <div style={{ fontSize: '1.7cqw', color: '#D4AF37', marginTop: '0.5%', fontStyle: 'normal', fontWeight: 'bold' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4vw', fontFamily: '"Dancing Script", cursive', color: '#D4AF37' }}>
+          <div style={{ fontSize: '1.4cqw', fontFamily: '"Dancing Script", cursive', color: '#D4AF37' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '6px 0' }}>
@@ -137,16 +137,16 @@ function ArtDeco({ data, logoUrl }) {
             <div style={{ width: '4px', height: '4px', background: '#D4AF37', transform: 'rotate(45deg)' }} />
             <div style={{ width: '40px', height: '1px', background: '#D4AF37' }} />
           </div>
-          <div style={{ fontSize: '0.8vw', color: '#BFA181' }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.8cqw', color: '#BFA181' }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1vw', color: '#D4AF37' }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1cqw', color: '#D4AF37' }}>{date || 'Date'}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', margin: '6px 0' }}>
             <div style={{ width: '40px', height: '1px', background: '#D4AF37' }} />
             <div style={{ width: '4px', height: '4px', background: '#D4AF37', transform: 'rotate(45deg)' }} />
             <div style={{ width: '40px', height: '1px', background: '#D4AF37' }} />
           </div>
-          <div style={{ fontSize: '0.8vw', color: '#BFA181' }}>Date</div>
+          <div style={{ fontSize: '0.8cqw', color: '#BFA181' }}>Date</div>
         </div>
       </div>
     </div>

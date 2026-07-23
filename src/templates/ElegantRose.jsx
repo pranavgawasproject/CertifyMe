@@ -31,7 +31,7 @@ function ElegantRose({ data, logoUrl }) {
       ].map((pos, i) => (
         <div key={i} style={{
           position: 'absolute',
-          fontSize: '1.8vw',
+          fontSize: '1.8cqw',
           color: '#BE185D',
           opacity: 0.6,
           ...pos,
@@ -42,7 +42,7 @@ function ElegantRose({ data, logoUrl }) {
         <img src={logoUrl} alt="logo" style={{ height: '60px', maxWidth: '20%', objectFit: 'contain', marginBottom: '2%' }} />
       )}
       <div style={{
-        fontSize: '1vw',
+        fontSize: '1cqw',
         letterSpacing: '0.4em',
         textTransform: 'uppercase',
         color: '#BE185D',
@@ -53,12 +53,12 @@ function ElegantRose({ data, logoUrl }) {
         ~ Certificate of Achievement ~
       </div>
 
-      <div style={{ fontSize: '1.1vw', color: '#9D174D', fontStyle: 'italic', marginBottom: '2%' }}>
+      <div style={{ fontSize: '1.1cqw', color: '#9D174D', fontStyle: 'italic', marginBottom: '2%' }}>
         With great pleasure, presented to
       </div>
 
       <div style={{
-        fontSize: '4vw',
+        fontSize: '4cqw',
         fontFamily: '"Dancing Script", cursive',
         color: '#831843',
         margin: '0.5% 0 1.5%',
@@ -70,29 +70,29 @@ function ElegantRose({ data, logoUrl }) {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '1% 0 2%' }}>
         <div style={{ width: '50px', height: '1px', background: '#BE185D' }} />
-        <span style={{ color: '#BE185D', fontSize: '1.2vw' }}>♥</span>
+        <span style={{ color: '#BE185D', fontSize: '1.2cqw' }}>♥</span>
         <div style={{ width: '50px', height: '1px', background: '#BE185D' }} />
       </div>
 
-      <div style={{ fontSize: '1.15vw', color: '#9D174D', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%', fontStyle: 'italic' }}>
+      <div style={{ fontSize: '1.15cqw', color: '#9D174D', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%', fontStyle: 'italic' }}>
         In graceful recognition of
-        <div style={{ fontSize: '1.7vw', color: '#831843', marginTop: '0.5%', fontFamily: 'Georgia, serif', fontStyle: 'normal', fontWeight: 'bold' }}>
+        <div style={{ fontSize: '1.7cqw', color: '#831843', marginTop: '0.5%', fontFamily: 'Georgia, serif', fontStyle: 'normal', fontWeight: 'bold' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.6vw', fontFamily: '"Dancing Script", cursive', color: '#831843' }}>
+          <div style={{ fontSize: '1.6cqw', fontFamily: '"Dancing Script", cursive', color: '#831843' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#BE185D', margin: '4px 0', opacity: 0.6 }} />
-          <div style={{ fontSize: '0.8vw', color: '#9D174D' }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.8cqw', color: '#9D174D' }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1vw', color: '#831843' }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1cqw', color: '#831843' }}>{date || 'Date'}</div>
           <div style={{ width: '100%', height: '1px', background: '#BE185D', margin: '4px 0', opacity: 0.6 }} />
-          <div style={{ fontSize: '0.8vw', color: '#9D174D' }}>Date</div>
+          <div style={{ fontSize: '0.8cqw', color: '#9D174D' }}>Date</div>
         </div>
       </div>
     </div>

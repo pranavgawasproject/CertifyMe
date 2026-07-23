@@ -52,19 +52,19 @@ function MidnightGalaxy({ data, logoUrl }) {
       )}
 
       <div style={{
-        fontSize: '0.95vw', letterSpacing: '0.5em', textTransform: 'uppercase',
+        fontSize: '0.95cqw', letterSpacing: '0.5em', textTransform: 'uppercase',
         color: '#A78BFA', marginBottom: '2%', fontWeight: 'bold',
         textShadow: '0 0 10px rgba(167, 139, 250, 0.6)',
       }}>
         ✦ Certificate of Achievement ✦
       </div>
 
-      <div style={{ fontSize: '1vw', color: '#C4B5FD', fontStyle: 'italic', marginBottom: '1.5%' }}>
+      <div style={{ fontSize: '1cqw', color: '#C4B5FD', fontStyle: 'italic', marginBottom: '1.5%' }}>
         Among the stars, presented to
       </div>
 
       <div style={{
-        fontSize: '3.4vw', fontWeight: 'bold', color: '#FFFFFF',
+        fontSize: '3.4cqw', fontWeight: 'bold', color: '#FFFFFF',
         margin: '0.5% 0 1.5%', lineHeight: 1.1,
         textShadow: '0 0 25px rgba(167, 139, 250, 0.7)',
       }}>
@@ -73,25 +73,25 @@ function MidnightGalaxy({ data, logoUrl }) {
 
       <div style={{ width: '50%', height: '1px', background: 'linear-gradient(to right, transparent, #A78BFA, transparent)', margin: '1% 0' }} />
 
-      <div style={{ fontSize: '1.1vw', color: '#C4B5FD', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
+      <div style={{ fontSize: '1.1cqw', color: '#C4B5FD', maxWidth: '65%', lineHeight: 1.6, marginBottom: '2%' }}>
         for stellar achievement in
-        <div style={{ fontSize: '1.7vw', color: '#FCD34D', marginTop: '0.5%', fontStyle: 'italic' }}>
+        <div style={{ fontSize: '1.7cqw', color: '#FCD34D', marginTop: '0.5%', fontStyle: 'italic' }}>
           {event || 'Event Name'}
         </div>
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '70%', marginTop: 'auto', marginBottom: '3%' }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1.4vw', fontFamily: '"Dancing Script", cursive', color: '#A78BFA' }}>
+          <div style={{ fontSize: '1.4cqw', fontFamily: '"Dancing Script", cursive', color: '#A78BFA' }}>
             {signature || issuer || 'Issuer'}
           </div>
           <div style={{ width: '100%', height: '1px', background: '#A78BFA', margin: '4px 0', opacity: 0.6 }} />
-          <div style={{ fontSize: '0.8vw', color: '#C4B5FD' }}>{issuer || 'Issuing Authority'}</div>
+          <div style={{ fontSize: '0.8cqw', color: '#C4B5FD' }}>{issuer || 'Issuing Authority'}</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '1vw', color: '#FCD34D' }}>{date || 'Date'}</div>
+          <div style={{ fontSize: '1cqw', color: '#FCD34D' }}>{date || 'Date'}</div>
           <div style={{ width: '100%', height: '1px', background: '#A78BFA', margin: '4px 0', opacity: 0.6 }} />
-          <div style={{ fontSize: '0.8vw', color: '#C4B5FD' }}>Date</div>
+          <div style={{ fontSize: '0.8cqw', color: '#C4B5FD' }}>Date</div>
         </div>
       </div>
     </div>
