@@ -87,7 +87,7 @@ export async function exportNodesToMultiPagePdf(nodes, filename = 'certificates.
       logging: false,
     });
 
-    const { imgWidth, imgHeight, x, y } = calculatePdfDimensions(canvas.width, canvas.height, 297, 210);
+    const { imgWidth, imgHeight, x, y } = calculatePdfDimensions(canvas.width, canvas.height, pdfWidth, pdfHeight);
 
     const imgData = canvas.toDataURL('image/png');
     if (i > 0) pdf.addPage();
