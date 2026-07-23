@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore } from '../certificateVerification.js';
 
 
 
@@ -265,7 +265,30 @@ describe('Certificate Verification Utilities', () => {
       expect(res.error).toBe('Credential ID is required');
     });
   });
+
+  describe('calculateCertificateDesignAestheticScore', () => {
+    it('calculates design score and WCAG accessibility compliance', () => {
+      const res = calculateCertificateDesignAestheticScore({
+        titleFontSizePx: 32,
+        recipientFontSizePx: 24,
+        fontContrastRatio: 4.5,
+        borderPaddingPx: 40,
+        includesLogo: true
+      });
+      expect(res.valid).toBe(true);
+      expect(res.designScore).toBe(100);
+      expect(res.isWcagCompliant).toBe(true);
+      expect(res.aestheticGrade).toBe('EXCELLENT');
+    });
+
+    it('returns error for invalid non-positive font size', () => {
+      const res = calculateCertificateDesignAestheticScore({ titleFontSizePx: 0 });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Title font size must be a positive number');
+    });
+  });
 });
+
 
 
 

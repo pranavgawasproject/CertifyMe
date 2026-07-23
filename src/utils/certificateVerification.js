@@ -423,6 +423,64 @@ export function calculateCertificateSecurityQRVerificationHash({ credentialId = 
   };
 }
 
+export function calculateCertificateDesignAestheticScore({
+  titleFontSizePx = 32,
+  recipientFontSizePx = 24,
+  fontContrastRatio = 4.5,
+  borderPaddingPx = 40,
+  includesLogo = true
+} = {}) {
+  if (typeof titleFontSizePx !== 'number' || titleFontSizePx <= 0 || isNaN(titleFontSizePx)) {
+    return { valid: false, error: 'Title font size must be a positive number' };
+  }
+  if (typeof recipientFontSizePx !== 'number' || recipientFontSizePx <= 0 || isNaN(recipientFontSizePx)) {
+    return { valid: false, error: 'Recipient font size must be a positive number' };
+  }
+
+  let designScore = 50;
+
+  if (titleFontSizePx > recipientFontSizePx) {
+    designScore += 20;
+  }
+
+  const contrast = typeof fontContrastRatio === 'number' && fontContrastRatio > 0 ? fontContrastRatio : 4.5;
+  if (contrast >= 4.5) {
+    designScore += 15;
+  } else if (contrast < 3.0) {
+    designScore -= 15;
+  }
+
+  const padding = typeof borderPaddingPx === 'number' && borderPaddingPx >= 0 ? borderPaddingPx : 40;
+  if (padding >= 20) {
+    designScore += 10;
+  }
+
+  if (includesLogo) {
+    designScore += 5;
+  }
+
+  designScore = Math.min(100, Math.max(0, designScore));
+
+  let aestheticGrade = 'GOOD';
+  if (designScore >= 80) aestheticGrade = 'EXCELLENT';
+  else if (designScore < 60) aestheticGrade = 'NEEDS_IMPROVEMENT';
+
+  return {
+    valid: true,
+    titleFontSizePx,
+    recipientFontSizePx,
+    fontContrastRatio: contrast,
+    borderPaddingPx: padding,
+    designScore,
+    isWcagCompliant: contrast >= 4.5,
+    aestheticGrade,
+    recommendation: designScore >= 80
+      ? 'Certificate layout has optimal typographic hierarchy and accessibility contrast.'
+      : 'Increase font contrast ratio or balance title/recipient font hierarchy.'
+  };
+}
+
+
 
 
 
