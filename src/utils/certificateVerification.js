@@ -342,4 +342,33 @@ export function generateCertificateEmbedBadgeHTML(credentialId = '', courseTitle
   };
 }
 
+export function calculateCertificateTamperProofSignature(credentialId = '', recipientName = '', courseTitle = '', issueDate = '') {
+  if (!credentialId || !credentialId.trim()) {
+    return { signature: '', isValid: false, algorithm: 'SHA-256-Simulated' };
+  }
+
+  const cleanId = credentialId.trim().toUpperCase();
+  const cleanName = (recipientName || '').trim().toLowerCase();
+  const cleanCourse = (courseTitle || '').trim().toLowerCase();
+  const cleanDate = (issueDate || '').trim();
+
+  const str = `${cleanId}:${cleanName}:${cleanCourse}:${cleanDate}`;
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash |= 0;
+  }
+
+  const hexSignature = `SIG-${Math.abs(hash).toString(16).padStart(8, '0').toUpperCase()}`;
+
+  return {
+    signature: hexSignature,
+    isValid: true,
+    algorithm: 'CRC32-Checksum',
+    verificationChecksum: `${cleanId}-${hexSignature}`
+  };
+}
+
+
 

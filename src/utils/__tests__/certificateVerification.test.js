@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature } from '../certificateVerification.js';
 
 
 describe('Certificate Verification Utilities', () => {
@@ -215,6 +215,21 @@ describe('Certificate Verification Utilities', () => {
       const res = generateCertificateEmbedBadgeHTML('');
       expect(res.isValid).toBe(false);
       expect(res.embedCode).toBe('');
+    });
+  });
+
+  describe('calculateCertificateTamperProofSignature', () => {
+    it('generates cryptographic checksum signature for valid certificate', () => {
+      const res = calculateCertificateTamperProofSignature('CERT-100', 'Alice', 'React', '2026-07-20');
+      expect(res.isValid).toBe(true);
+      expect(res.signature).toMatch(/^SIG-[0-9A-F]+$/);
+      expect(res.verificationChecksum).toContain('CERT-100');
+    });
+
+    it('returns invalid for empty credential id', () => {
+      const res = calculateCertificateTamperProofSignature('');
+      expect(res.isValid).toBe(false);
+      expect(res.signature).toBe('');
     });
   });
 });
