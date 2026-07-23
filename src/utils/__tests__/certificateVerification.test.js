@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary } from '../certificateVerification.js';
 
 
 describe('Certificate Verification Utilities', () => {
@@ -182,7 +182,27 @@ describe('Certificate Verification Utilities', () => {
       expect(res.error).toBe('Issue date string is required');
     });
   });
+
+  describe('calculateCertificateBatchIssuanceSummary', () => {
+    it('summarizes valid batch recipient list for issuance', () => {
+      const recipients = ['Alice Walker', 'Bob Vance', 'Charlie Brown'];
+      const res = calculateCertificateBatchIssuanceSummary(recipients, 'React Dev', 'CertifyMe');
+      expect(res.totalRecipients).toBe(3);
+      expect(res.validRecipientsCount).toBe(3);
+      expect(res.invalidRecipientsCount).toBe(0);
+      expect(res.isBatchReady).toBe(true);
+      expect(res.previewCredentialIds).toHaveLength(3);
+    });
+
+    it('flags empty list gracefully', () => {
+      const res = calculateCertificateBatchIssuanceSummary([]);
+      expect(res.totalRecipients).toBe(0);
+      expect(res.isBatchReady).toBe(false);
+      expect(res.validationErrors).toContain('Recipients list cannot be empty');
+    });
+  });
 });
+
 
 
 

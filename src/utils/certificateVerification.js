@@ -271,3 +271,50 @@ export function calculateCertificateRenewalAlert(issueDateStr, validityMonths = 
     requiresAction
   };
 }
+
+export function calculateCertificateBatchIssuanceSummary(recipientsList = [], courseTitle = '', issuerName = '') {
+  if (!Array.isArray(recipientsList) || recipientsList.length === 0) {
+    return {
+      totalRecipients: 0,
+      validRecipientsCount: 0,
+      invalidRecipientsCount: 0,
+      estimatedProcessingTimeSeconds: 0,
+      isBatchReady: false,
+      validationErrors: ['Recipients list cannot be empty']
+    };
+  }
+
+  const course = (courseTitle || 'Certificate of Achievement').trim();
+  const issuer = (issuerName || 'CertifyMe').trim();
+  let validCount = 0;
+  let invalidCount = 0;
+  const validationErrors = [];
+  const previewCredentialIds = [];
+
+  recipientsList.forEach((recipient, idx) => {
+    const name = typeof recipient === 'string' ? recipient.trim() : (recipient && recipient.name ? recipient.name.trim() : '');
+    if (!name) {
+      invalidCount++;
+      validationErrors.push(`Row ${idx + 1}: Recipient name is missing`);
+    } else {
+      validCount++;
+      previewCredentialIds.push(generateCredentialId(name, new Date().toISOString().split('T')[0]));
+    }
+  });
+
+  const estimatedProcessingTimeSeconds = Math.round(validCount * 0.15 * 100) / 100;
+  const isBatchReady = validCount > 0 && invalidCount === 0;
+
+  return {
+    courseTitle: course,
+    issuerName: issuer,
+    totalRecipients: recipientsList.length,
+    validRecipientsCount: validCount,
+    invalidRecipientsCount: invalidCount,
+    estimatedProcessingTimeSeconds,
+    isBatchReady,
+    validationErrors,
+    previewCredentialIds: previewCredentialIds.slice(0, 5)
+  };
+}
+
