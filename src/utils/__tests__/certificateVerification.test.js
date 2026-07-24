@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota } from '../certificateVerification.js';
+
 
 
 
@@ -439,7 +440,32 @@ describe('Certificate Verification Utilities', () => {
       expect(res.error).toBe('Issue date string is required');
     });
   });
+
+  describe('calculateCertificateBatchIssuanceQuota', () => {
+    it('calculates quota utilization and storage estimate accurately', () => {
+      const res = calculateCertificateBatchIssuanceQuota({
+        batchRecipientCount: 100,
+        templateAssetSizeMb: 1.5,
+        availableStorageQuotaMb: 500,
+        monthlyIssuanceLimit: 1000,
+        currentIssuedThisMonth: 250
+      });
+      expect(res.valid).toBe(true);
+      expect(res.estimatedBatchStorageMb).toBe(150);
+      expect(res.totalIssuedAfterBatch).toBe(350);
+      expect(res.quotaUtilizationPct).toBe(35);
+      expect(res.status).toBe('APPROVED');
+    });
+
+    it('returns error for invalid recipient count', () => {
+      const res = calculateCertificateBatchIssuanceQuota({ batchRecipientCount: -10 });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Batch recipient count must be a positive number');
+    });
+  });
 });
+
+
 
 
 

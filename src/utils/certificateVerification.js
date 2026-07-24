@@ -728,6 +728,60 @@ export function calculateCertificateExpiryRisk({
   };
 }
 
+export function calculateCertificateBatchIssuanceQuota({
+  batchRecipientCount = 100,
+  templateAssetSizeMb = 1.5,
+  availableStorageQuotaMb = 500,
+  monthlyIssuanceLimit = 1000,
+  currentIssuedThisMonth = 250
+} = {}) {
+  if (typeof batchRecipientCount !== 'number' || batchRecipientCount <= 0 || isNaN(batchRecipientCount)) {
+    return { valid: false, error: 'Batch recipient count must be a positive number' };
+  }
+
+  const assetSize = typeof templateAssetSizeMb === 'number' && templateAssetSizeMb > 0 ? templateAssetSizeMb : 1.5;
+  const storageQuota = typeof availableStorageQuotaMb === 'number' && availableStorageQuotaMb > 0 ? availableStorageQuotaMb : 500;
+  const limit = typeof monthlyIssuanceLimit === 'number' && monthlyIssuanceLimit > 0 ? monthlyIssuanceLimit : 1000;
+  const current = typeof currentIssuedThisMonth === 'number' && currentIssuedThisMonth >= 0 ? currentIssuedThisMonth : 0;
+
+  const estimatedBatchStorageMb = Math.round(batchRecipientCount * assetSize * 100) / 100;
+  const totalIssuedAfterBatch = current + batchRecipientCount;
+  const quotaUtilizationPct = Math.round((totalIssuedAfterBatch / limit) * 100);
+
+  const isStorageQuotaExceeded = estimatedBatchStorageMb > storageQuota;
+  const isMonthlyLimitExceeded = totalIssuedAfterBatch > limit;
+
+  let status = 'APPROVED';
+  if (isStorageQuotaExceeded || isMonthlyLimitExceeded) {
+    status = 'QUOTA_EXCEEDED';
+  } else if (quotaUtilizationPct >= 85) {
+    status = 'NEAR_QUOTA_CAP';
+  }
+
+  let recommendation = `Batch of ${batchRecipientCount} certificates approved for bulk generation.`;
+  if (isMonthlyLimitExceeded) {
+    recommendation = `Monthly limit exceeded: Generating ${batchRecipientCount} items brings total to ${totalIssuedAfterBatch}/${limit}.`;
+  } else if (isStorageQuotaExceeded) {
+    recommendation = `Storage limit exceeded: Batch requires ${estimatedBatchStorageMb}MB but only ${storageQuota}MB available.`;
+  } else if (status === 'NEAR_QUOTA_CAP') {
+    recommendation = `Warning: Monthly issuance will reach ${quotaUtilizationPct}% of quota capacity.`;
+  }
+
+  return {
+    valid: true,
+    batchRecipientCount,
+    estimatedBatchStorageMb,
+    currentIssuedThisMonth: current,
+    totalIssuedAfterBatch,
+    quotaUtilizationPct,
+    isStorageQuotaExceeded,
+    isMonthlyLimitExceeded,
+    status,
+    recommendation
+  };
+}
+
+
 
 
 
