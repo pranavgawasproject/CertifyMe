@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex } from '../certificateVerification.js';
 
 
 
@@ -287,7 +287,37 @@ describe('Certificate Verification Utilities', () => {
       expect(res.error).toBe('Title font size must be a positive number');
     });
   });
+
+  describe('calculateCertificateRevocationRiskIndex', () => {
+    it('calculates low risk for fully verified credential', () => {
+      const res = calculateCertificateRevocationRiskIndex({
+        isIssuerVerified: true,
+        hasTamperProofSignature: true,
+        revocationCheckPassed: true,
+        reportFlagsCount: 0
+      });
+      expect(res.valid).toBe(true);
+      expect(res.riskScore).toBe(0);
+      expect(res.status).toBe('LOW_RISK');
+      expect(res.isRevocationLikely).toBe(false);
+    });
+
+    it('flags high risk when issuer unverified and revocation check fails', () => {
+      const res = calculateCertificateRevocationRiskIndex({
+        isIssuerVerified: false,
+        hasTamperProofSignature: false,
+        revocationCheckPassed: false,
+        reportFlagsCount: 2
+      });
+      expect(res.valid).toBe(true);
+      expect(res.riskScore).toBe(100);
+      expect(res.status).toBe('HIGH_RISK');
+      expect(res.isRevocationLikely).toBe(true);
+    });
+  });
 });
+
+
 
 
 

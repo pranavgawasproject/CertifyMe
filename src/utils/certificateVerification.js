@@ -480,8 +480,34 @@ export function calculateCertificateDesignAestheticScore({
   };
 }
 
+export function calculateCertificateRevocationRiskIndex({
+  isIssuerVerified = true,
+  hasTamperProofSignature = true,
+  revocationCheckPassed = true,
+  reportFlagsCount = 0
+} = {}) {
+  let riskScore = 0;
+  if (!isIssuerVerified) riskScore += 40;
+  if (!hasTamperProofSignature) riskScore += 35;
+  if (!revocationCheckPassed) riskScore += 50;
 
+  const flags = typeof reportFlagsCount === 'number' && reportFlagsCount >= 0 ? reportFlagsCount : 0;
+  riskScore += flags * 15;
 
+  riskScore = Math.min(100, riskScore);
 
+  let status = 'LOW_RISK';
+  if (riskScore >= 70) status = 'HIGH_RISK';
+  else if (riskScore >= 35) status = 'MODERATE_RISK';
 
+  return {
+    valid: true,
+    riskScore,
+    status,
+    isRevocationLikely: riskScore >= 50,
+    recommendation: riskScore >= 50
+      ? 'Credential exhibits significant compliance risks. Request issuer re-verification.'
+      : 'Credential meets security and verification standards.'
+  };
+}
 
