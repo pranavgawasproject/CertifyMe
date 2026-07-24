@@ -511,3 +511,48 @@ export function calculateCertificateRevocationRiskIndex({
   };
 }
 
+export function calculateCertificateExpirationRiskAssessment({
+  expirationDate = '2026-12-31',
+  currentDate = '2026-07-24',
+  gracePeriodDays = 30
+} = {}) {
+  if (!expirationDate || typeof expirationDate !== 'string' || !expirationDate.trim()) {
+    return { valid: false, error: 'Expiration date is required' };
+  }
+
+  const expTime = new Date(expirationDate).getTime();
+  const currTime = new Date(currentDate).getTime();
+
+  if (isNaN(expTime) || isNaN(currTime)) {
+    return { valid: false, error: 'Invalid date format provided' };
+  }
+
+  const graceDays = typeof gracePeriodDays === 'number' && gracePeriodDays >= 0 ? gracePeriodDays : 30;
+  const diffMs = expTime - currTime;
+  const daysRemaining = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+  const isExpired = daysRemaining < 0;
+  const isExpiringSoon = !isExpired && daysRemaining <= graceDays;
+
+  let expirationStatus = 'VALID';
+  if (isExpired) expirationStatus = 'EXPIRED';
+  else if (isExpiringSoon) expirationStatus = 'EXPIRING_SOON';
+
+  return {
+    valid: true,
+    expirationDate,
+    currentDate,
+    daysRemaining,
+    gracePeriodDays: graceDays,
+    isExpired,
+    isExpiringSoon,
+    expirationStatus,
+    recommendation: isExpired
+      ? 'Certificate has expired. Renewal required immediately.'
+      : (isExpiringSoon
+          ? `Certificate expires in ${daysRemaining} days. Schedule renewal soon.`
+          : 'Certificate is active and in valid standing.')
+  };
+}
+
+

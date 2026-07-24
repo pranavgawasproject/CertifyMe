@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment } from '../certificateVerification.js';
+
 
 
 
@@ -315,7 +316,28 @@ describe('Certificate Verification Utilities', () => {
       expect(res.isRevocationLikely).toBe(true);
     });
   });
+
+  describe('calculateCertificateExpirationRiskAssessment', () => {
+    it('calculates valid status for active certificate', () => {
+      const res = calculateCertificateExpirationRiskAssessment({
+        expirationDate: '2026-12-31',
+        currentDate: '2026-07-24',
+        gracePeriodDays: 30
+      });
+      expect(res.valid).toBe(true);
+      expect(res.isExpired).toBe(false);
+      expect(res.isExpiringSoon).toBe(false);
+      expect(res.expirationStatus).toBe('VALID');
+    });
+
+    it('returns error for empty expiration date', () => {
+      const res = calculateCertificateExpirationRiskAssessment({ expirationDate: '' });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Expiration date is required');
+    });
+  });
 });
+
 
 
 
