@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier } from '../certificateVerification.js';
 
 
 
@@ -383,6 +383,26 @@ describe('Certificate Verification Utilities', () => {
       expect(res.tamperEvidenceScore).toBe(15);
       expect(res.trustTier).toBe('UNTRUSTED');
       expect(res.isAuthentic).toBe(false);
+    });
+  });
+
+  describe('calculateCertificateVerificationSlaTier', () => {
+    it('calculates ENTERPRISE tier for low latency and high availability', () => {
+      const res = calculateCertificateVerificationSlaTier({
+        verificationRequestsCount: 500,
+        averageResponseTimeMs: 120,
+        uptimePercentage: 99.9
+      });
+      expect(res.valid).toBe(true);
+      expect(res.slaScore).toBe(100);
+      expect(res.tier).toBe('ENTERPRISE');
+      expect(res.isSlaCompliant).toBe(true);
+    });
+
+    it('returns error for invalid negative request count', () => {
+      const res = calculateCertificateVerificationSlaTier({ verificationRequestsCount: -1 });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Verification requests count must be a non-negative number');
     });
   });
 });

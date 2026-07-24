@@ -628,6 +628,50 @@ export function calculateCertificateTamperEvidenceIndex({
   };
 }
 
+export function calculateCertificateVerificationSlaTier({
+  verificationRequestsCount = 100,
+  averageResponseTimeMs = 150,
+  uptimePercentage = 99.9
+} = {}) {
+  if (typeof verificationRequestsCount !== 'number' || verificationRequestsCount < 0 || isNaN(verificationRequestsCount)) {
+    return { valid: false, error: 'Verification requests count must be a non-negative number' };
+  }
+  if (typeof averageResponseTimeMs !== 'number' || averageResponseTimeMs < 0 || isNaN(averageResponseTimeMs)) {
+    return { valid: false, error: 'Average response time must be a non-negative number' };
+  }
+
+  const reqCount = Math.floor(verificationRequestsCount);
+  const respTime = Math.round(averageResponseTimeMs);
+  const uptime = typeof uptimePercentage === 'number' ? Math.min(100, Math.max(0, uptimePercentage)) : 99.9;
+
+  let slaScore = 100;
+  if (respTime > 500) slaScore -= 30;
+  else if (respTime > 250) slaScore -= 15;
+
+  if (uptime < 99.0) slaScore -= 40;
+  else if (uptime < 99.5) slaScore -= 20;
+
+  slaScore = Math.max(0, Math.round(slaScore));
+
+  let tier = 'ENTERPRISE';
+  if (slaScore < 70) tier = 'DEGRADED';
+  else if (slaScore < 90) tier = 'STANDARD';
+
+  return {
+    valid: true,
+    verificationRequestsCount: reqCount,
+    averageResponseTimeMs: respTime,
+    uptimePercentage: uptime,
+    slaScore,
+    tier,
+    isSlaCompliant: slaScore >= 90,
+    recommendation: slaScore >= 90
+      ? 'Optimal verification throughput and high-availability SLA compliance.'
+      : 'Optimize database indexing and cache verification responses.'
+  };
+}
+
+
 
 
 
