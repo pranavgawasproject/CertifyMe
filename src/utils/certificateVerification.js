@@ -594,5 +594,40 @@ export function calculateCertificateBulkIssuanceQualityScore(records = []) {
   };
 }
 
+export function calculateCertificateTamperEvidenceIndex({
+  hasDigitalSignature = true,
+  hasQrCodeProof = true,
+  isHashVerified = true,
+  issuerDomainVerified = true
+} = {}) {
+  let score = 0;
+
+  if (hasDigitalSignature) score += 35;
+  if (hasQrCodeProof) score += 25;
+  if (isHashVerified) score += 25;
+  if (issuerDomainVerified) score += 15;
+
+  score = Math.min(100, Math.round(score));
+
+  let trustTier = 'HIGH_TRUST';
+  if (score < 50) trustTier = 'UNTRUSTED';
+  else if (score < 80) trustTier = 'MODERATE_TRUST';
+
+  return {
+    valid: true,
+    hasDigitalSignature: Boolean(hasDigitalSignature),
+    hasQrCodeProof: Boolean(hasQrCodeProof),
+    isHashVerified: Boolean(isHashVerified),
+    issuerDomainVerified: Boolean(issuerDomainVerified),
+    tamperEvidenceScore: score,
+    trustTier,
+    isAuthentic: score >= 75,
+    recommendation: score >= 75
+      ? 'Certificate signature & cryptographic tamper evidence fully verified.'
+      : 'Tamper evidence check incomplete. Verify issuer signature and blockchain anchor.'
+  };
+}
+
+
 
 

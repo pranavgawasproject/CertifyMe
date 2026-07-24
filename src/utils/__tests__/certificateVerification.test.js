@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex } from '../certificateVerification.js';
 
 
 
@@ -355,6 +355,34 @@ describe('Certificate Verification Utilities', () => {
       const res = calculateCertificateBulkIssuanceQualityScore([]);
       expect(res.valid).toBe(false);
       expect(res.error).toBe('Records array must not be empty');
+    });
+  });
+
+  describe('calculateCertificateTamperEvidenceIndex', () => {
+    it('calculates score and HIGH_TRUST tier for fully verified certificate', () => {
+      const res = calculateCertificateTamperEvidenceIndex({
+        hasDigitalSignature: true,
+        hasQrCodeProof: true,
+        isHashVerified: true,
+        issuerDomainVerified: true
+      });
+      expect(res.valid).toBe(true);
+      expect(res.tamperEvidenceScore).toBe(100);
+      expect(res.trustTier).toBe('HIGH_TRUST');
+      expect(res.isAuthentic).toBe(true);
+    });
+
+    it('flags UNTRUSTED tier when signature and hash verification fail', () => {
+      const res = calculateCertificateTamperEvidenceIndex({
+        hasDigitalSignature: false,
+        hasQrCodeProof: false,
+        isHashVerified: false,
+        issuerDomainVerified: true
+      });
+      expect(res.valid).toBe(true);
+      expect(res.tamperEvidenceScore).toBe(15);
+      expect(res.trustTier).toBe('UNTRUSTED');
+      expect(res.isAuthentic).toBe(false);
     });
   });
 });
