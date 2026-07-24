@@ -555,4 +555,44 @@ export function calculateCertificateExpirationRiskAssessment({
   };
 }
 
+export function calculateCertificateBulkIssuanceQualityScore(records = []) {
+  if (!Array.isArray(records) || records.length === 0) {
+    return { valid: false, error: 'Records array must not be empty' };
+  }
+
+  let validNameCount = 0;
+  let validEmailCount = 0;
+  let validDateCount = 0;
+
+  for (const r of records) {
+    if (!r) continue;
+    if (typeof r.recipientName === 'string' && r.recipientName.trim().length >= 2) validNameCount++;
+    if (typeof r.email === 'string' && r.email.includes('@') && r.email.includes('.')) validEmailCount++;
+    if (r.issueDate && !isNaN(new Date(r.issueDate).getTime())) validDateCount++;
+  }
+
+  const total = records.length;
+  const nameScore = (validNameCount / total) * 40;
+  const emailScore = (validEmailCount / total) * 30;
+  const dateScore = (validDateCount / total) * 30;
+  const qualityScore = Math.round(nameScore + emailScore + dateScore);
+
+  const status = qualityScore >= 90 ? 'EXCELLENT' : qualityScore >= 70 ? 'GOOD' : 'REQUIRES_CLEANUP';
+
+  return {
+    valid: true,
+    totalRecords: total,
+    validNameCount,
+    validEmailCount,
+    validDateCount,
+    qualityScore,
+    status,
+    isReadyForBatchIssuance: qualityScore >= 80,
+    recommendation: qualityScore >= 80
+      ? 'Data batch is high quality and ready for instant automated certificate generation.'
+      : 'Clean up missing recipient names/emails before executing bulk generation.'
+  };
+}
+
+
 

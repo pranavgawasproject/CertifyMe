@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore } from '../certificateVerification.js';
+
 
 
 
@@ -336,7 +337,28 @@ describe('Certificate Verification Utilities', () => {
       expect(res.error).toBe('Expiration date is required');
     });
   });
+
+  describe('calculateCertificateBulkIssuanceQualityScore', () => {
+    it('calculates EXCELLENT quality score for clean record batch', () => {
+      const records = [
+        { recipientName: 'Alice', email: 'alice@example.com', issueDate: '2026-07-20' },
+        { recipientName: 'Bob', email: 'bob@example.com', issueDate: '2026-07-21' }
+      ];
+      const res = calculateCertificateBulkIssuanceQualityScore(records);
+      expect(res.valid).toBe(true);
+      expect(res.qualityScore).toBe(100);
+      expect(res.status).toBe('EXCELLENT');
+      expect(res.isReadyForBatchIssuance).toBe(true);
+    });
+
+    it('returns error for empty records array', () => {
+      const res = calculateCertificateBulkIssuanceQualityScore([]);
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Records array must not be empty');
+    });
+  });
 });
+
 
 
 
