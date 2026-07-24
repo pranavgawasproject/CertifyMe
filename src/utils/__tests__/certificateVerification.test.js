@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk } from '../certificateVerification.js';
 
 
 
@@ -403,6 +403,40 @@ describe('Certificate Verification Utilities', () => {
       const res = calculateCertificateVerificationSlaTier({ verificationRequestsCount: -1 });
       expect(res.valid).toBe(false);
       expect(res.error).toBe('Verification requests count must be a non-negative number');
+    });
+  });
+
+  describe('calculateCertificateExpiryRisk', () => {
+    it('calculates HEALTHY status for active certificate', () => {
+      const res = calculateCertificateExpiryRisk({
+        issueDate: '2026-01-01',
+        validityDays: 365,
+        gracePeriodDays: 30,
+        currentDate: '2026-07-24'
+      });
+      expect(res.valid).toBe(true);
+      expect(res.riskTier).toBe('HEALTHY');
+      expect(res.isExpired).toBe(false);
+      expect(res.needsRenewal).toBe(false);
+      expect(res.daysRemaining).toBeGreaterThan(100);
+    });
+
+    it('identifies EXPIRED certificate', () => {
+      const res = calculateCertificateExpiryRisk({
+        issueDate: '2024-01-01',
+        validityDays: 365,
+        currentDate: '2026-07-24'
+      });
+      expect(res.valid).toBe(true);
+      expect(res.riskTier).toBe('EXPIRED');
+      expect(res.isExpired).toBe(true);
+      expect(res.recommendation).toContain('Immediate re-issuance required');
+    });
+
+    it('returns error for empty issue date', () => {
+      const res = calculateCertificateExpiryRisk({ issueDate: '' });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Issue date string is required');
     });
   });
 });

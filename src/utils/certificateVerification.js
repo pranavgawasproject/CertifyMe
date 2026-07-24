@@ -671,6 +671,64 @@ export function calculateCertificateVerificationSlaTier({
   };
 }
 
+export function calculateCertificateExpiryRisk({
+  issueDate = '2025-01-01',
+  validityDays = 365,
+  gracePeriodDays = 30,
+  currentDate = '2026-07-24'
+} = {}) {
+  if (!issueDate || typeof issueDate !== 'string' || !issueDate.trim()) {
+    return { valid: false, error: 'Issue date string is required' };
+  }
+
+  const issueTime = new Date(issueDate).getTime();
+  const currTime = new Date(currentDate).getTime();
+
+  if (isNaN(issueTime) || isNaN(currTime)) {
+    return { valid: false, error: 'Invalid issue or current date format' };
+  }
+
+  const validity = typeof validityDays === 'number' && validityDays > 0 ? validityDays : 365;
+  const grace = typeof gracePeriodDays === 'number' && gracePeriodDays >= 0 ? gracePeriodDays : 30;
+
+  const expiryTime = issueTime + (validity * 24 * 60 * 60 * 1000);
+  const expiryDateStr = new Date(expiryTime).toISOString().split('T')[0];
+  const diffMs = expiryTime - currTime;
+  const daysRemaining = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+  const isExpired = daysRemaining <= 0;
+  const isCritical = !isExpired && daysRemaining <= 14;
+  const needsRenewal = !isExpired && daysRemaining <= grace;
+
+  let riskTier = 'HEALTHY';
+  if (isExpired) riskTier = 'EXPIRED';
+  else if (isCritical) riskTier = 'CRITICAL_RENEWAL';
+  else if (needsRenewal) riskTier = 'NEEDS_RENEWAL';
+
+  let recommendation = 'Certificate status healthy and active.';
+  if (isExpired) {
+    recommendation = `Certificate expired on ${expiryDateStr}. Immediate re-issuance required.`;
+  } else if (isCritical) {
+    recommendation = `Critical: Certificate expires in ${daysRemaining} days. Execute priority renewal.`;
+  } else if (needsRenewal) {
+    recommendation = `Upcoming renewal window: ${daysRemaining} days remaining before expiration.`;
+  }
+
+  return {
+    valid: true,
+    issueDate,
+    expiryDateStr,
+    validityDays: validity,
+    gracePeriodDays: grace,
+    daysRemaining,
+    isExpired,
+    needsRenewal,
+    riskTier,
+    recommendation
+  };
+}
+
+
 
 
 
