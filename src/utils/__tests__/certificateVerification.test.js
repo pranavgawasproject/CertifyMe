@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore } from '../certificateVerification.js';
 
 
 
@@ -539,7 +539,36 @@ describe('Certificate Verification Utilities', () => {
       expect(invalid.error).toBe('Certificate count must be a positive number');
     });
   });
+
+  describe('calculateCertificateCredentialPortabilityScore', () => {
+    it('calculates score and universality tier accurately for full integrations', () => {
+      const res = calculateCertificateCredentialPortabilityScore({
+        hasOpenBadgeExport: true,
+        hasPdfDownload: true,
+        hasLinkedInShareIntegration: true,
+        hasVerifiableCredentialJson: true
+      });
+      expect(res.valid).toBe(true);
+      expect(res.portabilityScore).toBe(100);
+      expect(res.portabilityTier).toBe('UNIVERSAL');
+      expect(res.isFullyPortable).toBe(true);
+      expect(res.recommendation).toContain('supports universal export');
+    });
+
+    it('calculates score for partial integrations', () => {
+      const res = calculateCertificateCredentialPortabilityScore({
+        hasOpenBadgeExport: false,
+        hasPdfDownload: true,
+        hasLinkedInShareIntegration: true,
+        hasVerifiableCredentialJson: false
+      });
+      expect(res.valid).toBe(true);
+      expect(res.portabilityScore).toBe(50);
+      expect(res.isFullyPortable).toBe(false);
+    });
+  });
 });
+
 
 
 

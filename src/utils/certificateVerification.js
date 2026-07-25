@@ -897,6 +897,39 @@ export function calculateCertificateBulkGenerationTimeEstimate({
   };
 }
 
+export function calculateCertificateCredentialPortabilityScore({
+  hasOpenBadgeExport = true,
+  hasPdfDownload = true,
+  hasLinkedInShareIntegration = true,
+  hasVerifiableCredentialJson = true
+} = {}) {
+  let score = 0;
+  if (hasOpenBadgeExport) score += 25;
+  if (hasPdfDownload) score += 25;
+  if (hasLinkedInShareIntegration) score += 25;
+  if (hasVerifiableCredentialJson) score += 25;
+
+  let portabilityTier = 'BASIC';
+  if (score >= 100) portabilityTier = 'UNIVERSAL';
+  else if (score >= 75) portabilityTier = 'HIGH_PORTABILITY';
+  else if (score >= 50) portabilityTier = 'STANDARD';
+
+  return {
+    valid: true,
+    hasOpenBadgeExport: Boolean(hasOpenBadgeExport),
+    hasPdfDownload: Boolean(hasPdfDownload),
+    hasLinkedInShareIntegration: Boolean(hasLinkedInShareIntegration),
+    hasVerifiableCredentialJson: Boolean(hasVerifiableCredentialJson),
+    portabilityScore: score,
+    portabilityTier,
+    isFullyPortable: score === 100,
+    recommendation: score === 100
+      ? 'Credential supports universal export across OpenBadges, PDF, W3C Verifiable Credentials, and LinkedIn.'
+      : `Portability score ${score}/100. Enable remaining export formats to achieve universal portability.`
+  };
+}
+
+
 
 
 
