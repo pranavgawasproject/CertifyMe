@@ -781,6 +781,58 @@ export function calculateCertificateBatchIssuanceQuota({
   };
 }
 
+export function calculateCertificateDesignAccessibilityAndPrintQualityScore({
+  fontDpi = 300,
+  colorContrastRatio = 4.5,
+  includesQrVerificationCode = true,
+  isPdfVectorFormat = true,
+  customLogoProvided = true
+} = {}) {
+  if (typeof fontDpi !== 'number' || fontDpi <= 0 || isNaN(fontDpi)) {
+    return { valid: false, error: 'Font DPI must be a positive number' };
+  }
+  if (typeof colorContrastRatio !== 'number' || colorContrastRatio < 1 || isNaN(colorContrastRatio)) {
+    return { valid: false, error: 'Color contrast ratio must be at least 1.0' };
+  }
+
+  let score = 0;
+  if (fontDpi >= 300) score += 30;
+  else if (fontDpi >= 150) score += 15;
+
+  if (colorContrastRatio >= 4.5) score += 30;
+  else if (colorContrastRatio >= 3.0) score += 15;
+
+  if (includesQrVerificationCode) score += 20;
+  if (isPdfVectorFormat) score += 10;
+  if (customLogoProvided) score += 10;
+
+  const qualityScore = Math.min(100, Math.round(score));
+
+  let qualityTier = 'ENTERPRISE_GRADE';
+  if (qualityScore < 60) qualityTier = 'NEEDS_OPTIMIZATION';
+  else if (qualityScore < 85) qualityTier = 'PRINT_READY';
+
+  let recommendation = 'Certificate template satisfies enterprise printing & WCAG contrast benchmarks.';
+  if (qualityTier === 'NEEDS_OPTIMIZATION') {
+    recommendation = 'Improve color contrast ratio and increase DPI to at least 300 for crisp physical printing.';
+  } else if (qualityTier === 'PRINT_READY') {
+    recommendation = 'Good print quality; consider adding QR verification code for anti-tamper authenticity.';
+  }
+
+  return {
+    valid: true,
+    fontDpi,
+    colorContrastRatio,
+    includesQrVerificationCode: Boolean(includesQrVerificationCode),
+    isPdfVectorFormat: Boolean(isPdfVectorFormat),
+    customLogoProvided: Boolean(customLogoProvided),
+    qualityScore,
+    qualityTier,
+    recommendation
+  };
+}
+
+
 
 
 

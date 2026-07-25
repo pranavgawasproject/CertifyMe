@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore } from '../certificateVerification.js';
 
 
 
@@ -461,6 +461,39 @@ describe('Certificate Verification Utilities', () => {
       const res = calculateCertificateBatchIssuanceQuota({ batchRecipientCount: -10 });
       expect(res.valid).toBe(false);
       expect(res.error).toBe('Batch recipient count must be a positive number');
+    });
+  });
+
+  describe('calculateCertificateDesignAccessibilityAndPrintQualityScore', () => {
+    it('calculates enterprise grade quality for high DPI and contrast', () => {
+      const res = calculateCertificateDesignAccessibilityAndPrintQualityScore({
+        fontDpi: 300,
+        colorContrastRatio: 5.0,
+        includesQrVerificationCode: true,
+        isPdfVectorFormat: true,
+        customLogoProvided: true
+      });
+      expect(res.valid).toBe(true);
+      expect(res.qualityScore).toBe(100);
+      expect(res.qualityTier).toBe('ENTERPRISE_GRADE');
+    });
+
+    it('returns warning recommendation for low contrast and low DPI', () => {
+      const res = calculateCertificateDesignAccessibilityAndPrintQualityScore({
+        fontDpi: 72,
+        colorContrastRatio: 2.0,
+        includesQrVerificationCode: false,
+        isPdfVectorFormat: false,
+        customLogoProvided: false
+      });
+      expect(res.valid).toBe(true);
+      expect(res.qualityTier).toBe('NEEDS_OPTIMIZATION');
+    });
+
+    it('returns error for invalid DPI or contrast inputs', () => {
+      const res = calculateCertificateDesignAccessibilityAndPrintQualityScore({ fontDpi: 0 });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Font DPI must be a positive number');
     });
   });
 });
