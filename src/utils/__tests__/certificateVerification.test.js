@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate } from '../certificateVerification.js';
+
 
 
 
@@ -517,7 +518,29 @@ describe('Certificate Verification Utilities', () => {
       expect(invalid.error).toBe('Recipient name and certificate ID are required');
     });
   });
+
+  describe('calculateCertificateBulkGenerationTimeEstimate', () => {
+    it('calculates sequential vs parallel rendering time estimates accurately', () => {
+      const res = calculateCertificateBulkGenerationTimeEstimate({
+        certificateCount: 100,
+        averageRenderTimeMsPerCert: 100,
+        concurrencyLimit: 4
+      });
+      expect(res.valid).toBe(true);
+      expect(res.totalSequentialTimeMs).toBe(10000);
+      expect(res.estimatedParallelTimeMs).toBe(2500);
+      expect(res.estimatedSeconds).toBe(2.5);
+      expect(res.recommendation).toContain('100 certificates estimated to complete in 2.5 seconds');
+    });
+
+    it('returns error for non-positive certificate count', () => {
+      const invalid = calculateCertificateBulkGenerationTimeEstimate({ certificateCount: 0 });
+      expect(invalid.valid).toBe(false);
+      expect(invalid.error).toBe('Certificate count must be a positive number');
+    });
+  });
 });
+
 
 
 

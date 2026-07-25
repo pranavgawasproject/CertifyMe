@@ -869,6 +869,35 @@ export function calculateCertificateTamperProofVerificationHash({
   };
 }
 
+export function calculateCertificateBulkGenerationTimeEstimate({
+  certificateCount = 50,
+  averageRenderTimeMsPerCert = 150,
+  concurrencyLimit = 5
+} = {}) {
+  if (typeof certificateCount !== 'number' || certificateCount <= 0 || isNaN(certificateCount)) {
+    return { valid: false, error: 'Certificate count must be a positive number' };
+  }
+
+  const renderTimeMs = typeof averageRenderTimeMsPerCert === 'number' && averageRenderTimeMsPerCert > 0 ? averageRenderTimeMsPerCert : 150;
+  const concurrency = typeof concurrencyLimit === 'number' && concurrencyLimit > 0 ? concurrencyLimit : 5;
+
+  const totalSequentialTimeMs = certificateCount * renderTimeMs;
+  const estimatedParallelTimeMs = Math.ceil(certificateCount / concurrency) * renderTimeMs;
+  const estimatedSeconds = Math.round((estimatedParallelTimeMs / 1000) * 10) / 10;
+
+  return {
+    valid: true,
+    certificateCount,
+    averageRenderTimeMsPerCert: renderTimeMs,
+    concurrencyLimit: concurrency,
+    totalSequentialTimeMs,
+    estimatedParallelTimeMs,
+    estimatedSeconds,
+    recommendation: `Bulk generation of ${certificateCount} certificates estimated to complete in ${estimatedSeconds} seconds using ${concurrency} parallel workers.`
+  };
+}
+
+
 
 
 
