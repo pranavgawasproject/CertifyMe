@@ -625,7 +625,7 @@ describe('Certificate Verification Utilities', () => {
   describe('calculateCredentialSkillsProofWeight', () => {
     it('calculates gold-standard proof weight correctly', () => {
       const res = calculateCredentialSkillsProofWeight({
-        issuerTrustScore: 95,
+        issuerTrustScore: 100,
         signatureValidityDays: 365,
         verificationCount: 200,
         isAccredited: true
