@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight } from '../certificateVerification.js';
 
 
 
@@ -619,6 +619,29 @@ describe('Certificate Verification Utilities', () => {
       expect(res.integrityScore).toBe(50);
       expect(res.integrityTier).toBe('HIGH_TAMPER_RISK');
       expect(res.isTamperFree).toBe(false);
+    });
+  });
+
+  describe('calculateCredentialSkillsProofWeight', () => {
+    it('calculates gold-standard proof weight correctly', () => {
+      const res = calculateCredentialSkillsProofWeight({
+        issuerTrustScore: 95,
+        signatureValidityDays: 365,
+        verificationCount: 200,
+        isAccredited: true
+      });
+      expect(res.valid).toBe(true);
+      expect(res.credentialWeightScore).toBe(100);
+      expect(res.proofTrustTier).toBe('GOLD_STANDARD_PROOF');
+      expect(res.recommendation).toContain('Gold-standard credential weight');
+    });
+
+    it('returns score 0 for revoked credentials', () => {
+      const res = calculateCredentialSkillsProofWeight({ isRevoked: true });
+      expect(res.valid).toBe(true);
+      expect(res.credentialWeightScore).toBe(0);
+      expect(res.proofTrustTier).toBe('REVOKED');
+      expect(res.recommendation).toContain('Credential has been revoked');
     });
   });
 });

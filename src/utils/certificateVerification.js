@@ -998,6 +998,47 @@ export function calculateCertificateMetadataIntegrityScore({
   };
 }
 
+export function calculateCredentialSkillsProofWeight({
+  issuerTrustScore = 90,
+  signatureValidityDays = 365,
+  verificationCount = 150,
+  isAccredited = true,
+  isRevoked = false
+} = {}) {
+  if (isRevoked) {
+    return {
+      valid: true,
+      credentialWeightScore: 0,
+      employerConfidenceIndex: 0,
+      proofTrustTier: 'REVOKED',
+      recommendation: 'Credential has been revoked by issuer.'
+    };
+  }
+
+  const trust = Math.min(100, Math.max(0, typeof issuerTrustScore === 'number' ? issuerTrustScore : 50));
+  const verifications = Math.min(100, Math.max(0, typeof verificationCount === 'number' ? verificationCount / 2 : 0));
+  const accreditationBonus = isAccredited ? 20 : 0;
+
+  const credentialWeightScore = Math.min(100, Math.round((trust * 0.5) + (verifications * 0.3) + accreditationBonus));
+  const employerConfidenceIndex = Math.min(100, Math.round((credentialWeightScore * 0.9) + 10));
+
+  let proofTrustTier = 'STANDARD_PROOF';
+  if (credentialWeightScore >= 80) proofTrustTier = 'GOLD_STANDARD_PROOF';
+  else if (credentialWeightScore < 45) proofTrustTier = 'UNVERIFIED_CLAIM';
+
+  return {
+    valid: true,
+    issuerTrustScore: trust,
+    credentialWeightScore,
+    employerConfidenceIndex,
+    proofTrustTier,
+    recommendation: proofTrustTier === 'GOLD_STANDARD_PROOF'
+      ? `Gold-standard credential weight (${credentialWeightScore}/100) with top employer confidence index (${employerConfidenceIndex}/100).`
+      : `Valid credential weight (${credentialWeightScore}/100).`
+  };
+}
+
+
 
 
 
