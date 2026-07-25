@@ -929,6 +929,39 @@ export function calculateCertificateCredentialPortabilityScore({
   };
 }
 
+export function calculateCertificateRevocationStatusAudit({
+  credentialId = '',
+  isRevoked = false,
+  revocationReason = '',
+  revokedAtDateStr = null
+} = {}) {
+  const id = typeof credentialId === 'string' && credentialId.trim() !== '' ? credentialId.trim() : 'CERT-UNKNOWN';
+  const revoked = Boolean(isRevoked);
+  const reason = typeof revocationReason === 'string' && revocationReason.trim() !== '' ? revocationReason.trim() : (revoked ? 'UNSPECIFIED_REASON' : 'ACTIVE_VALID');
+
+  let statusTier = 'ACTIVE_VALID';
+  if (revoked) {
+    if (reason.toUpperCase().includes('FRAUD') || reason.toUpperCase().includes('TAMPER')) {
+      statusTier = 'REVOKED_SECURITY_VIOLATION';
+    } else {
+      statusTier = 'REVOKED_ADMINISTRATIVE';
+    }
+  }
+
+  return {
+    valid: true,
+    credentialId: id,
+    isRevoked: revoked,
+    statusTier,
+    revocationReason: reason,
+    revokedAtDateStr: revoked ? (revokedAtDateStr || new Date().toISOString()) : null,
+    isAuthentic: !revoked,
+    recommendation: revoked
+      ? `CREDENTIAL REVOKED (${statusTier}): Reason - ${reason}. Do not accept or verify this certificate.`
+      : `CREDENTIAL ACTIVE: Credential ${id} is authentic and in good standing.`
+  };
+}
+
 
 
 

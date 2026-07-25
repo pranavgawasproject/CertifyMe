@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit } from '../certificateVerification.js';
 
 
 
@@ -565,6 +565,30 @@ describe('Certificate Verification Utilities', () => {
       expect(res.valid).toBe(true);
       expect(res.portabilityScore).toBe(50);
       expect(res.isFullyPortable).toBe(false);
+    });
+  });
+
+  describe('calculateCertificateRevocationStatusAudit', () => {
+    it('returns active status for unrevoked certificate', () => {
+      const res = calculateCertificateRevocationStatusAudit({
+        credentialId: 'CERT-123',
+        isRevoked: false
+      });
+      expect(res.valid).toBe(true);
+      expect(res.isAuthentic).toBe(true);
+      expect(res.statusTier).toBe('ACTIVE_VALID');
+    });
+
+    it('returns security violation tier when revoked due to fraud', () => {
+      const res = calculateCertificateRevocationStatusAudit({
+        credentialId: 'CERT-999',
+        isRevoked: true,
+        revocationReason: 'Fraudulent Identity Verification'
+      });
+      expect(res.valid).toBe(true);
+      expect(res.isAuthentic).toBe(false);
+      expect(res.statusTier).toBe('REVOKED_SECURITY_VIOLATION');
+      expect(res.recommendation).toContain('CREDENTIAL REVOKED');
     });
   });
 });
