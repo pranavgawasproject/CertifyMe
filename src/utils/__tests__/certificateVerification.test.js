@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash } from '../certificateVerification.js';
 
 
 
@@ -496,7 +496,29 @@ describe('Certificate Verification Utilities', () => {
       expect(res.error).toBe('Font DPI must be a positive number');
     });
   });
+
+  describe('calculateCertificateTamperProofVerificationHash', () => {
+    it('generates deterministic verification hash and verification URL', () => {
+      const res = calculateCertificateTamperProofVerificationHash({
+        recipientName: 'Alice Smith',
+        courseTitle: 'Full-Stack Web Dev',
+        issueDate: '2026-07-25',
+        certificateId: 'CERT-9901'
+      });
+      expect(res.valid).toBe(true);
+      expect(res.verificationHash).toContain('SHA256-');
+      expect(res.verificationUrl).toContain('CERT-9901');
+      expect(res.integrityStatus).toBe('AUTHENTIC');
+    });
+
+    it('returns error when recipientName or certificateId is missing', () => {
+      const invalid = calculateCertificateTamperProofVerificationHash({ recipientName: '' });
+      expect(invalid.valid).toBe(false);
+      expect(invalid.error).toBe('Recipient name and certificate ID are required');
+    });
+  });
 });
+
 
 
 
