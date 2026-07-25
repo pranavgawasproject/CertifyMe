@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore } from '../certificateVerification.js';
 
 
 
@@ -591,7 +591,38 @@ describe('Certificate Verification Utilities', () => {
       expect(res.recommendation).toContain('CREDENTIAL REVOKED');
     });
   });
+
+  describe('calculateCertificateMetadataIntegrityScore', () => {
+    it('calculates 100% score and VERIFIED_SECURE tier for pristine metadata', () => {
+      const res = calculateCertificateMetadataIntegrityScore({
+        issuerSignatureValid: true,
+        recipientEmailValid: true,
+        issueDateValid: true,
+        expirationDateValid: true,
+        hashChecksumMatch: true
+      });
+      expect(res.valid).toBe(true);
+      expect(res.integrityScore).toBe(100);
+      expect(res.integrityTier).toBe('VERIFIED_SECURE');
+      expect(res.isTamperFree).toBe(true);
+    });
+
+    it('flags high tamper risk for invalid signature and checksum', () => {
+      const res = calculateCertificateMetadataIntegrityScore({
+        issuerSignatureValid: false,
+        recipientEmailValid: true,
+        issueDateValid: true,
+        expirationDateValid: true,
+        hashChecksumMatch: false
+      });
+      expect(res.valid).toBe(true);
+      expect(res.integrityScore).toBe(50);
+      expect(res.integrityTier).toBe('HIGH_TAMPER_RISK');
+      expect(res.isTamperFree).toBe(false);
+    });
+  });
 });
+
 
 
 

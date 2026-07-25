@@ -962,6 +962,42 @@ export function calculateCertificateRevocationStatusAudit({
   };
 }
 
+export function calculateCertificateMetadataIntegrityScore({
+  issuerSignatureValid = true,
+  recipientEmailValid = true,
+  issueDateValid = true,
+  expirationDateValid = true,
+  hashChecksumMatch = true
+} = {}) {
+  let score = 0;
+  if (issuerSignatureValid) score += 30;
+  if (recipientEmailValid) score += 20;
+  if (issueDateValid) score += 15;
+  if (expirationDateValid) score += 15;
+  if (hashChecksumMatch) score += 20;
+
+  let integrityTier = 'VERIFIED_SECURE';
+  if (score < 60) integrityTier = 'HIGH_TAMPER_RISK';
+  else if (score < 90) integrityTier = 'WARN_METADATA_MISMATCH';
+
+  return {
+    valid: true,
+    issuerSignatureValid: Boolean(issuerSignatureValid),
+    recipientEmailValid: Boolean(recipientEmailValid),
+    issueDateValid: Boolean(issueDateValid),
+    expirationDateValid: Boolean(expirationDateValid),
+    hashChecksumMatch: Boolean(hashChecksumMatch),
+    integrityScore: score,
+    integrityTier,
+    isTamperFree: score >= 85,
+    recommendation: integrityTier === 'VERIFIED_SECURE'
+      ? `Certificate metadata integrity verified secure (${score}/100).`
+      : integrityTier === 'WARN_METADATA_MISMATCH'
+      ? `Minor metadata mismatch detected (${score}/100). Verify issuer signature.`
+      : `High tamper risk detected (${score}/100). Reject certificate verification.`
+  };
+}
+
 
 
 
