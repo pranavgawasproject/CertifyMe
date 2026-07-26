@@ -1082,6 +1082,53 @@ export function calculateCertificateVerificationAuditReport({
   };
 }
 
+export function calculateCertificateBulkIssuanceValidationSummary(certificatesArray = []) {
+  if (!Array.isArray(certificatesArray) || certificatesArray.length === 0) {
+    return { valid: false, error: 'Certificates array must not be empty' };
+  }
+
+  let validCount = 0;
+  let invalidCount = 0;
+  const errorsList = [];
+
+  certificatesArray.forEach((cert, idx) => {
+    if (!cert || typeof cert !== 'object') {
+      invalidCount++;
+      errorsList.push(`Item #${idx + 1}: Invalid certificate data structure`);
+      return;
+    }
+    const name = cert.recipientName || cert.name;
+    const title = cert.courseTitle || cert.title;
+    if (!name || String(name).trim() === '') {
+      invalidCount++;
+      errorsList.push(`Item #${idx + 1}: Missing recipient name`);
+    } else if (!title || String(title).trim() === '') {
+      invalidCount++;
+      errorsList.push(`Item #${idx + 1}: Missing certificate title`);
+    } else {
+      validCount++;
+    }
+  });
+
+  const totalCount = certificatesArray.length;
+  const validationPassRatePct = Math.round((validCount / totalCount) * 100);
+  const isBulkReady = invalidCount === 0;
+
+  return {
+    valid: true,
+    totalCertificatesCount: totalCount,
+    validCertificatesCount: validCount,
+    invalidCertificatesCount: invalidCount,
+    validationPassRatePct,
+    isBulkReady,
+    errorsList,
+    recommendation: isBulkReady
+      ? `All ${totalCount} certificates validated successfully for bulk generation.`
+      : `Found ${invalidCount} invalid certificate entries out of ${totalCount}. Fix missing fields before batch issuance.`
+  };
+}
+
+
 
 
 
