@@ -1038,6 +1038,51 @@ export function calculateCredentialSkillsProofWeight({
   };
 }
 
+export function calculateCertificateVerificationAuditReport({
+  issuerTrustScore = 95,
+  verificationCount = 200,
+  hasDigitalSignature = true,
+  isAccredited = true,
+  isRevoked = false
+} = {}) {
+  if (isRevoked) {
+    return {
+      valid: true,
+      auditScore: 0,
+      auditTier: 'REVOKED_CREDENTIAL',
+      isAuditPassed: false,
+      recommendation: 'Credential is explicitly revoked and invalid.'
+    };
+  }
+
+  const trust = Math.min(100, Math.max(0, typeof issuerTrustScore === 'number' ? issuerTrustScore : 50));
+  const sigBonus = hasDigitalSignature ? 30 : 0;
+  const accBonus = isAccredited ? 20 : 0;
+
+  const rawScore = Math.round((trust * 0.5) + sigBonus + accBonus);
+  const auditScore = Math.min(100, Math.max(0, rawScore));
+
+  const isAuditPassed = auditScore >= 75 && hasDigitalSignature;
+  let auditTier = 'VERIFIED';
+  if (auditScore >= 85) auditTier = 'ENTERPRISE_GRADE';
+  else if (auditScore < 50) auditTier = 'HIGH_RISK';
+
+  return {
+    valid: true,
+    issuerTrustScore: trust,
+    verificationCount: Math.max(0, verificationCount),
+    hasDigitalSignature,
+    isAccredited,
+    auditScore,
+    isAuditPassed,
+    auditTier,
+    recommendation: isAuditPassed
+      ? `Certificate verified successfully with ${auditTier} audit rating (${auditScore}/100).`
+      : 'Credential requires digital signature or higher issuer trust score.'
+  };
+}
+
+
 
 
 
