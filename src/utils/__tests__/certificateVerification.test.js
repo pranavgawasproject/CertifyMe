@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary } from '../certificateVerification.js';
 
 
 
@@ -688,6 +688,32 @@ describe('Certificate Verification Utilities', () => {
       const res = calculateCertificateBulkIssuanceValidationSummary([]);
       expect(res.valid).toBe(false);
       expect(res.error).toBe('Certificates array must not be empty');
+    });
+  });
+
+  describe('calculateCertificateAuthenticityVerificationSummary', () => {
+    it('evaluates fully authentic credential correctly', () => {
+      const res = calculateCertificateAuthenticityVerificationSummary({
+        isHashVerified: true,
+        isIssuerAccredited: true,
+        isRecipientIdentityVerified: true,
+        hasDigitalSeal: true,
+        isRevoked: false
+      });
+      expect(res.valid).toBe(true);
+      expect(res.authenticityScore).toBe(100);
+      expect(res.isAuthentic).toBe(true);
+      expect(res.verificationTier).toBe('AUTHENTIC_CREDENTIAL');
+      expect(res.recommendation).toContain('verified successfully');
+    });
+
+    it('returns revoked credential status when revoked', () => {
+      const res = calculateCertificateAuthenticityVerificationSummary({ isRevoked: true });
+      expect(res.valid).toBe(true);
+      expect(res.authenticityScore).toBe(0);
+      expect(res.isAuthentic).toBe(false);
+      expect(res.verificationTier).toBe('REVOKED_CREDENTIAL');
+      expect(res.recommendation).toContain('revoked');
     });
   });
 });

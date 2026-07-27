@@ -1128,16 +1128,52 @@ export function calculateCertificateBulkIssuanceValidationSummary(certificatesAr
   };
 }
 
+export function calculateCertificateAuthenticityVerificationSummary({
+  isHashVerified = true,
+  isIssuerAccredited = true,
+  isRecipientIdentityVerified = true,
+  hasDigitalSeal = true,
+  isRevoked = false
+} = {}) {
+  if (isRevoked) {
+    return {
+      valid: true,
+      authenticityScore: 0,
+      verificationTier: 'REVOKED_CREDENTIAL',
+      isAuthentic: false,
+      recommendation: 'Credential is revoked and cannot be verified as authentic.'
+    };
+  }
 
+  let score = 0;
+  if (isHashVerified) score += 40;
+  if (isIssuerAccredited) score += 25;
+  if (isRecipientIdentityVerified) score += 20;
+  if (hasDigitalSeal) score += 15;
 
+  const authenticityScore = Math.min(100, score);
+  const isAuthentic = authenticityScore >= 80 && isHashVerified;
 
+  let verificationTier = 'AUTHENTIC_CREDENTIAL';
+  if (authenticityScore < 60) {
+    verificationTier = 'HIGH_RISK_CREDENTIAL';
+  } else if (!isAuthentic) {
+    verificationTier = 'SUSPICIOUS_CREDENTIAL';
+  }
 
-
-
-
-
-
-
-
-
+  return {
+    valid: true,
+    isHashVerified: Boolean(isHashVerified),
+    isIssuerAccredited: Boolean(isIssuerAccredited),
+    isRecipientIdentityVerified: Boolean(isRecipientIdentityVerified),
+    hasDigitalSeal: Boolean(hasDigitalSeal),
+    isRevoked: false,
+    authenticityScore,
+    verificationTier,
+    isAuthentic,
+    recommendation: isAuthentic
+      ? `Certificate authenticity verified successfully (${authenticityScore}/100 score).`
+      : `Authenticity risk detected (${verificationTier}): missing cryptographic proof or accredited issuer status.`
+  };
+}
 
