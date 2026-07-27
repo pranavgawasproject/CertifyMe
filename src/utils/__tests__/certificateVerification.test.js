@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex } from '../certificateVerification.js';
 
 
 
@@ -753,7 +753,42 @@ describe('Certificate Verification Utilities', () => {
       expect(res.error).toBe('Total batch records must be a positive number');
     });
   });
+
+  describe('calculateCertificateRecipientEngagementIndex', () => {
+    it('calculates HIGH_VIRAL_ENGAGEMENT tier for high views and LinkedIn shares', () => {
+      const res = calculateCertificateRecipientEngagementIndex({
+        totalCertificatesIssued: 100,
+        uniqueViewsCount: 90,
+        linkedinSharesCount: 50,
+        pdfDownloadsCount: 70,
+        verificationScansCount: 40
+      });
+      expect(res.valid).toBe(true);
+      expect(res.engagementScore).toBe(65);
+      expect(res.shareRatePct).toBe(50);
+      expect(res.downloadRatePct).toBe(70);
+    });
+
+    it('identifies LOW_ENGAGEMENT tier when interaction counts are zero or low', () => {
+      const res = calculateCertificateRecipientEngagementIndex({
+        totalCertificatesIssued: 100,
+        uniqueViewsCount: 5,
+        linkedinSharesCount: 0,
+        pdfDownloadsCount: 2,
+        verificationScansCount: 0
+      });
+      expect(res.valid).toBe(true);
+      expect(res.engagementTier).toBe('LOW_ENGAGEMENT');
+    });
+
+    it('returns error for invalid non-positive totalCertificatesIssued', () => {
+      const res = calculateCertificateRecipientEngagementIndex({ totalCertificatesIssued: 0 });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Total certificates issued must be a positive number');
+    });
+  });
 });
+
 
 
 

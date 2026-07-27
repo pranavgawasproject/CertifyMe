@@ -1221,4 +1221,53 @@ export function calculateCertificateBatchIssuanceAudit({
   };
 }
 
+export function calculateCertificateRecipientEngagementIndex({
+  totalCertificatesIssued = 100,
+  uniqueViewsCount = 85,
+  linkedinSharesCount = 40,
+  pdfDownloadsCount = 60,
+  verificationScansCount = 30
+} = {}) {
+  if (typeof totalCertificatesIssued !== 'number' || totalCertificatesIssued <= 0 || isNaN(totalCertificatesIssued)) {
+    return { valid: false, error: 'Total certificates issued must be a positive number' };
+  }
+
+  const viewsRatio = Math.min(1.0, (uniqueViewsCount || 0) / totalCertificatesIssued);
+  const sharesRatio = Math.min(1.0, (linkedinSharesCount || 0) / totalCertificatesIssued);
+  const downloadsRatio = Math.min(1.0, (pdfDownloadsCount || 0) / totalCertificatesIssued);
+  const verificationRatio = Math.min(1.0, (verificationScansCount || 0) / totalCertificatesIssued);
+
+  const viewScore = viewsRatio * 30;
+  const shareScore = sharesRatio * 35;
+  const downloadScore = downloadsRatio * 20;
+  const verificationScore = verificationRatio * 15;
+
+  const engagementScore = Math.min(100, Math.max(0, Math.round(viewScore + shareScore + downloadScore + verificationScore)));
+  const shareRatePct = Math.round(sharesRatio * 100);
+  const downloadRatePct = Math.round(downloadsRatio * 100);
+
+  let engagementTier = 'HIGH_VIRAL_ENGAGEMENT';
+  if (engagementScore < 40) engagementTier = 'LOW_ENGAGEMENT';
+  else if (engagementScore < 70) engagementTier = 'MODERATE_ENGAGEMENT';
+
+  return {
+    valid: true,
+    totalCertificatesIssued,
+    uniqueViewsCount: uniqueViewsCount || 0,
+    linkedinSharesCount: linkedinSharesCount || 0,
+    pdfDownloadsCount: pdfDownloadsCount || 0,
+    verificationScansCount: verificationScansCount || 0,
+    shareRatePct,
+    downloadRatePct,
+    engagementScore,
+    engagementTier,
+    recommendation: engagementTier === 'HIGH_VIRAL_ENGAGEMENT'
+      ? `High viral engagement (${engagementScore}/100 score, ${shareRatePct}% social share rate). Excellent brand reach.`
+      : engagementTier === 'MODERATE_ENGAGEMENT'
+      ? `Moderate credential engagement (${engagementScore}/100 score). Encourage social sharing via 1-click LinkedIn badges.`
+      : `Low engagement (${engagementScore}/100 score). Check email delivery and add call-to-action for credential verification.`
+  };
+}
+
+
 
