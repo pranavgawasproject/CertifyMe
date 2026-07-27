@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit } from '../certificateVerification.js';
+
 
 
 
@@ -716,7 +717,44 @@ describe('Certificate Verification Utilities', () => {
       expect(res.recommendation).toContain('revoked');
     });
   });
+
+  describe('calculateCertificateBatchIssuanceAudit', () => {
+    it('calculates perfect batch health for 100% valid records', () => {
+      const res = calculateCertificateBatchIssuanceAudit({
+        totalBatchRecords: 50,
+        validEmailCount: 50,
+        duplicateIdCount: 0,
+        signedPdfCount: 50,
+        failedRenderCount: 0
+      });
+      expect(res.valid).toBe(true);
+      expect(res.emailValidityPct).toBe(100);
+      expect(res.pdfSigningPct).toBe(100);
+      expect(res.batchSuccessRatePct).toBe(100);
+      expect(res.batchHealthTier).toBe('PERFECT_BATCH');
+    });
+
+    it('identifies minor warnings when duplicates exist', () => {
+      const res = calculateCertificateBatchIssuanceAudit({
+        totalBatchRecords: 50,
+        validEmailCount: 48,
+        duplicateIdCount: 2,
+        signedPdfCount: 48,
+        failedRenderCount: 0
+      });
+      expect(res.valid).toBe(true);
+      expect(res.batchSuccessRatePct).toBe(96);
+      expect(res.batchHealthTier).toBe('MINOR_WARNINGS');
+    });
+
+    it('returns error for invalid non-positive batch record count', () => {
+      const res = calculateCertificateBatchIssuanceAudit({ totalBatchRecords: 0 });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Total batch records must be a positive number');
+    });
+  });
 });
+
 
 
 

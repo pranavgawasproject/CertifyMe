@@ -1177,3 +1177,48 @@ export function calculateCertificateAuthenticityVerificationSummary({
   };
 }
 
+export function calculateCertificateBatchIssuanceAudit({
+  totalBatchRecords = 50,
+  validEmailCount = 48,
+  duplicateIdCount = 0,
+  signedPdfCount = 48,
+  failedRenderCount = 2
+} = {}) {
+  if (typeof totalBatchRecords !== 'number' || totalBatchRecords <= 0 || isNaN(totalBatchRecords)) {
+    return { valid: false, error: 'Total batch records must be a positive number' };
+  }
+
+  const validEmails = Math.min(totalBatchRecords, Math.max(0, typeof validEmailCount === 'number' ? validEmailCount : 0));
+  const duplicates = Math.max(0, typeof duplicateIdCount === 'number' ? duplicateIdCount : 0);
+  const signedPdfs = Math.min(totalBatchRecords, Math.max(0, typeof signedPdfCount === 'number' ? signedPdfCount : 0));
+  const failedRenders = Math.max(0, typeof failedRenderCount === 'number' ? failedRenderCount : 0);
+
+  const emailValidityPct = Math.round((validEmails / totalBatchRecords) * 100);
+  const pdfSigningPct = Math.round((signedPdfs / totalBatchRecords) * 100);
+  const successCount = Math.max(0, totalBatchRecords - duplicates - failedRenders);
+  const batchSuccessRatePct = Math.round((successCount / totalBatchRecords) * 100);
+
+  let batchHealthTier = 'PERFECT_BATCH';
+  if (batchSuccessRatePct < 80 || failedRenders > 5) batchHealthTier = 'CRITICAL_ERRORS_DETECTED';
+  else if (batchSuccessRatePct < 100 || duplicates > 0) batchHealthTier = 'MINOR_WARNINGS';
+
+  return {
+    valid: true,
+    totalBatchRecords,
+    validEmailCount: validEmails,
+    duplicateIdCount: duplicates,
+    signedPdfCount: signedPdfs,
+    failedRenderCount: failedRenders,
+    emailValidityPct,
+    pdfSigningPct,
+    batchSuccessRatePct,
+    batchHealthTier,
+    recommendation: batchHealthTier === 'PERFECT_BATCH'
+      ? `Batch issuance audit passed with 100% success rate (${totalBatchRecords} certificates ready for dispatch).`
+      : batchHealthTier === 'MINOR_WARNINGS'
+      ? `Batch audit completed with minor warnings (${batchSuccessRatePct}% success rate). Resolve ${duplicates} duplicates and ${failedRenders} render issues before sending.`
+      : `CRITICAL: Batch issuance failed (${batchSuccessRatePct}% success rate). Fix email and template render errors immediately.`
+  };
+}
+
+
