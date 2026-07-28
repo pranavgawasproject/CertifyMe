@@ -1269,5 +1269,40 @@ export function calculateCertificateRecipientEngagementIndex({
   };
 }
 
+export function calculateCertificateBlockchainAnchorAudit({
+  credentialId = '',
+  blockchainNetwork = 'Polygon',
+  blockConfirmationCount = 12,
+  isHashAnchored = true,
+  txHash = ''
+} = {}) {
+  if (!credentialId || typeof credentialId !== 'string') {
+    return { valid: false, error: 'Credential ID must be a non-empty string' };
+  }
+
+  const isConfirmed = isHashAnchored && blockConfirmationCount >= 6 && Boolean(txHash);
+  const confirmationScore = isConfirmed ? Math.min(100, Math.round(blockConfirmationCount * 5)) : (isHashAnchored ? 40 : 0);
+
+  let anchorTrustTier = 'UNANCHORED_CREDENTIAL';
+  if (isConfirmed && confirmationScore >= 80) anchorTrustTier = 'IMMUTABLE_BLOCKCHAIN_VERIFIED';
+  else if (isHashAnchored) anchorTrustTier = 'PENDING_LEDGER_CONFIRMATION';
+
+  return {
+    valid: true,
+    credentialId,
+    blockchainNetwork: (blockchainNetwork || 'Polygon').toUpperCase(),
+    blockConfirmationCount,
+    isHashAnchored: Boolean(isHashAnchored),
+    confirmationScore,
+    anchorTrustTier,
+    recommendation: anchorTrustTier === 'IMMUTABLE_BLOCKCHAIN_VERIFIED'
+      ? `Credential ${credentialId} is immutably anchored on ${blockchainNetwork.toUpperCase()} (${blockConfirmationCount} block confirmations).`
+      : anchorTrustTier === 'PENDING_LEDGER_CONFIRMATION'
+      ? `Credential hash submitted to ${blockchainNetwork.toUpperCase()}. Awaiting additional block confirmations.`
+      : `Credential is unanchored. Enable blockchain proof anchoring to prevent credential forgery.`
+  };
+}
+
+
 
 

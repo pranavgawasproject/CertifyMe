@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit } from '../certificateVerification.js';
 
 
 
@@ -787,7 +787,29 @@ describe('Certificate Verification Utilities', () => {
       expect(res.error).toBe('Total certificates issued must be a positive number');
     });
   });
+
+  describe('calculateCertificateBlockchainAnchorAudit', () => {
+    it('calculates immutable blockchain verified tier for confirmed credential', () => {
+      const res = calculateCertificateBlockchainAnchorAudit({
+        credentialId: 'CERT-12345',
+        blockchainNetwork: 'Polygon',
+        blockConfirmationCount: 20,
+        isHashAnchored: true,
+        txHash: '0xabc123def456'
+      });
+      expect(res.valid).toBe(true);
+      expect(res.anchorTrustTier).toBe('IMMUTABLE_BLOCKCHAIN_VERIFIED');
+      expect(res.blockchainNetwork).toBe('POLYGON');
+    });
+
+    it('returns error for empty credentialId', () => {
+      const res = calculateCertificateBlockchainAnchorAudit({ credentialId: '' });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Credential ID must be a non-empty string');
+    });
+  });
 });
+
 
 
 
