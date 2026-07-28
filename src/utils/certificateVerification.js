@@ -1303,6 +1303,75 @@ export function calculateCertificateBlockchainAnchorAudit({
   };
 }
 
+export function calculateCertificateExpirationAndRenewalAudit({
+  certificates = [],
+  warningWindowDays = 30,
+  currentDate = '2026-07-28'
+} = {}) {
+  if (!Array.isArray(certificates) || certificates.length === 0) {
+    return { valid: false, error: 'Certificates array must be a non-empty array' };
+  }
+
+  const currTime = new Date(currentDate).getTime();
+  if (isNaN(currTime)) {
+    return { valid: false, error: 'Invalid current date string format' };
+  }
+
+  let totalActive = 0;
+  let totalExpired = 0;
+  let totalExpiringSoon = 0;
+  const expiringCertificates = [];
+
+  for (const cert of certificates) {
+    if (!cert || !cert.expirationDate) continue;
+    const expTime = new Date(cert.expirationDate).getTime();
+    if (isNaN(expTime)) continue;
+
+    const diffDays = Math.round((expTime - currTime) / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 0) {
+      totalExpired++;
+    } else if (diffDays <= warningWindowDays) {
+      totalExpiringSoon++;
+      expiringCertificates.push({
+        id: cert.id || 'N/A',
+        recipientName: cert.recipientName || 'Unknown',
+        daysRemaining: diffDays,
+        expirationDate: cert.expirationDate
+      });
+    } else {
+      totalActive++;
+    }
+  }
+
+  const totalAnalyzed = certificates.length;
+  const renewalComplianceRatePct = Math.round(((totalActive) / totalAnalyzed) * 100 * 100) / 100;
+
+  let renewalRiskTier = 'ALL_CREDENTIALS_ACTIVE';
+  if (totalExpired > 0 || totalExpiringSoon > 5) {
+    renewalRiskTier = 'CRITICAL_RENEWAL_ACTION_REQUIRED';
+  } else if (totalExpiringSoon > 0) {
+    renewalRiskTier = 'EXPIRING_SOON_WARNING';
+  }
+
+  return {
+    valid: true,
+    totalAnalyzed,
+    totalActive,
+    totalExpired,
+    totalExpiringSoon,
+    renewalComplianceRatePct,
+    expiringCertificates,
+    renewalRiskTier,
+    recommendation: renewalRiskTier === 'ALL_CREDENTIALS_ACTIVE'
+      ? `All ${totalAnalyzed} certificates are active with no urgent expiration risk.`
+      : renewalRiskTier === 'EXPIRING_SOON_WARNING'
+      ? `${totalExpiringSoon} certificate(s) expire within ${warningWindowDays} days. Send automated renewal reminders.`
+      : `CRITICAL: ${totalExpired} expired and ${totalExpiringSoon} expiring certificate(s) detected. Priority re-issuance required.`
+  };
+}
+
+
 
 
 

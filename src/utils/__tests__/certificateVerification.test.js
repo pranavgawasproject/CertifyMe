@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit } from '../certificateVerification.js';
 
 
 
@@ -808,7 +808,42 @@ describe('Certificate Verification Utilities', () => {
       expect(res.error).toBe('Credential ID must be a non-empty string');
     });
   });
+
+  describe('calculateCertificateExpirationAndRenewalAudit', () => {
+    it('calculates ALL_CREDENTIALS_ACTIVE tier when all certificates are active', () => {
+      const certificates = [
+        { id: '1', recipientName: 'Alice', expirationDate: '2027-01-01' },
+        { id: '2', recipientName: 'Bob', expirationDate: '2027-06-01' }
+      ];
+      const res = calculateCertificateExpirationAndRenewalAudit({ certificates, currentDate: '2026-07-28' });
+      expect(res.valid).toBe(true);
+      expect(res.totalAnalyzed).toBe(2);
+      expect(res.totalActive).toBe(2);
+      expect(res.totalExpired).toBe(0);
+      expect(res.totalExpiringSoon).toBe(0);
+      expect(res.renewalRiskTier).toBe('ALL_CREDENTIALS_ACTIVE');
+    });
+
+    it('identifies expiring soon certificates within warning window', () => {
+      const certificates = [
+        { id: '1', recipientName: 'Alice', expirationDate: '2026-08-15' },
+        { id: '2', recipientName: 'Bob', expirationDate: '2027-01-01' }
+      ];
+      const res = calculateCertificateExpirationAndRenewalAudit({ certificates, warningWindowDays: 30, currentDate: '2026-07-28' });
+      expect(res.valid).toBe(true);
+      expect(res.totalExpiringSoon).toBe(1);
+      expect(res.expiringCertificates[0].recipientName).toBe('Alice');
+      expect(res.renewalRiskTier).toBe('EXPIRING_SOON_WARNING');
+    });
+
+    it('returns error for empty certificates array', () => {
+      const res = calculateCertificateExpirationAndRenewalAudit({ certificates: [] });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Certificates array must be a non-empty array');
+    });
+  });
 });
+
 
 
 
