@@ -1018,6 +1018,7 @@ export function calculateCredentialSkillsProofWeight({
   const trust = Math.min(100, Math.max(0, typeof issuerTrustScore === 'number' ? issuerTrustScore : 50));
   const verifications = Math.min(100, Math.max(0, typeof verificationCount === 'number' ? verificationCount / 2 : 0));
   const accreditationBonus = isAccredited ? 20 : 0;
+  const signatureDays = typeof signatureValidityDays === 'number' ? signatureValidityDays : 365;
 
   const credentialWeightScore = Math.min(100, Math.round((trust * 0.5) + (verifications * 0.3) + accreditationBonus));
   const employerConfidenceIndex = Math.min(100, Math.round((credentialWeightScore * 0.9) + 10));
@@ -1029,6 +1030,7 @@ export function calculateCredentialSkillsProofWeight({
   return {
     valid: true,
     issuerTrustScore: trust,
+    signatureValidityDays: signatureDays,
     credentialWeightScore,
     employerConfidenceIndex,
     proofTrustTier,
