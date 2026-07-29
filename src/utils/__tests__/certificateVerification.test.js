@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit, calculateCertificateSecurityTamperDetectionScore } from '../certificateVerification.js';
 
 
 
@@ -867,7 +867,42 @@ describe('Certificate Verification Utilities', () => {
       expect(res.error).toBe('Batch recipient count must be a positive number');
     });
   });
+
+  describe('calculateCertificateSecurityTamperDetectionScore', () => {
+    it('verifies tamper-free certificate with valid hashes and digital signature', () => {
+      const res = calculateCertificateSecurityTamperDetectionScore({
+        originalHash: 'sha256_12345',
+        currentHash: 'sha256_12345',
+        metadataSignatureValid: true,
+        watermarkPresent: true,
+        qrVerificationEnabled: true
+      });
+      expect(res.valid).toBe(true);
+      expect(res.tamperScore).toBe(100);
+      expect(res.securityTier).toBe('VERIFIED_SECURE_CERTIFICATE');
+      expect(res.isTamperFree).toBe(true);
+      expect(res.recommendation).toContain('Certificate security verified cleanly');
+    });
+
+    it('detects hash mismatch tampering', () => {
+      const res = calculateCertificateSecurityTamperDetectionScore({
+        originalHash: 'sha256_12345',
+        currentHash: 'sha256_99999'
+      });
+      expect(res.valid).toBe(true);
+      expect(res.securityTier).toBe('TAMPERED_HASH_MISMATCH');
+      expect(res.isTamperFree).toBe(false);
+    });
+
+    it('identifies revoked certificate risk', () => {
+      const res = calculateCertificateSecurityTamperDetectionScore({ isIssuerRevoked: true });
+      expect(res.valid).toBe(true);
+      expect(res.securityTier).toBe('REVOKED_CERTIFICATE');
+      expect(res.isTamperFree).toBe(false);
+    });
+  });
 });
+
 
 
 

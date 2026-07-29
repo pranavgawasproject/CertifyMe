@@ -1423,6 +1423,66 @@ export function calculateCertificateBatchIssuanceQuotaAudit({
   };
 }
 
+export function calculateCertificateSecurityTamperDetectionScore({
+  originalHash = 'sha256_abc123',
+  currentHash = 'sha256_abc123',
+  metadataSignatureValid = true,
+  isIssuerRevoked = false,
+  watermarkPresent = true,
+  qrVerificationEnabled = true
+} = {}) {
+  if (isIssuerRevoked) {
+    return {
+      valid: true,
+      tamperScore: 0,
+      securityTier: 'REVOKED_CERTIFICATE',
+      isTamperFree: false,
+      recommendation: 'CRITICAL SECURITY RISK: Certificate is revoked by issuer.'
+    };
+  }
+
+  const hashMatch = Boolean(originalHash && currentHash && originalHash === currentHash);
+  if (!hashMatch) {
+    return {
+      valid: true,
+      tamperScore: 10,
+      securityTier: 'TAMPERED_HASH_MISMATCH',
+      isTamperFree: false,
+      recommendation: 'CRITICAL: Cryptographic hash mismatch! Content or metadata has been altered.'
+    };
+  }
+
+  let score = 50;
+  if (metadataSignatureValid) score += 25;
+  if (watermarkPresent) score += 15;
+  if (qrVerificationEnabled) score += 10;
+
+  const tamperScore = Math.min(100, Math.max(0, score));
+  const isTamperFree = tamperScore >= 80 && hashMatch && metadataSignatureValid;
+
+  let securityTier = 'VERIFIED_SECURE_CERTIFICATE';
+  if (!isTamperFree) {
+    securityTier = 'PARTIAL_SECURITY_PROOF';
+  }
+
+  return {
+    valid: true,
+    originalHash,
+    currentHash,
+    hashMatch,
+    metadataSignatureValid: Boolean(metadataSignatureValid),
+    watermarkPresent: Boolean(watermarkPresent),
+    qrVerificationEnabled: Boolean(qrVerificationEnabled),
+    tamperScore,
+    securityTier,
+    isTamperFree,
+    recommendation: isTamperFree
+      ? `Certificate security verified cleanly (${tamperScore}/100 score). No content tampering detected.`
+      : `Partial security proof (${tamperScore}/100 score). Enable digital signature or QR verification.`
+  };
+}
+
+
 
 
 
