@@ -1373,6 +1373,57 @@ export function calculateCertificateExpirationAndRenewalAudit({
   };
 }
 
+export function calculateCertificateBatchIssuanceQuotaAudit({
+  batchRecipientCount = 50,
+  storagePerCertMb = 0.5,
+  monthlyIssuanceQuota = 1000,
+  currentMonthIssuedCount = 200,
+  maxAvailableStorageMb = 500
+} = {}) {
+  if (typeof batchRecipientCount !== 'number' || batchRecipientCount <= 0 || isNaN(batchRecipientCount)) {
+    return { valid: false, error: 'Batch recipient count must be a positive number' };
+  }
+
+  const certMb = typeof storagePerCertMb === 'number' && storagePerCertMb > 0 ? storagePerCertMb : 0.5;
+  const quota = typeof monthlyIssuanceQuota === 'number' && monthlyIssuanceQuota > 0 ? monthlyIssuanceQuota : 1000;
+  const current = Math.max(0, typeof currentMonthIssuedCount === 'number' ? currentMonthIssuedCount : 0);
+  const maxStorage = typeof maxAvailableStorageMb === 'number' && maxAvailableStorageMb > 0 ? maxAvailableStorageMb : 500;
+
+  const estimatedBatchStorageMb = Math.round(batchRecipientCount * certMb * 100) / 100;
+  const projectedTotalIssued = current + batchRecipientCount;
+  const quotaUtilizationPct = Math.round((projectedTotalIssued / quota) * 100 * 100) / 100;
+  const remainingIssuanceQuota = Math.max(0, quota - projectedTotalIssued);
+
+  const isStorageExceeded = estimatedBatchStorageMb > maxStorage;
+  const isQuotaExceeded = projectedTotalIssued > quota;
+
+  let auditStatusTier = 'APPROVED_FOR_BATCH_DISPATCH';
+  if (isStorageExceeded || isQuotaExceeded) {
+    auditStatusTier = 'CAPACITY_EXCEEDED_REJECTED';
+  } else if (quotaUtilizationPct >= 85) {
+    auditStatusTier = 'NEAR_CAPACITY_WARNING';
+  }
+
+  return {
+    valid: true,
+    batchRecipientCount,
+    estimatedBatchStorageMb,
+    currentMonthIssuedCount: current,
+    projectedTotalIssued,
+    remainingIssuanceQuota,
+    quotaUtilizationPct,
+    isStorageExceeded,
+    isQuotaExceeded,
+    auditStatusTier,
+    recommendation: auditStatusTier === 'APPROVED_FOR_BATCH_DISPATCH'
+      ? `Batch issuance of ${batchRecipientCount} certificates approved (${quotaUtilizationPct}% quota utilized).`
+      : auditStatusTier === 'NEAR_CAPACITY_WARNING'
+      ? `Approved with warning: Batch issuance will utilize ${quotaUtilizationPct}% of monthly quota.`
+      : `CAPACITY EXCEEDED: Batch exceeds storage or monthly issuance quota limit (${projectedTotalIssued}/${quota}).`
+  };
+}
+
+
 
 
 
