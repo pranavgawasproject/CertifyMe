@@ -1548,6 +1548,82 @@ export function calculateCertificateBlockchainAnchorVerificationScore({
   };
 }
 
+export function calculateCertificateBulkIssuanceValidationAudit({
+  recipients = []
+} = {}) {
+  if (!Array.isArray(recipients) || recipients.length === 0) {
+    return { valid: false, error: 'Recipients list must be a non-empty array' };
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const seenEmails = new Set();
+  let validCount = 0;
+  let invalidCount = 0;
+  let duplicateCount = 0;
+  const invalidRecords = [];
+
+  for (let i = 0; i < recipients.length; i++) {
+    const r = recipients[i];
+    if (!r) {
+      invalidCount++;
+      invalidRecords.push({ index: i, reason: 'Empty record' });
+      continue;
+    }
+
+    const name = (typeof r.name === 'string' ? r.name : (r.recipientName || '')).trim();
+    const email = (typeof r.email === 'string' ? r.email : (r.recipientEmail || '')).trim().toLowerCase();
+
+    if (!name || name.length < 2) {
+      invalidCount++;
+      invalidRecords.push({ index: i, name, email, reason: 'Invalid or missing recipient name' });
+      continue;
+    }
+
+    if (!email || !emailRegex.test(email)) {
+      invalidCount++;
+      invalidRecords.push({ index: i, name, email, reason: 'Invalid email syntax' });
+      continue;
+    }
+
+    if (seenEmails.has(email)) {
+      duplicateCount++;
+      invalidCount++;
+      invalidRecords.push({ index: i, name, email, reason: 'Duplicate email in batch' });
+      continue;
+    }
+
+    seenEmails.add(email);
+    validCount++;
+  }
+
+  const totalCount = recipients.length;
+  const batchValidityPercentage = Math.round((validCount / totalCount) * 100 * 100) / 100;
+
+  let auditTier = 'READY_FOR_BULK_ISSUANCE';
+  if (batchValidityPercentage < 80) {
+    auditTier = 'INVALID_BATCH_DATA';
+  } else if (invalidCount > 0) {
+    auditTier = 'NEEDS_CLEANUP_BEFORE_ISSUANCE';
+  }
+
+  return {
+    valid: true,
+    totalCount,
+    validCount,
+    invalidCount,
+    duplicateCount,
+    batchValidityPercentage,
+    invalidRecords,
+    auditTier,
+    recommendation: auditTier === 'READY_FOR_BULK_ISSUANCE'
+      ? `Batch of ${totalCount} recipient records verified 100% valid. Ready for bulk issuance.`
+      : auditTier === 'NEEDS_CLEANUP_BEFORE_ISSUANCE'
+      ? `Batch is ${batchValidityPercentage}% valid (${invalidCount} invalid/duplicate records found). Fix invalid records before sending.`
+      : `Critical data errors in batch (${batchValidityPercentage}% validity). ${invalidCount} invalid records detected.`
+  };
+}
+
+
 
 
 

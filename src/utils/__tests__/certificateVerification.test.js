@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit, calculateCertificateSecurityTamperDetectionScore, calculateCertificateBlockchainAnchorVerificationScore } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit, calculateCertificateSecurityTamperDetectionScore, calculateCertificateBlockchainAnchorVerificationScore, calculateCertificateBulkIssuanceValidationAudit } from '../certificateVerification.js';
+
 
 
 
@@ -935,7 +936,44 @@ describe('Certificate Verification Utilities', () => {
       expect(res.verificationTier).toBe('CONTRACT_PAUSED_OR_DEPRECATED');
     });
   });
+
+  describe('calculateCertificateBulkIssuanceValidationAudit', () => {
+    it('validates batch recipient records and approves clean data', () => {
+      const recipients = [
+        { name: 'Alice Smith', email: 'alice@example.com' },
+        { name: 'Bob Jones', email: 'bob@example.com' }
+      ];
+      const res = calculateCertificateBulkIssuanceValidationAudit({ recipients });
+      expect(res.valid).toBe(true);
+      expect(res.totalCount).toBe(2);
+      expect(res.validCount).toBe(2);
+      expect(res.invalidCount).toBe(0);
+      expect(res.batchValidityPercentage).toBe(100);
+      expect(res.auditTier).toBe('READY_FOR_BULK_ISSUANCE');
+    });
+
+    it('identifies invalid email syntax and duplicates in batch', () => {
+      const recipients = [
+        { name: 'Alice Smith', email: 'alice@example.com' },
+        { name: 'Duplicate Alice', email: 'alice@example.com' },
+        { name: 'Bad Email', email: 'invalid-email-format' }
+      ];
+      const res = calculateCertificateBulkIssuanceValidationAudit({ recipients });
+      expect(res.valid).toBe(true);
+      expect(res.validCount).toBe(1);
+      expect(res.invalidCount).toBe(2);
+      expect(res.duplicateCount).toBe(1);
+      expect(res.auditTier).toBe('INVALID_BATCH_DATA');
+    });
+
+    it('returns error for empty recipients list', () => {
+      const res = calculateCertificateBulkIssuanceValidationAudit({ recipients: [] });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Recipients list must be a non-empty array');
+    });
+  });
 });
+
 
 
 
