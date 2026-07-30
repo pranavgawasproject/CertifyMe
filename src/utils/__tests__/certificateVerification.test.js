@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit, calculateCertificateSecurityTamperDetectionScore } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit, calculateCertificateSecurityTamperDetectionScore, calculateCertificateBlockchainAnchorVerificationScore } from '../certificateVerification.js';
+
 
 
 
@@ -901,7 +902,41 @@ describe('Certificate Verification Utilities', () => {
       expect(res.isTamperFree).toBe(false);
     });
   });
+
+  describe('calculateCertificateBlockchainAnchorVerificationScore', () => {
+    it('verifies IMMUTABLE_BLOCKCHAIN_VERIFIED tier for valid proof and high confirmations', () => {
+      const res = calculateCertificateBlockchainAnchorVerificationScore({
+        merkleProofValid: true,
+        blockConfirmationsCount: 15,
+        requiredConfirmations: 6,
+        isSmartContractActive: true,
+        timestampVarianceSeconds: 45
+      });
+      expect(res.valid).toBe(true);
+      expect(res.isBlockchainAnchored).toBe(true);
+      expect(res.verificationTier).toBe('IMMUTABLE_BLOCKCHAIN_VERIFIED');
+      expect(res.recommendation).toContain('Blockchain anchor verified successfully');
+    });
+
+    it('identifies INVALID_MERKLE_PROOF when merkle proof fails', () => {
+      const res = calculateCertificateBlockchainAnchorVerificationScore({
+        merkleProofValid: false
+      });
+      expect(res.valid).toBe(true);
+      expect(res.isBlockchainAnchored).toBe(false);
+      expect(res.verificationTier).toBe('INVALID_MERKLE_PROOF');
+    });
+
+    it('identifies CONTRACT_PAUSED_OR_DEPRECATED when contract is inactive', () => {
+      const res = calculateCertificateBlockchainAnchorVerificationScore({
+        isSmartContractActive: false
+      });
+      expect(res.valid).toBe(true);
+      expect(res.verificationTier).toBe('CONTRACT_PAUSED_OR_DEPRECATED');
+    });
+  });
 });
+
 
 
 

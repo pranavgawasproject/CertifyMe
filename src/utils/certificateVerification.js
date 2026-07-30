@@ -1482,6 +1482,73 @@ export function calculateCertificateSecurityTamperDetectionScore({
   };
 }
 
+export function calculateCertificateBlockchainAnchorVerificationScore({
+  merkleProofValid = true,
+  blockConfirmationsCount = 12,
+  requiredConfirmations = 6,
+  isSmartContractActive = true,
+  timestampVarianceSeconds = 30
+} = {}) {
+  if (!isSmartContractActive) {
+    return {
+      valid: true,
+      verificationScore: 0,
+      verificationTier: 'CONTRACT_PAUSED_OR_DEPRECATED',
+      isBlockchainAnchored: false,
+      recommendation: 'CRITICAL: Smart contract issuer is inactive or deprecated.'
+    };
+  }
+
+  if (!merkleProofValid) {
+    return {
+      valid: true,
+      verificationScore: 15,
+      verificationTier: 'INVALID_MERKLE_PROOF',
+      isBlockchainAnchored: false,
+      recommendation: 'INVALID PROOF: Merkle tree cryptographic proof does not match root hash.'
+    };
+  }
+
+  const reqConf = typeof requiredConfirmations === 'number' && requiredConfirmations > 0 ? requiredConfirmations : 6;
+  const confCount = typeof blockConfirmationsCount === 'number' && blockConfirmationsCount >= 0 ? blockConfirmationsCount : 0;
+  const isFullyConfirmed = confCount >= reqConf;
+
+  let score = 50; // Merkle proof passed
+  score += Math.min(30, (confCount / reqConf) * 30);
+
+  const variance = Math.abs(typeof timestampVarianceSeconds === 'number' ? timestampVarianceSeconds : 0);
+  if (variance <= 300) score += 20; // Timestamp within 5 mins of block header
+  else if (variance <= 3600) score += 10;
+
+  const verificationScore = Math.min(100, Math.max(0, Math.round(score)));
+  const isBlockchainAnchored = verificationScore >= 80 && isFullyConfirmed;
+
+  let verificationTier = 'IMMUTABLE_BLOCKCHAIN_VERIFIED';
+  if (!isFullyConfirmed) {
+    verificationTier = 'PENDING_BLOCK_CONFIRMATIONS';
+  } else if (verificationScore < 80) {
+    verificationTier = 'PARTIAL_TIMESTAMP_PROOF';
+  }
+
+  return {
+    valid: true,
+    merkleProofValid: true,
+    blockConfirmationsCount: confCount,
+    requiredConfirmations: reqConf,
+    isFullyConfirmed,
+    timestampVarianceSeconds: variance,
+    verificationScore,
+    verificationTier,
+    isBlockchainAnchored,
+    recommendation: isBlockchainAnchored
+      ? `Blockchain anchor verified successfully (${verificationScore}/100 score, ${confCount} block confirmations).`
+      : isFullyConfirmed
+      ? `Partial timestamp proof (${verificationScore}/100 score).`
+      : `Pending block confirmations (${confCount}/${reqConf} blocks confirmed).`
+  };
+}
+
+
 
 
 
