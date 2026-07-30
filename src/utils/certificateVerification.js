@@ -1623,6 +1623,47 @@ export function calculateCertificateBulkIssuanceValidationAudit({
   };
 }
 
+export function calculateCertificateVerificationAuditTrailScore({
+  hasDigitalSignature = true,
+  hasBlockchainTimestamp = true,
+  hasPublicKeyVerification = true,
+  isRevocationListChecked = true,
+  certificateAgeDays = 30
+} = {}) {
+  if (typeof certificateAgeDays !== 'number' || certificateAgeDays < 0) {
+    return { valid: false, error: 'Certificate age days must be a non-negative number' };
+  }
+
+  let score = 0;
+  if (hasDigitalSignature) score += 30;
+  if (hasBlockchainTimestamp) score += 30;
+  if (hasPublicKeyVerification) score += 25;
+  if (isRevocationListChecked) score += 15;
+
+  const totalAuditTrailScore = Math.min(100, score);
+
+  let auditComplianceTier = 'CRYPTOGRAPHICALLY_VERIFIED';
+  if (totalAuditTrailScore < 50) auditComplianceTier = 'UNVERIFIED_CREDENTIAL';
+  else if (totalAuditTrailScore < 80) auditComplianceTier = 'PARTIALLY_VERIFIED';
+
+  return {
+    valid: true,
+    hasDigitalSignature: Boolean(hasDigitalSignature),
+    hasBlockchainTimestamp: Boolean(hasBlockchainTimestamp),
+    hasPublicKeyVerification: Boolean(hasPublicKeyVerification),
+    isRevocationListChecked: Boolean(isRevocationListChecked),
+    certificateAgeDays,
+    totalAuditTrailScore,
+    auditComplianceTier,
+    recommendation: auditComplianceTier === 'CRYPTOGRAPHICALLY_VERIFIED'
+      ? `Certificate audit trail cryptographically verified (${totalAuditTrailScore}/100).`
+      : auditComplianceTier === 'PARTIALLY_VERIFIED'
+      ? `Partially verified credential (${totalAuditTrailScore}/100). Enable digital signature or revocation check.`
+      : `Unverified credential (${totalAuditTrailScore}/100). Missing digital signatures or timestamp proofs.`
+  };
+}
+
+
 
 
 
