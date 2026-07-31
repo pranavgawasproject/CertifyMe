@@ -1663,6 +1663,48 @@ export function calculateCertificateVerificationAuditTrailScore({
   };
 }
 
+export function calculateCertificateBulkDeliveryStatusAndFailureRate({
+  totalCertificatesIssued = 100,
+  successfulDeliveries = 95,
+  bounceFailures = 3,
+  invalidEmails = 2
+} = {}) {
+  if (typeof totalCertificatesIssued !== 'number' || totalCertificatesIssued <= 0 || isNaN(totalCertificatesIssued)) {
+    return { valid: false, error: 'Total certificates issued must be a positive number' };
+  }
+
+  const successCount = Math.max(0, Math.min(totalCertificatesIssued, successfulDeliveries || 0));
+  const bounceCount = Math.max(0, bounceFailures || 0);
+  const invalidCount = Math.max(0, invalidEmails || 0);
+
+  const deliverySuccessRatePct = Math.round(((successCount / totalCertificatesIssued) * 100) * 10) / 10;
+  const failureRatePct = Math.round((( (bounceCount + invalidCount) / totalCertificatesIssued) * 100) * 10) / 10;
+
+  let deliveryHealthTier = 'EXCELLENT_DELIVERY';
+  if (deliverySuccessRatePct < 85) {
+    deliveryHealthTier = 'HIGH_BOUNCE_ALERT';
+  } else if (deliverySuccessRatePct < 95) {
+    deliveryHealthTier = 'MODERATE_DELIVERY_HEALTH';
+  }
+
+  return {
+    valid: true,
+    totalCertificatesIssued,
+    successfulDeliveries: successCount,
+    bounceFailures: bounceCount,
+    invalidEmails: invalidCount,
+    deliverySuccessRatePct,
+    failureRatePct,
+    deliveryHealthTier,
+    recommendation: deliveryHealthTier === 'EXCELLENT_DELIVERY'
+      ? `Bulk certificate dispatch health is excellent (${deliverySuccessRatePct}% success rate).`
+      : deliveryHealthTier === 'MODERATE_DELIVERY_HEALTH'
+      ? `Moderate delivery success (${deliverySuccessRatePct}%). Review ${bounceCount} email bounces.`
+      : `High email bounce alert (${failureRatePct}% failure rate). Clean recipient mailing list before next batch.`
+  };
+}
+
+
 
 
 

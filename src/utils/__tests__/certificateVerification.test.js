@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit, calculateCertificateSecurityTamperDetectionScore, calculateCertificateBlockchainAnchorVerificationScore, calculateCertificateBulkIssuanceValidationAudit, calculateCertificateVerificationAuditTrailScore } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit, calculateCertificateSecurityTamperDetectionScore, calculateCertificateBlockchainAnchorVerificationScore, calculateCertificateBulkIssuanceValidationAudit, calculateCertificateVerificationAuditTrailScore, calculateCertificateBulkDeliveryStatusAndFailureRate } from '../certificateVerification.js';
 
 
 
@@ -991,6 +991,27 @@ describe('Certificate Verification Utilities', () => {
       const res = calculateCertificateVerificationAuditTrailScore({ certificateAgeDays: -5 });
       expect(res.valid).toBe(false);
       expect(res.error).toBe('Certificate age days must be a non-negative number');
+    });
+  });
+
+  describe('calculateCertificateBulkDeliveryStatusAndFailureRate', () => {
+    it('calculates bulk delivery status and failure rate correctly', () => {
+      const res = calculateCertificateBulkDeliveryStatusAndFailureRate({
+        totalCertificatesIssued: 100,
+        successfulDeliveries: 96,
+        bounceFailures: 3,
+        invalidEmails: 1
+      });
+      expect(res.valid).toBe(true);
+      expect(res.deliverySuccessRatePct).toBe(96);
+      expect(res.failureRatePct).toBe(4);
+      expect(res.deliveryHealthTier).toBe('EXCELLENT_DELIVERY');
+    });
+
+    it('returns error for non-positive total certificates issued', () => {
+      const inv = calculateCertificateBulkDeliveryStatusAndFailureRate({ totalCertificatesIssued: 0 });
+      expect(inv.valid).toBe(false);
+      expect(inv.error).toBe('Total certificates issued must be a positive number');
     });
   });
 });
