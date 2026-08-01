@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit, calculateCertificateSecurityTamperDetectionScore, calculateCertificateBlockchainAnchorVerificationScore, calculateCertificateBulkIssuanceValidationAudit, calculateCertificateVerificationAuditTrailScore, calculateCertificateBulkDeliveryStatusAndFailureRate, calculateCertificateVerificationSecurityScore } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit, calculateCertificateSecurityTamperDetectionScore, calculateCertificateBlockchainAnchorVerificationScore, calculateCertificateBulkIssuanceValidationAudit, calculateCertificateVerificationAuditTrailScore, calculateCertificateBulkDeliveryStatusAndFailureRate, calculateCertificateVerificationSecurityScore, calculateCertificateQRVerificationIntegrityScore } from '../certificateVerification.js';
+
 
 
 
@@ -1034,7 +1035,37 @@ describe('Certificate Verification Utilities', () => {
       expect(inv.error).toBe('Recipient verification count must be a non-negative number');
     });
   });
+
+  describe('calculateCertificateQRVerificationIntegrityScore', () => {
+    it('calculates high integrity score for SSL encrypted and signed QR payload', () => {
+      const res = calculateCertificateQRVerificationIntegrityScore({
+        qrPayloadLengthBytes: 256,
+        isSslEncryptedUrl: true,
+        hasIssuerHashSignature: true
+      });
+      expect(res.valid).toBe(true);
+      expect(res.integrityScore).toBe(100);
+      expect(res.integrityTier).toBe('HIGH_INTEGRITY_QR');
+      expect(res.isAuthentic).toBe(true);
+      expect(res.recommendation).toContain('authentic and cryptographically signed');
+    });
+
+    it('identifies revoked or expired credential', () => {
+      const res = calculateCertificateQRVerificationIntegrityScore({ isExpiredOrRevoked: true });
+      expect(res.valid).toBe(true);
+      expect(res.integrityScore).toBe(0);
+      expect(res.integrityTier).toBe('REVOKED_OR_EXPIRED_CREDENTIAL');
+      expect(res.isAuthentic).toBe(false);
+    });
+
+    it('returns error for invalid non-positive QR payload length', () => {
+      const inv = calculateCertificateQRVerificationIntegrityScore({ qrPayloadLengthBytes: 0 });
+      expect(inv.valid).toBe(false);
+      expect(inv.error).toBe('QR payload length must be a positive number');
+    });
+  });
 });
+
 
 
 

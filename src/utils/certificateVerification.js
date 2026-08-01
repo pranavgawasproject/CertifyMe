@@ -1744,6 +1744,57 @@ export function calculateCertificateVerificationSecurityScore({
   };
 }
 
+export function calculateCertificateQRVerificationIntegrityScore({
+  qrPayloadLengthBytes = 256,
+  isSslEncryptedUrl = true,
+  hasIssuerHashSignature = true,
+  scanCount = 10,
+  isExpiredOrRevoked = false
+} = {}) {
+  if (typeof qrPayloadLengthBytes !== 'number' || qrPayloadLengthBytes <= 0 || isNaN(qrPayloadLengthBytes)) {
+    return { valid: false, error: 'QR payload length must be a positive number' };
+  }
+
+  if (isExpiredOrRevoked) {
+    return {
+      valid: true,
+      integrityScore: 0,
+      integrityTier: 'REVOKED_OR_EXPIRED_CREDENTIAL',
+      isAuthentic: false,
+      recommendation: 'INVALID CREDENTIAL: Certificate has been revoked or expired.'
+    };
+  }
+
+  let score = 30;
+  if (isSslEncryptedUrl) score += 35;
+  if (hasIssuerHashSignature) score += 35;
+
+  const integrityScore = Math.min(100, Math.round(score));
+  const isAuthentic = integrityScore >= 80;
+
+  let integrityTier = 'HIGH_INTEGRITY_QR';
+  if (integrityScore < 50) {
+    integrityTier = 'LOW_INTEGRITY_RISK';
+  } else if (integrityScore < 80) {
+    integrityTier = 'MODERATE_INTEGRITY_QR';
+  }
+
+  return {
+    valid: true,
+    qrPayloadLengthBytes,
+    isSslEncryptedUrl: Boolean(isSslEncryptedUrl),
+    hasIssuerHashSignature: Boolean(hasIssuerHashSignature),
+    scanCount: typeof scanCount === 'number' && scanCount >= 0 ? scanCount : 0,
+    integrityScore,
+    integrityTier,
+    isAuthentic,
+    recommendation: isAuthentic
+      ? `QR verification payload is authentic and cryptographically signed (${integrityScore}/100 score).`
+      : `Integrity warning (${integrityScore}/100 score). Check SSL encryption and issuer hash signature.`
+  };
+}
+
+
 
 
 
