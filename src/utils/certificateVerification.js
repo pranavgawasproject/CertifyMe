@@ -1704,6 +1704,47 @@ export function calculateCertificateBulkDeliveryStatusAndFailureRate({
   };
 }
 
+export function calculateCertificateVerificationSecurityScore({
+  hasDigitalSignature = true,
+  hasQrCodePayload = true,
+  isIssuerDomainVerified = true,
+  recipientVerificationCount = 15,
+  daysSinceIssuance = 30
+} = {}) {
+  if (typeof recipientVerificationCount !== 'number' || recipientVerificationCount < 0) {
+    return { valid: false, error: 'Recipient verification count must be a non-negative number' };
+  }
+
+  let securityScore = 50;
+  if (hasDigitalSignature) securityScore += 25;
+  if (hasQrCodePayload) securityScore += 15;
+  if (isIssuerDomainVerified) securityScore += 10;
+
+  securityScore = Math.min(100, Math.round(securityScore));
+
+  let securityTier = 'VERIFIED_SECURE';
+  if (securityScore < 60) {
+    securityTier = 'UNVERIFIED_UNSECURE';
+  } else if (securityScore < 85) {
+    securityTier = 'MODERATE_SECURITY';
+  }
+
+  return {
+    valid: true,
+    hasDigitalSignature: Boolean(hasDigitalSignature),
+    hasQrCodePayload: Boolean(hasQrCodePayload),
+    isIssuerDomainVerified: Boolean(isIssuerDomainVerified),
+    recipientVerificationCount,
+    daysSinceIssuance: daysSinceIssuance || 0,
+    securityScore,
+    securityTier,
+    recommendation: securityScore >= 85
+      ? `Cryptographically verified credential (${securityScore}/100 security score). Authentic and tamper-proof.`
+      : `Moderate security credential (${securityScore}/100 score). Enable domain verification & digital signatures.`
+  };
+}
+
+
 
 
 
