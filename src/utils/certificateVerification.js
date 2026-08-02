@@ -1879,6 +1879,47 @@ export function calculateCertificateTemplateDesignScore({
   };
 }
 
+export function calculateCertificateBulkPdfExportCompressionRatio({
+  totalCertificatesCount = 50,
+  uncompressedTotalSizeBytes = 50000000,
+  compressedTotalSizeBytes = 12000000,
+  dpiResolution = 300,
+  isEmbedFontsEnabled = true
+} = {}) {
+  if (typeof totalCertificatesCount !== 'number' || totalCertificatesCount <= 0 || isNaN(totalCertificatesCount)) {
+    return { valid: false, error: 'Total certificates count must be a positive number' };
+  }
+  if (typeof uncompressedTotalSizeBytes !== 'number' || uncompressedTotalSizeBytes <= 0 || isNaN(uncompressedTotalSizeBytes)) {
+    return { valid: false, error: 'Uncompressed size must be a positive number' };
+  }
+  if (typeof compressedTotalSizeBytes !== 'number' || compressedTotalSizeBytes <= 0 || isNaN(compressedTotalSizeBytes)) {
+    return { valid: false, error: 'Compressed size must be a positive number' };
+  }
+
+  const compressionRatioPct = Math.round((1 - (compressedTotalSizeBytes / uncompressedTotalSizeBytes)) * 100 * 10) / 10;
+  const avgPdfSizeMb = Math.round((compressedTotalSizeBytes / totalCertificatesCount / (1024 * 1024)) * 100) / 100;
+
+  let exportEfficiencyTier = 'OPTIMAL_BULK_EXPORT';
+  if (avgPdfSizeMb > 2.0 || compressionRatioPct < 30) {
+    exportEfficiencyTier = 'HIGH_FILE_SIZE_WARNING';
+  } else if (avgPdfSizeMb > 1.0) {
+    exportEfficiencyTier = 'MODERATE_FILE_SIZE';
+  }
+
+  return {
+    valid: true,
+    totalCertificatesCount,
+    uncompressedTotalSizeBytes,
+    compressedTotalSizeBytes,
+    compressionRatioPct,
+    avgPdfSizeMb,
+    exportEfficiencyTier,
+    recommendation: exportEfficiencyTier === 'OPTIMAL_BULK_EXPORT'
+      ? `Bulk export optimized (${compressionRatioPct}% size reduction, ${avgPdfSizeMb}MB avg per PDF). Fast ZIP download ready.`
+      : `Bulk export file size elevated (${avgPdfSizeMb}MB avg). Downsample background images for faster zip delivery.`
+  };
+}
+
 
 
 
