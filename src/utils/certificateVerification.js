@@ -1794,6 +1794,46 @@ export function calculateCertificateQRVerificationIntegrityScore({
   };
 }
 
+export function calculateCertifyMeBulkCertificateGenerationQuotaIndex({
+  monthlyGenerationQuota = 500,
+  certificatesGeneratedThisMonth = 350,
+  batchRecipientCount = 100,
+  isPremiumIssuerPlan = true
+} = {}) {
+  if (typeof monthlyGenerationQuota !== 'number' || monthlyGenerationQuota <= 0 || isNaN(monthlyGenerationQuota)) {
+    return { valid: false, error: 'Monthly generation quota must be a positive number' };
+  }
+  if (typeof certificatesGeneratedThisMonth !== 'number' || certificatesGeneratedThisMonth < 0 || isNaN(certificatesGeneratedThisMonth)) {
+    return { valid: false, error: 'Certificates generated this month must be a non-negative number' };
+  }
+
+  const remainingQuota = Math.max(0, monthlyGenerationQuota - certificatesGeneratedThisMonth);
+  const isBatchAllowed = batchRecipientCount <= remainingQuota || isPremiumIssuerPlan;
+  const quotaUtilizationPct = Math.min(100, Math.round((certificatesGeneratedThisMonth / monthlyGenerationQuota) * 100 * 10) / 10);
+
+  let quotaTier = 'SUFFICIENT_QUOTA_AVAILABLE';
+  if (quotaUtilizationPct >= 100) {
+    quotaTier = 'QUOTA_EXHAUSTED';
+  } else if (quotaUtilizationPct >= 80) {
+    quotaTier = 'QUOTA_WARNING_NEAR_LIMIT';
+  }
+
+  return {
+    valid: true,
+    monthlyGenerationQuota,
+    certificatesGeneratedThisMonth,
+    remainingQuota,
+    batchRecipientCount,
+    quotaUtilizationPct,
+    isBatchAllowed,
+    quotaTier,
+    recommendation: isBatchAllowed
+      ? `Batch of ${batchRecipientCount} certificates approved (${remainingQuota} remaining in monthly quota).`
+      : `Batch exceeds remaining monthly quota (${remainingQuota} remaining). Upgrade to Premium Issuer plan for unlimited issuance.`
+  };
+}
+
+
 
 
 
