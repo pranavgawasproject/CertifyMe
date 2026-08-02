@@ -1833,6 +1833,52 @@ export function calculateCertifyMeBulkCertificateGenerationQuotaIndex({
   };
 }
 
+export function calculateCertificateTemplateDesignScore({
+  fontContrastRatio = 4.5,
+  marginAlignmentPx = 20,
+  hasLogoImage = true,
+  hasQrCodePlaceholder = true,
+  hasRecipientNameField = true,
+  hasIssueDateField = true
+} = {}) {
+  if (typeof fontContrastRatio !== 'number' || fontContrastRatio <= 0 || isNaN(fontContrastRatio)) {
+    return { valid: false, error: 'Font contrast ratio must be a positive number' };
+  }
+
+  let score = 30;
+  if (fontContrastRatio >= 4.5) score += 25;
+  else if (fontContrastRatio >= 3.0) score += 15;
+
+  if (hasLogoImage) score += 15;
+  if (hasQrCodePlaceholder) score += 15;
+  if (hasRecipientNameField) score += 10;
+  if (hasIssueDateField) score += 5;
+
+  const designScore = Math.min(100, Math.round(score));
+
+  let designTier = 'PROFESSIONAL_TEMPLATE';
+  if (designScore < 60) {
+    designTier = 'NEEDS_DESIGN_IMPROVEMENT';
+  } else if (designScore < 85) {
+    designTier = 'GOOD_TEMPLATE_DESIGN';
+  }
+
+  return {
+    valid: true,
+    fontContrastRatio,
+    marginAlignmentPx,
+    hasLogoImage: Boolean(hasLogoImage),
+    hasQrCodePlaceholder: Boolean(hasQrCodePlaceholder),
+    hasRecipientNameField: Boolean(hasRecipientNameField),
+    hasIssueDateField: Boolean(hasIssueDateField),
+    designScore,
+    designTier,
+    recommendation: designScore >= 85
+      ? `Professional certificate template design (${designScore}/100 score). High contrast and layout balance verified.`
+      : `Template design can be enhanced (${designScore}/100 score). Ensure 4.5:1 font contrast and add branding logo.`
+  };
+}
+
 
 
 
