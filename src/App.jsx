@@ -19,6 +19,7 @@ function App() {
               <Route path="/templates" element={<Templates />} />
               <Route path="/bulk" element={<BulkGenerate />} />
               <Route path="/c/:data" element={<SharedCertificate />} />
+              <Route path="*" element={<Welcome />} />
             </Routes>
           </ErrorBoundary>
         </BrowserRouter>
