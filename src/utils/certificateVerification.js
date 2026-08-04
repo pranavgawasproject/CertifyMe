@@ -1984,6 +1984,60 @@ export function calculateSingleCertificateExpirationAudit({
   };
 }
 
+export function calculateCertificateVerificationHashAndRevocationAudit({
+  certificateHashId = 'cert_hash_987654321',
+  revocationList = [],
+  issuerSignatureValid = true,
+  expirationTimestamp = null,
+  currentTimestamp = Date.now()
+} = {}) {
+  if (typeof certificateHashId !== 'string' || !certificateHashId.trim()) {
+    return { valid: false, error: 'Certificate hash ID must be a non-empty string' };
+  }
+  if (!Array.isArray(revocationList)) {
+    return { valid: false, error: 'Revocation list must be an array' };
+  }
+
+  const normalizedHash = certificateHashId.trim().toLowerCase();
+  const isRevoked = revocationList.map(h => String(h).trim().toLowerCase()).includes(normalizedHash);
+
+  const isExpired = expirationTimestamp !== null && typeof expirationTimestamp === 'number' && currentTimestamp > expirationTimestamp;
+
+  let authenticityScore = 100;
+  if (!issuerSignatureValid) authenticityScore -= 50;
+  if (isRevoked) authenticityScore = 0;
+  if (isExpired) authenticityScore -= 30;
+
+  authenticityScore = Math.max(0, Math.min(100, authenticityScore));
+
+  let verificationStatusTier = 'VERIFIED_AUTHENTIC';
+  if (isRevoked) {
+    verificationStatusTier = 'REVOKED_CREDENTIAL';
+  } else if (!issuerSignatureValid) {
+    verificationStatusTier = 'INVALID_ISSUER_SIGNATURE';
+  } else if (isExpired) {
+    verificationStatusTier = 'EXPIRED_CREDENTIAL';
+  }
+
+  return {
+    valid: true,
+    certificateHashId: normalizedHash,
+    isRevoked,
+    isExpired,
+    issuerSignatureValid: Boolean(issuerSignatureValid),
+    authenticityScore,
+    verificationStatusTier,
+    recommendation: verificationStatusTier === 'VERIFIED_AUTHENTIC'
+      ? `Certificate verified authentic (100% cryptographic integrity score).`
+      : verificationStatusTier === 'REVOKED_CREDENTIAL'
+      ? `CRITICAL: Certificate has been revoked by issuing authority.`
+      : verificationStatusTier === 'INVALID_ISSUER_SIGNATURE'
+      ? `SECURITY ALERT: Invalid issuer signature detected on certificate hash.`
+      : `Certificate credential has expired.`
+  };
+}
+
+
 
 
 
