@@ -1920,6 +1920,72 @@ export function calculateCertificateBulkPdfExportCompressionRatio({
   };
 }
 
+export function calculateSingleCertificateExpirationAudit({
+  issueDateStr = '2025-08-04',
+  expirationDateStr = '2026-08-04',
+  gracePeriodDays = 30,
+  currentDateStr = '2026-08-04'
+} = {}) {
+  const issueDate = new Date(issueDateStr);
+  const currentDate = new Date(currentDateStr);
+
+  if (isNaN(issueDate.getTime()) || isNaN(currentDate.getTime())) {
+    return { valid: false, error: 'Invalid issue or current date format' };
+  }
+
+  if (!expirationDateStr) {
+    return {
+      valid: true,
+      isLifetime: true,
+      isExpired: false,
+      isInGracePeriod: false,
+      daysRemaining: Infinity,
+      statusTier: 'LIFETIME_VALID',
+      recommendation: 'Lifetime non-expiring credential. Always valid.'
+    };
+  }
+
+  const expirationDate = new Date(expirationDateStr);
+  if (isNaN(expirationDate.getTime())) {
+    return { valid: false, error: 'Invalid expiration date format' };
+  }
+
+  const diffMs = expirationDate.getTime() - currentDate.getTime();
+  const daysRemaining = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  const isExpired = daysRemaining < 0;
+  const isInGracePeriod = isExpired && Math.abs(daysRemaining) <= gracePeriodDays;
+
+  let statusTier = 'ACTIVE_VALID';
+  if (isExpired) {
+    statusTier = isInGracePeriod ? 'RENEWAL_GRACE_PERIOD' : 'EXPIRED_CREDENTIAL';
+  } else if (daysRemaining <= 30) {
+    statusTier = 'EXPIRING_SOON_RENEWAL_RECOMMENDED';
+  }
+
+  return {
+    valid: true,
+    issueDateStr,
+    expirationDateStr,
+    currentDateStr,
+    isLifetime: false,
+    daysRemaining,
+    isExpired,
+    isInGracePeriod,
+    gracePeriodDays,
+    statusTier,
+    recommendation: statusTier === 'ACTIVE_VALID'
+      ? `Certificate is valid and active (${daysRemaining} days remaining).`
+      : statusTier === 'EXPIRING_SOON_RENEWAL_RECOMMENDED'
+      ? `Credential expiring soon (${daysRemaining} days remaining). Initiate recertification.`
+      : statusTier === 'RENEWAL_GRACE_PERIOD'
+      ? `Credential expired ${Math.abs(daysRemaining)} days ago, but within ${gracePeriodDays}-day grace period. Recertify immediately.`
+      : `Credential expired ${Math.abs(daysRemaining)} days ago. Renewal window closed.`
+  };
+}
+
+
+
 
 
 

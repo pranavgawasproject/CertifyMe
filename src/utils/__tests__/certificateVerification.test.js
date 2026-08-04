@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit, calculateCertificateSecurityTamperDetectionScore, calculateCertificateBlockchainAnchorVerificationScore, calculateCertificateBulkIssuanceValidationAudit, calculateCertificateVerificationAuditTrailScore, calculateCertificateBulkDeliveryStatusAndFailureRate, calculateCertificateVerificationSecurityScore, calculateCertificateQRVerificationIntegrityScore, calculateCertifyMeBulkCertificateGenerationQuotaIndex, calculateCertificateTemplateDesignScore, calculateCertificateBulkPdfExportCompressionRatio } from '../certificateVerification.js';
+import { generateCredentialId, validateCertificateMetadata, formatCertificateIssueDate, buildVerificationUrl, generateCertificateQRCodeUrl, calculateCertificateExpirationStatus, generateBadgeEmbedCode, calculateCertificateVerificationScore, generateLinkedInShareUrl, calculateCertificateExpiryAndRenewalStatus, calculateCertificateTamperCheck, calculateCertificateRenewalAlert, calculateCertificateBatchIssuanceSummary, generateCertificateEmbedBadgeHTML, calculateCertificateTamperProofSignature, calculateCertificateBulkExportBundleEstimate, calculateCertificateSecurityQRVerificationHash, calculateCertificateDesignAestheticScore, calculateCertificateRevocationRiskIndex, calculateCertificateExpirationRiskAssessment, calculateCertificateBulkIssuanceQualityScore, calculateCertificateTamperEvidenceIndex, calculateCertificateVerificationSlaTier, calculateCertificateExpiryRisk, calculateCertificateBatchIssuanceQuota, calculateCertificateDesignAccessibilityAndPrintQualityScore, calculateCertificateTamperProofVerificationHash, calculateCertificateBulkGenerationTimeEstimate, calculateCertificateCredentialPortabilityScore, calculateCertificateRevocationStatusAudit, calculateCertificateMetadataIntegrityScore, calculateCredentialSkillsProofWeight, calculateCertificateVerificationAuditReport, calculateCertificateBulkIssuanceValidationSummary, calculateCertificateAuthenticityVerificationSummary, calculateCertificateBatchIssuanceAudit, calculateCertificateRecipientEngagementIndex, calculateCertificateBlockchainAnchorAudit, calculateCertificateExpirationAndRenewalAudit, calculateCertificateBatchIssuanceQuotaAudit, calculateCertificateSecurityTamperDetectionScore, calculateCertificateBlockchainAnchorVerificationScore, calculateCertificateBulkIssuanceValidationAudit, calculateCertificateVerificationAuditTrailScore, calculateCertificateBulkDeliveryStatusAndFailureRate, calculateCertificateVerificationSecurityScore, calculateCertificateQRVerificationIntegrityScore, calculateCertifyMeBulkCertificateGenerationQuotaIndex, calculateCertificateTemplateDesignScore, calculateCertificateBulkPdfExportCompressionRatio, calculateSingleCertificateExpirationAudit } from '../certificateVerification.js';
+
 
 
 
@@ -1130,7 +1131,53 @@ describe('Certificate Verification Utilities', () => {
       expect(res.error).toBe('Total certificates count must be a positive number');
     });
   });
+
+  describe('calculateSingleCertificateExpirationAudit', () => {
+    it('evaluates active valid certificate correctly', () => {
+      const res = calculateSingleCertificateExpirationAudit({
+        issueDateStr: '2025-08-04',
+        expirationDateStr: '2027-08-04',
+        currentDateStr: '2026-08-04'
+      });
+      expect(res.valid).toBe(true);
+      expect(res.isLifetime).toBe(false);
+      expect(res.isExpired).toBe(false);
+      expect(res.statusTier).toBe('ACTIVE_VALID');
+      expect(res.recommendation).toContain('Certificate is valid and active');
+    });
+
+    it('evaluates lifetime non-expiring credential correctly', () => {
+      const res = calculateSingleCertificateExpirationAudit({
+        issueDateStr: '2025-08-04',
+        expirationDateStr: null
+      });
+      expect(res.valid).toBe(true);
+      expect(res.isLifetime).toBe(true);
+      expect(res.statusTier).toBe('LIFETIME_VALID');
+    });
+
+    it('evaluates RENEWAL_GRACE_PERIOD for recently expired certificate', () => {
+      const res = calculateSingleCertificateExpirationAudit({
+        issueDateStr: '2024-08-04',
+        expirationDateStr: '2026-07-25',
+        gracePeriodDays: 30,
+        currentDateStr: '2026-08-04'
+      });
+      expect(res.valid).toBe(true);
+      expect(res.isExpired).toBe(true);
+      expect(res.isInGracePeriod).toBe(true);
+      expect(res.statusTier).toBe('RENEWAL_GRACE_PERIOD');
+    });
+
+    it('returns error for invalid issue date', () => {
+      const res = calculateSingleCertificateExpirationAudit({ issueDateStr: 'invalid-date' });
+      expect(res.valid).toBe(false);
+      expect(res.error).toBe('Invalid issue or current date format');
+    });
+  });
+
 });
+
 
 
 
