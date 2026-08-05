@@ -2037,6 +2037,45 @@ export function calculateCertificateVerificationHashAndRevocationAudit({
   };
 }
 
+export function calculateCertificateTrustTierAndAuditScore({
+  isIssuerVerified = true,
+  isCryptographicallySigned = true,
+  isBlockchainAnchored = false,
+  daysUntilExpiration = 180
+} = {}) {
+  if (typeof daysUntilExpiration !== 'number') {
+    return { valid: false, error: 'Days until expiration must be a number' };
+  }
+
+  let auditScore = 40;
+  if (isIssuerVerified) auditScore += 30;
+  if (isCryptographicallySigned) auditScore += 20;
+  if (isBlockchainAnchored) auditScore += 10;
+
+  const finalScore = Math.min(100, Math.max(0, Math.round(auditScore)));
+
+  let trustTier = 'VERIFIED_TRUSTED_CREDENTIAL';
+  if (finalScore < 60) {
+    trustTier = 'UNVERIFIED_CREDENTIAL';
+  } else if (finalScore < 85) {
+    trustTier = 'MODERATE_TRUST_CREDENTIAL';
+  }
+
+  return {
+    valid: true,
+    isIssuerVerified: Boolean(isIssuerVerified),
+    isCryptographicallySigned: Boolean(isCryptographicallySigned),
+    isBlockchainAnchored: Boolean(isBlockchainAnchored),
+    daysUntilExpiration,
+    auditScore: finalScore,
+    trustTier,
+    recommendation: trustTier === 'VERIFIED_TRUSTED_CREDENTIAL'
+      ? `Highest trust tier credential verified (${finalScore}/100 audit trail score).`
+      : `Credential verified with moderate trust score (${finalScore}/100). Verify issuing domain.`
+  };
+}
+
+
 
 
 
