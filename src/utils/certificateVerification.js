@@ -2075,6 +2075,53 @@ export function calculateCertificateTrustTierAndAuditScore({
   };
 }
 
+export function calculateEnterpriseCertificateRevocationAudit({
+  totalCertificatesInBatch = 50,
+  revokedCertificatesCount = 0,
+  expiredCertificatesCount = 0,
+  verifiedDomainIssuersCount = 50
+} = {}) {
+  if (typeof totalCertificatesInBatch !== 'number' || totalCertificatesInBatch <= 0 || isNaN(totalCertificatesInBatch)) {
+    return { valid: false, error: 'Total certificates in batch must be a positive number' };
+  }
+
+  const total = Math.floor(totalCertificatesInBatch);
+  const revoked = Math.max(0, typeof revokedCertificatesCount === 'number' ? revokedCertificatesCount : 0);
+  const expired = Math.max(0, typeof expiredCertificatesCount === 'number' ? expiredCertificatesCount : 0);
+  const verifiedDomains = Math.max(0, typeof verifiedDomainIssuersCount === 'number' ? verifiedDomainIssuersCount : 0);
+
+  const activeValidCount = Math.max(0, total - revoked - expired);
+  const integrityPercentage = Math.round((activeValidCount / total) * 100);
+
+  let auditScore = integrityPercentage;
+  if (revoked > 0) auditScore -= revoked * 10;
+  if (verifiedDomains < total) auditScore -= Math.round(((total - verifiedDomains) / total) * 20);
+
+  const finalAuditScore = Math.max(0, Math.min(100, Math.round(auditScore)));
+
+  let complianceTier = 'FULL_ENTERPRISE_COMPLIANCE';
+  if (revoked > 0 || finalAuditScore < 70) {
+    complianceTier = 'AUDIT_WARNING_REVOCATIONS_DETECTED';
+  } else if (finalAuditScore < 90) {
+    complianceTier = 'PARTIAL_ENTERPRISE_COMPLIANCE';
+  }
+
+  return {
+    valid: true,
+    totalCertificatesInBatch: total,
+    activeValidCount,
+    revokedCertificatesCount: revoked,
+    expiredCertificatesCount: expired,
+    integrityPercentage,
+    auditScore: finalAuditScore,
+    complianceTier,
+    recommendation: finalAuditScore >= 90
+      ? `Enterprise certificate batch passed integrity audit (${finalAuditScore}/100 score).`
+      : `Audit warning: ${revoked} revoked or unverified certificates detected in batch.`
+  };
+}
+
+
 
 
 
