@@ -26,16 +26,19 @@ export default function AdSlot({ slot = '', format = 'auto', responsive = true, 
     }
   }, [client, slot]);
 
-  // If no client configured, render a placeholder so devs see where ads will appear
+  // If no client configured, render a placeholder in dev, otherwise render nothing
   if (!client) {
-    return (
-      <div
-        className={`bg-white/[0.02] border border-dashed border-white/10 rounded-lg p-4 text-center text-xs text-slate-500 ${className}`}
-        aria-hidden="true"
-      >
-        Ad slot (placeholder — set <code className="text-[#C9A24B]">VITE_ADSENSE_CLIENT</code> to enable)
-      </div>
-    );
+    if (import.meta.env.DEV) {
+      return (
+        <div
+          className={`bg-white/[0.02] border border-dashed border-white/10 rounded-lg p-4 text-center text-xs text-slate-500 ${className}`}
+          aria-hidden="true"
+        >
+          Ad slot (placeholder — set <code className="text-[#C9A24B]">VITE_ADSENSE_CLIENT</code> to enable)
+        </div>
+      );
+    }
+    return null;
   }
 
   return (
