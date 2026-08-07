@@ -1882,9 +1882,7 @@ export function calculateCertificateTemplateDesignScore({
 export function calculateCertificateBulkPdfExportCompressionRatio({
   totalCertificatesCount = 50,
   uncompressedTotalSizeBytes = 50000000,
-  compressedTotalSizeBytes = 12000000,
-  dpiResolution = 300,
-  isEmbedFontsEnabled = true
+  compressedTotalSizeBytes = 12000000
 } = {}) {
   if (typeof totalCertificatesCount !== 'number' || totalCertificatesCount <= 0 || isNaN(totalCertificatesCount)) {
     return { valid: false, error: 'Total certificates count must be a positive number' };
