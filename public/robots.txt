@@ -3,4 +3,4 @@ Allow: /
 Disallow: /c/
 
 # Sitemap
-Sitemap: https://certifyme.app/sitemap.xml
+Sitemap: https://certify-me-five.vercel.app/sitemap.xml
