@@ -1,12 +1,16 @@
 import { Helmet } from 'react-helmet-async';
 
-const SITE_URL = 'https://certifyme.app';
+const SITE_URL = 'https://certify-me-five.vercel.app';
 const DEFAULT_OG = `${SITE_URL}/og-image.png`;
 
 export default function SEO({ title, description, path = '', image = DEFAULT_OG, keywords }) {
-  const fullTitle = title ? `${title} | CertifyMe` : 'CertifyMe — Free Certificate Maker | 12 Templates, Live Preview';
+  const fullTitle = title
+    ? `${title} | CertifyMe`
+    : 'CertifyMe — Free Certificate Maker | 20 Templates, Live Preview';
   const url = `${SITE_URL}${path}`;
-  const desc = description || 'Create professional certificates in seconds. 12 designer templates, live preview, PNG download, CSV bulk generation. Free, no sign-up.';
+  const desc =
+    description ||
+    'Create professional certificates in seconds. 20 designer templates, live preview, PNG download, CSV bulk generation. Free, no sign-up. Perfect for teachers, HR, events & online courses.';
 
   return (
     <Helmet>
@@ -23,6 +27,8 @@ export default function SEO({ title, description, path = '', image = DEFAULT_OG,
       <meta property="og:image" content={image} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
+      <meta property="og:site_name" content="CertifyMe" />
+      <meta property="og:locale" content="en_US" />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
