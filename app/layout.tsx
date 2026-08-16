@@ -3,6 +3,7 @@ import { Fraunces, Inter, IBM_Plex_Mono, Dancing_Script } from 'next/font/google
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 const SITE_URL = 'https://certify-me-five.vercel.app';
 
@@ -164,6 +165,7 @@ export default function RootLayout({
           </div>
         </ErrorBoundary>
         <Analytics />
+        <GoogleAnalytics />
       </body>
     </html>
   );
