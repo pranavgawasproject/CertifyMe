@@ -5,6 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
+      disallow: ['/c/'],
     },
     sitemap: 'https://certify-me-five.vercel.app/sitemap.xml',
   };
