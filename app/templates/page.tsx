@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
 import Templates from '@/components/Templates';
+import { TEMPLATES } from '@/lib/data/templates';
+
+const SITE_URL = 'https://certify-me-five.vercel.app';
 
 export const metadata: Metadata = {
   title: '20 Free Certificate Templates — Download & Customize',
@@ -37,6 +40,58 @@ export const metadata: Metadata = {
   },
 };
 
+/** Real structured data only — template names/descriptions from registry, no fake ratings. */
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: `${SITE_URL}/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Certificate Templates',
+      item: `${SITE_URL}/templates`,
+    },
+  ],
+};
+
+const itemListJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'CertifyMe Certificate Templates',
+  description:
+    'Free professionally designed certificate templates for completion, achievement, and award certificates.',
+  numberOfItems: TEMPLATES.length,
+  itemListElement: TEMPLATES.map((t, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: t.name,
+    description: t.description,
+    url: `${SITE_URL}/templates`,
+  })),
+};
+
 export default function TemplatesPage() {
-  return <Templates />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(itemListJsonLd),
+        }}
+      />
+      <Templates />
+    </>
+  );
 }
